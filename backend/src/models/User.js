@@ -29,6 +29,10 @@ const userSchema = new Schema(
         type: Schema.Types.ObjectId,
       },
     ],
+    publications: [{
+        ref: "Publication",
+        type: Schema.Types.ObjectId
+    }]
   },
   {
     versionKey: false,

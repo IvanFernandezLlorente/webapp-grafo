@@ -17,6 +17,10 @@ export const verifyToken = async (req,res,next) => {
         if (!user) {
             return res.status(404).json({message: "No user found"});
         }
+
+        const roles = await Role.find({ _id: { $in: user.roles } });
+        req.isAdmin = roles.some(rol => rol.name === "admin");
+        
         next();
     } catch (error) {
         return res.status(401).json({message: "Unauthorized"})
@@ -26,13 +30,13 @@ export const verifyToken = async (req,res,next) => {
 export const isAdmin = async (req,res,next) => {
     try {
         const user = await User.findById(req.userId);
-        const roles = await Role.find({_id: {$in: user.roles}});
+        const roles = await Role.find({ _id: { $in: user.roles } });
+        
+        const isAdmin = roles.some(rol => rol.name === "admin");
 
-        for (let i = 0; i < roles.length; i++) {
-            if (roles[i].name === "admin") {
-                next();
-                return;
-            }
+        if (isAdmin) {
+            next();
+            return;
         }
 
         return res.status(403).json({ message: "Require Admin Role!" });
