@@ -15,7 +15,7 @@ app.use(express.urlencoded({ extended: false }));
 router(app);
 
 app.use((req,res) => {
-    res.status(404).json( {message: 'Page not Found'})
+    res.status(404).json( {message: "Page not Found"})
 })
 
 export default app;

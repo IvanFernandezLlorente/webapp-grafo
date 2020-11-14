@@ -15,22 +15,27 @@ export const getUserById = async (req, res) => {
         const user = await User.findById(userId);
         res.status(200).json(user);
     } catch (error) {
-        res.status(404).json({message: 'User not found'});
+        res.status(404).json({message: "User not found"});
     }
 };
 
 export const updateUserById = async (req, res) => {
     try {
+        const { password, ...rest } = req.body;
+
+        const encryptedPassword = await User.encryptPassword(password);
+        const allData = Object.assign(rest, { password: encryptedPassword });
+        
         const updatedUser = await User.findByIdAndUpdate(
             req.params.userId,
-            req.body,
+            allData,
             {
                 new: true
             }
         )
         res.status(200).json(updatedUser);
     } catch (error) {
-        res.status(404).json({message: 'User not found'});
+        res.status(404).json({message: "User not found"});
     }
 }
 
@@ -40,15 +45,16 @@ export const deleteUserById = async (req, res) => {
         await User.findByIdAndDelete(userId);
         res.status(200).json();
     } catch (error) {
-        res.status(404).json({message: 'User not found'});
+        res.status(404).json({message: "User not found"});
     }
 }
 
+// Admin signUp
 export const signUp = async (req,res) => {
     try {
-        const {name,email,password} = req.body;
+        const { email } = req.body;
+        const password = Math.random().toString(36).substring(2);
         const newUser = new User({
-            name,
             email,
             password: await User.encryptPassword(password)
         })
@@ -61,17 +67,18 @@ export const signUp = async (req,res) => {
             newUser.roles = [role._id]
         }
         const savedUser = await newUser.save();
-        const token = jwt.sign({id: savedUser._id},config.SECRET,{
-            expiresIn: 86400
-        });
+        // const token = jwt.sign({id: savedUser._id},config.SECRET,{
+        //     expiresIn: 86400
+        // });
 
+        // TODO: Send Email
         res.status(200).json({
-            name: savedUser.name,
             email: savedUser.email,
-            token
+            password: password
+            //token
         });
     } catch (error) {
-        res.status(500).json({message: 'Error'});
+        res.status(500).json({message: "Error"});
     }
 }
 
@@ -84,7 +91,7 @@ export const signIn = async (req,res) => {
 
         const checkPassword = await User.comparePassword(req.body.password,user.password);
         if (!checkPassword) {
-            return res.status(401).json({token: null, message: 'Invalid password'});
+            return res.status(401).json({token: null, message: "Invalid password"});
         }
 
         const token = jwt.sign({id: user._id}, config.SECRET, {
@@ -93,6 +100,6 @@ export const signIn = async (req,res) => {
 
         res.status(200).json({token});
     } catch (error) {
-        res.status(500).json({message: 'Error'});
+        res.status(500).json({message: "Error"});
     }
 }
