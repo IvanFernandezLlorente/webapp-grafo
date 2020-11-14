@@ -8,12 +8,12 @@ router.get('/',userController.getUsers);
 
 router.get('/:userId',userController.getUserById);
 
-router.post('/signup',[verifySignUp.checkDuplicateNameOrEmail,verifySignUp.checkRolesExisted], userController.signUp);
+router.post('/signup',[authJwt.verifyToken, authJwt.isAdmin,verifySignUp.checkDuplicateNameOrEmail,verifySignUp.checkRolesExisted], userController.signUp);
 
 router.post('/signin', userController.signIn);
 
-router.put('/:userId', [authJwt.verifyToken], userController.updateUserById);
+router.put('/:userId', [authJwt.verifyToken,verifySignUp.checkDuplicateNameOrEmail], userController.updateUserById);
 
-router.delete('/:userId', [authJwt.verifyToken, authJwt.isAdmin], userController.deleteUserById);
+router.delete('/:userId', [authJwt.verifyToken], userController.deleteUserById);
 
 export default router;
