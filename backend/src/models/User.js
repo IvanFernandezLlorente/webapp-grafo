@@ -23,6 +23,7 @@ const userSchema = new Schema(
     linkedinUrl:String,
     urjcUrl:String,
     scholarUrl:String,
+    imagenPath: String,
     roles: [
       {
         ref: "Role",

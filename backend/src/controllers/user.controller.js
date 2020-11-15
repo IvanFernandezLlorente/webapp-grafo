@@ -2,6 +2,8 @@ import User from "../models/User";
 import Role from '../models/Rol';
 import jwt from 'jsonwebtoken';
 import config from '../config';
+import fs from 'fs-extra';
+import path from 'path';
 
 export const getUsers = async (req, res) => {
     //const users = await User.find().populate("roles");
@@ -11,7 +13,7 @@ export const getUsers = async (req, res) => {
 
 export const getUserById = async (req, res) => {
     try {
-        const {userId} = req.params;
+        const { userId } = req.params;
         const user = await User.findById(userId);
         res.status(200).json(user);
     } catch (error) {
@@ -42,7 +44,10 @@ export const updateUserById = async (req, res) => {
 export const deleteUserById = async (req, res) => {
     try {
         const {userId} = req.params;
-        await User.findByIdAndDelete(userId);
+        const user = await User.findByIdAndDelete(userId);
+        if (user) {
+            await fs.unlink(path.resolve(user.imagenPath));
+        }
         res.status(200).json();
     } catch (error) {
         res.status(404).json({message: "User not found"});
