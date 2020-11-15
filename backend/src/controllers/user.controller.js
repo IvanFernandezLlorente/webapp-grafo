@@ -23,19 +23,27 @@ export const getUserById = async (req, res) => {
 
 export const updateUserById = async (req, res) => {
     try {
-        const { password, ...rest } = req.body;
-
-        const encryptedPassword = await User.encryptPassword(password);
-        const allData = Object.assign(rest, { password: encryptedPassword });
-        
-        const updatedUser = await User.findByIdAndUpdate(
-            req.params.userId,
-            allData,
-            {
-                new: true
+        if (req.isAdmin || req.userId == req.params.userId) {
+            
+            const { password, ...rest } = req.body;
+            let allData;
+            if (password) {
+                const encryptedPassword = await User.encryptPassword(password);
+                allData = Object.assign(rest, { password: encryptedPassword });
+            } else {
+                allData = rest;
             }
-        )
-        res.status(200).json(updatedUser);
+            
+            const updatedUser = await User.findByIdAndUpdate(
+                req.params.userId,
+                allData,
+                {
+                    new: true
+                }
+            )
+            return res.status(200).json(updatedUser);
+        }
+        return res.status(401).json({message: "Unauthorized"})
     } catch (error) {
         res.status(404).json({message: "User not found"});
     }
@@ -43,12 +51,15 @@ export const updateUserById = async (req, res) => {
 
 export const deleteUserById = async (req, res) => {
     try {
-        const {userId} = req.params;
-        const user = await User.findByIdAndDelete(userId);
-        if (user) {
-            await fs.unlink(path.resolve(user.imagenPath));
+        if (req.isAdmin || req.userId == req.params.userId) { 
+            const {userId} = req.params;
+            const user = await User.findByIdAndDelete(userId);
+            if (user) {
+                await fs.unlink(path.resolve(user.imagenPath));
+            }
+            return res.status(200).json();
         }
-        res.status(200).json();
+        return res.status(401).json({message: "Unauthorized"})
     } catch (error) {
         res.status(404).json({message: "User not found"});
     }
