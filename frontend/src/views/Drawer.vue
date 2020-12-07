@@ -9,11 +9,11 @@
         <b-navbar-nav class="list">
             <b-nav-item class="nav-link" to="/hola">
                 <b-icon-file-person></b-icon-file-person>
-                <p>Table list</p>
+                <p>People</p>
             </b-nav-item>
             <b-nav-item class="nav-link" to="/pepe">
                 <b-icon-chat-dots-fill></b-icon-chat-dots-fill>
-                <p>Icons</p>
+                <p>Publications</p>
             </b-nav-item>
         </b-navbar-nav>
         </b-collapse>

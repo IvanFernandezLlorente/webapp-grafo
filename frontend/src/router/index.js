@@ -4,6 +4,7 @@ import Index from '../views/Index.vue'
 import Hello from '../components/Hello';
 import pepe from '../components/Pepe';
 import Home from '../components/Home';
+import Login from '../pages/Login';
 
 Vue.use(VueRouter)
 
@@ -30,6 +31,11 @@ const routes = [
      },   
     ]
   },
+  {
+    path: '/login',
+    name: 'Login',
+    component: Login,
+  }
 ]
 
 const router = new VueRouter({

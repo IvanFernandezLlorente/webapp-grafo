@@ -14,13 +14,7 @@
               <i class="nc-icon nc-palette"></i>
             </a>
           </li>
-          <base-dropdown tag="li">
-            <template slot="title">
-              <i class="nc-icon nc-planet"></i>
-              <b class="caret"></b>
-              <span class="notification">5</span>
-            </template>
-          </base-dropdown>
+
           <li class="nav-item">
             <a href="#" class="nav-link">
               <i class="nc-icon nc-zoom-split"></i>
@@ -36,9 +30,12 @@
           </li>
           
           <li class="nav-item">
-            <a href="#" class="nav-link">
-              Log out
-            </a>
+            <b-link v-if="!tokenId" :to="{path: '/login'}" class="nav-link">
+              Sign In 
+            </b-link>
+            <b-link @click="logOut" v-else class="nav-link">
+              Log Out
+            </b-link>
           </li>
         </ul>
       </div>
@@ -46,12 +43,21 @@
   </nav>
 </template>
 <script>
+import { mapState } from 'vuex';
+
 export default {
-    name: 'TopNavbar'
+    name: 'TopNavbar',
+
+    methods: {
+        logOut () {
+            this.$store.dispatch('logout');
+        }
+    },
+    computed: mapState(['tokenId'])
 }
 
 </script>
-<style>
+<style scoped>
 .navbar {
     border: 0;
     border-bottom-color: currentcolor;
