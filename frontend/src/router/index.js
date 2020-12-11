@@ -1,10 +1,12 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
 import Index from '../views/Index.vue'
-import Hello from '../components/Hello';
-import pepe from '../components/Pepe';
+import Publications from '../components/Publications';
+import People from '../components/People';
 import Home from '../components/Home';
 import Login from '../pages/Login';
+import EditProfile from '../components/EditProfile';
+import store from '../store';
 
 Vue.use(VueRouter)
 
@@ -20,15 +22,27 @@ const routes = [
         component: Home,
      }, 
      {
-        path: '/hola',
-        name: 'Hello',
-        component: Hello,
+        path: '/publications',
+        name: 'Publications',
+        component: Publications,
      }, 
      {
-        path: '/pepe',
-        name: 'pepe',
-        component: pepe,
-     },   
+        path: '/people',
+        name: 'People',
+        component: People,
+     },  
+     {
+        path: '/myprofile',
+        name: 'EditProfile',
+        component: EditProfile,
+        beforeEnter: (to, from, next) => {
+            if (store.state.tokenId) {
+                next();
+            } else {
+                next({path: '/login'})
+            }
+        }
+     },  
     ]
   },
   {

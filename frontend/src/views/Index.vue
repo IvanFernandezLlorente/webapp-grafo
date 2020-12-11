@@ -37,7 +37,7 @@ export default {
     background: hsla(240,7%,81%,.15);
     position: relative;
     float: right;
-    width: calc(100% - 260px);
+    width: calc(100% - 265px);
     min-height: 100%;
 }
 </style>

@@ -7,11 +7,11 @@
 
         <b-collapse id="nav-collapse" is-nav>
         <b-navbar-nav class="list">
-            <b-nav-item class="nav-link" to="/hola">
+            <b-nav-item class="nav-link" to="/people">
                 <b-icon-file-person></b-icon-file-person>
                 <p>People</p>
             </b-nav-item>
-            <b-nav-item class="nav-link" to="/pepe">
+            <b-nav-item class="nav-link" to="/publications">
                 <b-icon-chat-dots-fill></b-icon-chat-dots-fill>
                 <p>Publications</p>
             </b-nav-item>

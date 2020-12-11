@@ -5,8 +5,8 @@ Vue.use(Vuex)
 
 export default new Vuex.Store({
     state: {
-        //tokenId: "",
-       // userId: "",
+        tokenId: "",
+        userId: "",
         //user: null,
         isAdmin: false
     },

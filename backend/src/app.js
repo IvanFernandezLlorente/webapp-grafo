@@ -10,6 +10,8 @@ createRoles();
 
 app.set("port",process.env.PORT || 4000);
 
+app.disable('etag');
+app.disable('x-powered-by')
 app.use(cors())
 app.use(morgan('dev'));
 app.use(express.json());
