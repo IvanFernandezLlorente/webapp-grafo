@@ -40,6 +40,12 @@
                             <input class="form-control" type="text" placeholder="Confirm Password">
                         </div>
                     </b-col>
+                    <b-col cols="6">
+                        <div class="form-group">
+                            <label for="userId" class="control-label">http://localhost:8080/users/</label>
+                            <input id="userId" v-model="user.userId" @change="updateCopy" class="form-control" type="text" placeholder="Your Url">
+                        </div>
+                    </b-col>
                 </b-row>
 
                 <b-row>
@@ -108,6 +114,7 @@ export default {
         user: {
           name: '',
           email: '',
+          userId: '',
           area: '',
           department: '',
           organization: '',
@@ -126,7 +133,7 @@ export default {
     methods: {
         async fetchData() {
             try {
-                const res = await axios.get(`http://localhost:4000/api/users/5f95be632491c35b78d42545`); //coger el id del store
+                const res = await axios.get(`http://localhost:4000/api/users/${this.$store.state.userId}`);
                 this.user = res.data;
             } catch (error) {
                 console.log(error)                
@@ -134,9 +141,12 @@ export default {
         },
         async updateProfile () {
             try {
-                const res = await axios.put(`http://localhost:4000/api/users/5f95be632491c35b78d42545`,this.userCopy,{
-                    headers: { token: this.$store.state.tokenId}
+                const res = await axios.put(`http://localhost:4000/api/users/${this.$store.state.userId}`,this.userCopy,{
+                    headers: { token: this.$store.state.token}
                 });
+                if (this.userCopy.userId) {
+                    this.$store.dispatch('updateUserId',this.userCopy.userId);
+                }
                 alert('Your data: ' + JSON.stringify(res.data))
             } catch (error) {
                 console.log(error)                

@@ -14,7 +14,7 @@ export const getUsers = async (req, res) => {
 export const getUserById = async (req, res) => {
     try {
         const { userId } = req.params;
-        const user = await User.findOne({userId});
+        const user = await User.findOne({userId}).populate("publications");
         res.status(200).json(user);
     } catch (error) {
         res.status(404).json({message: "User not found"});
@@ -31,8 +31,7 @@ export const updateUserById = async (req, res) => {
         if (req.isAdmin || req.userId == req.params.userId) {
             const { password, ...rest } = req.body;
             let allData;
-
-            if (userIdUnique(rest)) {
+            if (await userIdUnique(rest)) {
                 return res.status(400).json({ message: "The userId already exists" });
             }
 
@@ -137,7 +136,14 @@ export const signIn = async (req,res) => {
             expiresIn:86400
         })
 
-        res.status(200).json({token});
+        const roles = await Role.find({ _id: { $in: user.roles } });
+
+        res.status(200).json({
+            token,
+            id: user._id,
+            userId: user.userId,
+            isAdmin: roles.some(rol => rol.name === "admin")
+        });
     } catch (error) {
         res.status(500).json({message: "Error"});
     }

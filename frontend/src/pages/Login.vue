@@ -45,10 +45,12 @@ export default {
                     password: this.password
                 }
                 const res = await axios.post("http://localhost:4000/api/users/signin", info);
+                const { token, id, userId, isAdmin } = res.data;
                 const sended = {
-                    tokenId: res.data.token,
-                    userId: "pepe",
-                    isAdmin: true 
+                    token, 
+                    id, 
+                    userId, 
+                    isAdmin
                 }
                 this.$store.dispatch('login',sended);
                 this.$router.push({path: '/'})

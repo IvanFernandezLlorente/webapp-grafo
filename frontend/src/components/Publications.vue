@@ -28,7 +28,6 @@ export default {
         async fetchData() {
             const res = await axios.get("http://localhost:4000/api/publications");
             this.publications = res.data;
-            console.log(this.publications)
         }
     },
 }

@@ -77,7 +77,7 @@ export default {
         async newPublication () {
             try {
                 const res = await axios.post(`http://localhost:4000/api/publications`,this.publication,{
-                    headers: { token: this.$store.state.tokenId}
+                    headers: { token: this.$store.state.token}
                 });
             } catch (error) {
                 console.log(error)

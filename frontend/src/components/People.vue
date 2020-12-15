@@ -4,15 +4,18 @@
     <b-col cols="4" v-for="(person,index) in people"
     :key="index"
     >
-    <b-card
+    <b-link class="nav-link" :to="{path: `/profile/${person.userId}`}">
+        <b-card
         :title=person.name
         img-src="https://icon-library.com/images/blank-person-icon/blank-person-icon-12.jpg"
         img-alt="Image"
         img-top
         style="height: 76%;width: 76%;"
-    >
-        
-    </b-card>
+        >
+            
+        </b-card>
+    </b-link>
+    
   </b-col>
 </b-row>
 </template>
@@ -35,7 +38,6 @@ export default {
         async fetchData() {
             const res = await axios.get("http://localhost:4000/api/users");
             this.people = res.data;
-            console.log(this.people)
         }
     },
     computed: {

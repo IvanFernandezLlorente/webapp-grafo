@@ -8,6 +8,7 @@ import Login from '../pages/Login';
 import EditProfile from '../components/EditProfile';
 import store from '../store';
 import NewPublication from '../components/NewPublication';
+import Profile from '../components/Profile';
 
 Vue.use(VueRouter)
 
@@ -33,11 +34,16 @@ const routes = [
         component: People,
      },  
      {
+        path: '/profile/:userId',
+        name: 'Profile',
+        component: Profile,
+     },
+     {
         path: '/myprofile',
         name: 'EditProfile',
         component: EditProfile,
         beforeEnter: (to, from, next) => {
-            if (store.state.tokenId) {
+            if (store.state.token) {
                 next();
             } else {
                 next({path: '/login'})
@@ -49,7 +55,7 @@ const routes = [
         name: 'NewPublication',
         component: NewPublication,
         beforeEnter: (to, from, next) => {
-            if (store.state.tokenId) {
+            if (store.state.token) {
                 next();
             } else {
                 next({path: '/login'})

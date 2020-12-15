@@ -1,7 +1,9 @@
 <template>
   <nav class="navbar navbar-expand-lg">
     <div class="container-fluid">
-      <a class="navbar-brand" href="#">Dashboard</a>
+      <b-link class="nav-link" :to="{path: '/'}">
+        Home
+      </b-link>
       <button type="button">
         <span class="navbar-toggler-bar burger-lines"></span>
         <span class="navbar-toggler-bar burger-lines"></span>
@@ -23,12 +25,12 @@
           </li>
         </ul>
         <ul class="navbar-nav ml-auto">
-          <li v-if="tokenId && isAdmin" class="nav-item">
+          <li v-if="token && !isAdmin" class="nav-item">
             <b-link class="nav-link" :to="{name: 'NewPublication'}">
               New Publication
             </b-link>
           </li>
-          <li v-if="tokenId" class="nav-item">
+          <li v-if="token" class="nav-item">
             <b-link class="nav-link" :to="{name: 'EditProfile'}">
               Account
             </b-link>
@@ -66,7 +68,7 @@
           </li>
 
           <li class="nav-item">
-            <b-link v-if="!tokenId" :to="{path: '/login'}" class="nav-link">
+            <b-link v-if="!token" :to="{path: '/login'}" class="nav-link">
               Sign In 
             </b-link>
             <b-link @click="logOut" v-else class="nav-link">
@@ -118,7 +120,7 @@ export default {
             })
         }
     },
-    computed: mapState(['tokenId','isAdmin'])
+    computed: mapState(['token','isAdmin'])
 }
 
 </script>
