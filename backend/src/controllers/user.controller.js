@@ -14,7 +14,7 @@ export const getUsers = async (req, res) => {
 export const getUserById = async (req, res) => {
     try {
         const { userId } = req.params;
-        const user = await User.findById(userId);
+        const user = await User.findOne({userId});
         res.status(200).json(user);
     } catch (error) {
         res.status(404).json({message: "User not found"});
@@ -23,10 +23,19 @@ export const getUserById = async (req, res) => {
 
 export const updateUserById = async (req, res) => {
     try {
+        const user = await User.findOne({ userId: req.params.userId });
+        if (!user) {
+            return res.status(404).json({message: "User not found"});
+        }
+
         if (req.isAdmin || req.userId == req.params.userId) {
-            
             const { password, ...rest } = req.body;
             let allData;
+
+            if (userIdUnique(rest)) {
+                return res.status(400).json({ message: "The userId already exists" });
+            }
+
             if (password) {
                 const encryptedPassword = await User.encryptPassword(password);
                 allData = Object.assign(rest, { password: encryptedPassword });
@@ -34,8 +43,8 @@ export const updateUserById = async (req, res) => {
                 allData = rest;
             }
             
-            const updatedUser = await User.findByIdAndUpdate(
-                req.params.userId,
+            const updatedUser = await User.findOneAndUpdate(
+                { userId: req.params.userId },
                 allData,
                 {
                     new: true
@@ -43,25 +52,36 @@ export const updateUserById = async (req, res) => {
             )
             return res.status(200).json(updatedUser);
         }
-        return res.status(401).json({message: "Unauthorized"})
+        return res.status(401).json({ message: "Unauthorized" });
     } catch (error) {
-        res.status(404).json({message: "User not found"});
+        res.status(404).json({ message: "User not found" });
     }
+}
+
+const userIdUnique = async (rest) => {
+    const { userId } = rest;
+    const user = await User.findOne({ userId });
+    return user;
 }
 
 export const deleteUserById = async (req, res) => {
     try {
+        const userFound = await User.findOne({ userId: req.params.userId });
+        if (!userFound) {
+            return res.status(404).json({ message: "User not found" });
+        }
+
         if (req.isAdmin || req.userId == req.params.userId) { 
-            const {userId} = req.params;
-            const user = await User.findByIdAndDelete(userId);
-            if (user) {
-                await fs.unlink(path.resolve(user.imagenPath));
-            }
+            const { userId } = req.params;
+            const user = await User.findOneAndDelete({ userId });
+            // if (user) {
+            //     await fs.unlink(path.resolve(user.imagenPath));
+            // }
             return res.status(200).json();
         }
-        return res.status(401).json({message: "Unauthorized"})
+        return res.status(401).json({ message: "Unauthorized" });
     } catch (error) {
-        res.status(404).json({message: "User not found"});
+        res.status(404).json({ message: "User not found" });
     }
 }
 
@@ -83,14 +103,17 @@ export const signUp = async (req,res) => {
             newUser.roles = [role._id]
         }
         const savedUser = await newUser.save();
+        savedUser.userId = savedUser._id;
+        const finalUser = await savedUser.save();
         // const token = jwt.sign({id: savedUser._id},config.SECRET,{
         //     expiresIn: 86400
         // });
 
         // TODO: Send Email
         res.status(200).json({
-            email: savedUser.email,
-            password: password
+            email: finalUser.email,
+            password: password,
+            userId: finalUser.userId,
             //token
         });
     } catch (error) {
@@ -110,7 +133,7 @@ export const signIn = async (req,res) => {
             return res.status(401).json({token: null, message: "Invalid password"});
         }
 
-        const token = jwt.sign({id: user._id}, config.SECRET, {
+        const token = jwt.sign({id: user._id, userId: user.userId}, config.SECRET, {
             expiresIn:86400
         })
 

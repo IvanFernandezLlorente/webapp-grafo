@@ -12,7 +12,7 @@ export const getPublicationById = async (req, res) => {
         const publication = await Publication.findById(publicationId);
         res.status(200).json(publication);
     } catch (error) {
-        res.status(404).json({message: "Publication not found"});
+        res.status(404).json({ message: "Publication not found" });
     }
 }
 
@@ -27,49 +27,55 @@ export const createPublication = async (req, res) => {
             
             const newPublication = new Publication(req.body)
         
-            newPublication.user.push(req.userId);
+            newPublication.user.push(req.id);
             const publicationSaved = await newPublication.save();
 
-            const user = await User.findById(req.userId, { password: 0 });
+            const user = await User.findOne({ userId: req.userId }, { password: 0 });
             user.publications.push(publicationSaved._id);
             await user.save();
 
             return res.status(200).json(publicationSaved);
         }
-        res.status(403).json({message: "You can not create a publication"});
+        res.status(403).json({ message: "You can not create a publication" });
     } catch (error) {
-        res.status(500).json({message: "Error"});
+        res.status(500).json({ message: "Error" });
     }
 }
 
 export const updatePublicationById = async (req, res) => {
     try {
-        const updatedPublication = await Publication.findByIdAndUpdate(
-            req.params.publicationId,
-            req.body,
-            {
-                new: true
-            }
-        )
-        res.status(200).json(updatedPublication);
+        if (req.isAdmin || req.userId == req.params.userId) {
+            const updatedPublication = await Publication.findByIdAndUpdate(
+                req.params.publicationId,
+                req.body,
+                {
+                    new: true
+                }
+            )
+            return res.status(200).json(updatedPublication);
+        }
+        return res.status(401).json({ message: "Unauthorized" });
     } catch (error) {
-        res.status(404).json({message: "Publication not found"});
+        res.status(404).json({ message: "Publication not found" });
     }
 }
 
 export const deletePublicationById = async (req, res) => {
     try {
-        const { publicationId } = req.params;
-        const user = await User.findOne({ publications: publicationId });
-        if (user) {
-            const index = user.publications.indexOf(publicationId);
-            user.publications.splice(index, 1);
-            await user.save();
+        if (req.isAdmin || req.userId == req.params.userId) {
+            const { publicationId } = req.params;
+            const user = await User.findOne({ publications: publicationId });
+            if (user) {
+                const index = user.publications.indexOf(publicationId);
+                user.publications.splice(index, 1);
+                await user.save();
+            }
+            
+            await Publication.findByIdAndDelete(publicationId);
+            return res.status(200).json();
         }
-        
-        await Publication.findByIdAndDelete(publicationId);
-        res.status(200).json();
+        return res.status(401).json({ message: "Unauthorized" });
     } catch (error) {
-        res.status(404).json({message: "Publication not found"});
+        res.status(404).json({ message: "Publication not found" });
     }
 }

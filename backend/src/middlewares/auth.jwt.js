@@ -11,9 +11,10 @@ export const verifyToken = async (req,res,next) => {
         }
 
         const decoded = jwt.verify(token,config.SECRET);
-        req.userId = decoded.id
-
-        const user = await User.findById(req.userId, {password: 0});
+        req.id = decoded.id;
+        req.userId = decoded.userId;
+        
+        const user = await User.findById(req.id, { password: 0 });
         if (!user) {
             return res.status(404).json({message: "Invalid token"});
         }
@@ -29,7 +30,7 @@ export const verifyToken = async (req,res,next) => {
 
 export const isAdmin = async (req,res,next) => {
     try {
-        const user = await User.findById(req.userId);
+        const user = await User.findOne({ userId: req.userId });
         const roles = await Role.find({ _id: { $in: user.roles } });
         
         const isAdmin = roles.some(rol => rol.name === "admin");

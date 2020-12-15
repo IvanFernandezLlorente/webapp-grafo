@@ -3,7 +3,7 @@ import User from "../models/User";
 export const createImage = async (req, res) => {
     try {
         const { userId } = req.params;
-        const user = await User.findById(userId);
+        const user = await User.findOne({userId});
         if (user.imagenPath && (user.imagenPath!=req.file.path)) {
             await fs.unlink(path.resolve(user.imagenPath));
         }

@@ -15,6 +15,10 @@ const userSchema = new Schema(
       type: String,
       required: true,
     },
+    userId: {
+      type: String,
+      unique: true,
+    },
     organization: String,
     department: String,
     area: String,
