@@ -23,6 +23,11 @@
           </li>
         </ul>
         <ul class="navbar-nav ml-auto">
+          <li v-if="tokenId && isAdmin" class="nav-item">
+            <b-link class="nav-link" :to="{name: 'NewPublication'}">
+              New Publication
+            </b-link>
+          </li>
           <li v-if="tokenId" class="nav-item">
             <b-link class="nav-link" :to="{name: 'EditProfile'}">
               Account

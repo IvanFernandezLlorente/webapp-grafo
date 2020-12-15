@@ -7,6 +7,7 @@ import Home from '../components/Home';
 import Login from '../pages/Login';
 import EditProfile from '../components/EditProfile';
 import store from '../store';
+import NewPublication from '../components/NewPublication';
 
 Vue.use(VueRouter)
 
@@ -42,7 +43,19 @@ const routes = [
                 next({path: '/login'})
             }
         }
-     },  
+     },
+     {
+        path: '/newpublication',
+        name: 'NewPublication',
+        component: NewPublication,
+        beforeEnter: (to, from, next) => {
+            if (store.state.tokenId) {
+                next();
+            } else {
+                next({path: '/login'})
+            }
+        }
+    } 
     ]
   },
   {
