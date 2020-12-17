@@ -7,6 +7,10 @@ const publicationSchema = new Schema(
         type: String,
         unique: true
     },
+    publicationId:{
+        type: String,
+        unique: true
+    },
     userName: String,
     organization: String,
     description: String,

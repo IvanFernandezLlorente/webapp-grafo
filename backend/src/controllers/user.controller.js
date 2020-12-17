@@ -31,7 +31,7 @@ export const updateUserById = async (req, res) => {
         if (req.isAdmin || req.userId == req.params.userId) {
             const { password, ...rest } = req.body;
             let allData;
-            if (await userIdUnique(rest)) {
+            if (rest.userId  && await userIdUnique(rest.userId)) {
                 return res.status(400).json({ message: "The userId already exists" });
             }
 
@@ -57,8 +57,7 @@ export const updateUserById = async (req, res) => {
     }
 }
 
-const userIdUnique = async (rest) => {
-    const { userId } = rest;
+const userIdUnique = async (userId) => {
     const user = await User.findOne({ userId });
     return user;
 }

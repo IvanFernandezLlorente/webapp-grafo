@@ -24,8 +24,10 @@
                         <b-list-group-item  class="publi" v-for="(publication,index) in user.publications"
                             :key="index"
                         >
-                            <p>{{publication.title}}</p> 
-                            <p>{{publication.userName}}</p>
+                            <b-link class="nav-link" :to="{path: `/publications/${publication.publicationId}`}">
+                                <p>{{publication.title}}</p> 
+                                <p>{{publication.userName}}</p>
+                            </b-link>
                         </b-list-group-item>
                     </b-list-group>
                 </b-tab>
@@ -44,20 +46,7 @@ export default {
     
     data: () => {
         return {
-          user: {
-            name: '',
-            email: '',
-            userId: '',
-            area: '',
-            department: '',
-            organization: '',
-            researchgroup: '',
-            description: '',
-            linkedinUrl: '',
-            scholarUrl: '',
-            urjcUrl: '',
-            publications: []
-          },
+          user: {}
         }
     },
     created () {
@@ -77,8 +66,7 @@ export default {
 </script>
 
 <style scoped>
-.publi {
-
+.publi  a{
     justify-content: space-between;
     display: flex;
 }

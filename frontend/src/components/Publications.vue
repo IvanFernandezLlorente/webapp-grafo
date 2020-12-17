@@ -4,8 +4,10 @@
     <b-col cols="9" class="publi" v-for="(publication,index) in publications"
         :key="index"
     >
-         <p>{{publication.title}}</p> 
-         <p>{{publication.userName}}</p>
+        <b-link class="nav-link" :to="{path: `/publications/${publication.publicationId}`}">
+            <p>{{publication.title}}</p> 
+            <p>{{publication.userName}}</p>
+        </b-link>
     </b-col>
   </b-row>
 </template>
@@ -39,5 +41,11 @@ export default {
     margin: 19px;
     justify-content: space-between;
     display: flex;
+}
+
+.publi a {
+    justify-content: space-between;
+    display: flex;
+    width: 100%;
 }
 </style>

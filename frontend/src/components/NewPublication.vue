@@ -44,7 +44,7 @@
 
             <div class="text-center" style="margin-bottom: 63px;">
                 <button type="submit" class="btn btn-info float-right mb-50">
-                    Update Profile
+                    Save Publication
                 </button>
             </div>
         </form>

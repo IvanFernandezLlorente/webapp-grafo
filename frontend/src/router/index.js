@@ -9,6 +9,7 @@ import EditProfile from '../components/EditProfile';
 import store from '../store';
 import NewPublication from '../components/NewPublication';
 import Profile from '../components/Profile';
+import Publication from '../components/Publication';
 
 Vue.use(VueRouter)
 
@@ -27,6 +28,11 @@ const routes = [
         path: '/publications',
         name: 'Publications',
         component: Publications,
+     }, 
+     {
+        path: '/publications/:publicationId',
+        name: 'Publication',
+        component: Publication,
      }, 
      {
         path: '/people',
