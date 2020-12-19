@@ -173,8 +173,7 @@ const sendMail = async  (email, password) => {
             from: 'Grafo Research Support <grafo.research@gmail.com>',
             to: email,
             subject: "Welcome to Grafo Research",
-            text: `Your email is: ${email} \n
-            Your temporal password is: ${password}`
+            text: `Your email is: ${email} \nYour temporal password is: ${password}`
         };
         const result = await transport.sendMail(mailOptions);
         return result;

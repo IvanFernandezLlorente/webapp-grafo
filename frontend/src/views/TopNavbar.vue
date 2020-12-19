@@ -82,6 +82,7 @@
 </template>
 <script>
 import { mapState } from 'vuex';
+import axios from 'axios';
 
 export default {
     name: 'TopNavbar',
@@ -110,14 +111,24 @@ export default {
             bvModalEvt.preventDefault()
             this.handleSubmit()
         },
-        handleSubmit() {
+        async handleSubmit() {
             if (!this.checkFormValidity()) {
-            return
+                return
             }
-            
+
+            await this.signUp()
             this.$nextTick(() => {
-            this.$bvModal.hide('modal-admin')
+                this.$bvModal.hide('modal-admin')
             })
+        },
+        async signUp () {
+            try {
+                const res = await axios.post("http://localhost:4000/api/users/signup",{email: this.email},{
+                    headers: { token: this.$store.state.token}
+                });
+            } catch (error) {
+                console.log(error) 
+            }
         }
     },
     computed: mapState(['token','isAdmin'])

@@ -30,14 +30,14 @@
                 <b-row>
                     <b-col cols="3">
                         <div class="form-group">
-                            <label class="control-label">Change Password</label>
-                            <input class="form-control" type="text" placeholder="New Password">
+                            <label for="newPassword" class="control-label">Change Password</label>
+                            <input id="newPassword" v-model="newPassword" class="form-control" type="password" placeholder="New Password">
                         </div>
                     </b-col>
                     <b-col cols="3">
                         <div class="form-group">
-                            <label class="control-label">Confirm Password</label>
-                            <input class="form-control" type="text" placeholder="Confirm Password">
+                            <label for="confirmPassword" class="control-label">Confirm Password</label>
+                            <input id="confirmPassword" v-model="confirmPassword" class="form-control" type="password" placeholder="Confirm Password">
                         </div>
                     </b-col>
                     <b-col cols="6"> 
@@ -124,7 +124,9 @@ export default {
           scholarUrl: '',
           urjcUrl: ''
         },
-        userCopy: {}
+        userCopy: {},
+        newPassword: '',
+        confirmPassword: ''
       }
     },
     props: {
@@ -147,6 +149,9 @@ export default {
         },
         async updateProfile () {
             try {
+                if (this.newPassword && this.newPassword===this.confirmPassword) {
+                    this.userCopy.password = this.newPassword;
+                }
                 const res = await axios.put(`http://localhost:4000/api/users/${this.userIdProp ? this.userIdProp : this.$store.state.userId}`,this.userCopy,{
                     headers: { token: this.$store.state.token}
                 });
