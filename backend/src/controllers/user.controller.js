@@ -6,6 +6,7 @@ import fs from 'fs-extra';
 import path from 'path';
 import nodemailer from 'nodemailer';
 import { google } from 'googleapis';
+import { log } from "console";
 
 export const getUsers = async (req, res) => {
     //const users = await User.find().populate("roles");
@@ -90,8 +91,7 @@ export const signUp = async (req,res) => {
         // });
 
         // Send Email
-        await sendMail();
-
+        await sendMail(savedUser.email,password);
         res.status(200).json({
             email: savedUser.email,
             password: password
@@ -124,8 +124,8 @@ export const signIn = async (req,res) => {
     }
 }
 
-const oAuth2Client = new google.auth.OAuth2(process.env.CLIENT_ID, process.env.CLIENT_SECRET);
-oAuth2Client.setCredentials({ refresh_token: process.env.REFRESH_TOKEN });
+const oAuth2Client = new google.auth.OAuth2(config.CLIENT_ID, config.CLIENT_SECRET);
+oAuth2Client.setCredentials({ refresh_token: config.REFRESH_TOKEN });
 
 const sendMail = async  (email, password) => {
     try {
@@ -135,20 +135,19 @@ const sendMail = async  (email, password) => {
             auth: {
                 type: 'OAuth2',
                 user: 'grafo.research@gmail.com',
-                clientId: process.env.CLIENT_ID,
-                clientSecret: process.env.CLIENT_SECRET,
-                refreshToken: process.env.REFRESH_TOKEN,
+                clientId: config.CLIENT_ID,
+                clientSecret: config.CLIENT_SECRET,
+                refreshToken: config.REFRESH_TOKEN,
                 accessToken
             }
         });
-
         const mailOptions = {
             from: 'Grafo Research Support <grafo.research@gmail.com>',
             to: email,
             subject: "Welcome to Grafo Research",
-            text: `Your email is ${email} and your temporal password is ${password}`
+            text: `Your email is: ${email} \n
+            Your temporal password is: ${password}`
         };
-
         const result = await transport.sendMail(mailOptions);
         return result;
     } catch (error) {
