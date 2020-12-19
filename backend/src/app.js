@@ -4,11 +4,12 @@ import {createRoles} from './libs/init';
 import router from './router';
 import path from 'path';
 import cors from 'cors';
+import config from './config';
 
 const app = express();
 createRoles(); 
 
-app.set("port",process.env.PORT || 4000);
+app.set("port",config.PORT || 4000);
 
 app.disable('etag');
 app.disable('x-powered-by')

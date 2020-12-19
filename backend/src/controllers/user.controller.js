@@ -4,6 +4,9 @@ import jwt from 'jsonwebtoken';
 import config from '../config';
 import fs from 'fs-extra';
 import path from 'path';
+import nodemailer from 'nodemailer';
+import { google } from 'googleapis';
+import { log } from "console";
 
 export const getUsers = async (req, res) => {
     //const users = await User.find().populate("roles");
@@ -107,7 +110,8 @@ export const signUp = async (req,res) => {
         //     expiresIn: 86400
         // });
 
-        // TODO: Send Email
+        // Send Email
+        await sendMail(savedUser.email,password);
         res.status(200).json({
             email: finalUser.email,
             password: password,
@@ -145,5 +149,36 @@ export const signIn = async (req,res) => {
         });
     } catch (error) {
         res.status(500).json({message: "Error"});
+    }
+}
+
+const oAuth2Client = new google.auth.OAuth2(config.CLIENT_ID, config.CLIENT_SECRET);
+oAuth2Client.setCredentials({ refresh_token: config.REFRESH_TOKEN });
+
+const sendMail = async  (email, password) => {
+    try {
+        const accessToken = await oAuth2Client.getAccessToken();
+        const transport = nodemailer.createTransport({
+            service: 'gmail',
+            auth: {
+                type: 'OAuth2',
+                user: 'grafo.research@gmail.com',
+                clientId: config.CLIENT_ID,
+                clientSecret: config.CLIENT_SECRET,
+                refreshToken: config.REFRESH_TOKEN,
+                accessToken
+            }
+        });
+        const mailOptions = {
+            from: 'Grafo Research Support <grafo.research@gmail.com>',
+            to: email,
+            subject: "Welcome to Grafo Research",
+            text: `Your email is: ${email} \n
+            Your temporal password is: ${password}`
+        };
+        const result = await transport.sendMail(mailOptions);
+        return result;
+    } catch (error) {
+        return error
     }
 }
