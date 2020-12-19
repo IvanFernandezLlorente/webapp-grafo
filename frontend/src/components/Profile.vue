@@ -1,6 +1,18 @@
 <template>
   <div>
     <h3>{{user.name}}</h3>
+    <div class="buttons">
+        <b-link v-if="canEdit()" class="edit" :to="{name: 'EditProfile'}"> 
+            <button class="btn btn-success">
+                Edit
+            </button>
+        </b-link>
+        <b-link v-if="canEdit()" class="edit"  @click="deleteU()"> 
+            <button class="btn btn-danger">
+                Delete
+            </button>
+        </b-link>
+    </div>
     <b-row style="justify-content: center;">
         <b-col cols="9">
             <b-tabs content-class="mt-3" justified>
@@ -40,6 +52,7 @@
 
 <script>
 import axios from 'axios';
+import { mapState } from 'vuex';
 
 export default {
      name: 'Profile',
@@ -61,7 +74,23 @@ export default {
                 console.log(error)                
             }
         },
-    }
+        canEdit() {
+            return (this.isAdmin) || (this.user._id === this.id)
+        },
+        async deleteU() {
+            const res = await axios.delete(`http://localhost:4000/api/users/${this.$route.params.userId}`,{
+                headers: { token: this.$store.state.token}
+            });
+            if (this.isAdmin) {
+                this.$router.push({path: '/'})
+            } else {
+                this.$store.dispatch('logout');
+                this.$router.push({path: '/login'})
+            }
+            
+        }
+    },
+    computed: mapState(['isAdmin','id'])
 }
 </script>
 
@@ -69,5 +98,14 @@ export default {
 .publi  a{
     justify-content: space-between;
     display: flex;
+}
+
+.edit {
+    margin-right: 15px;
+}
+
+.buttons {
+    display: flex;
+    justify-content: flex-end;
 }
 </style>

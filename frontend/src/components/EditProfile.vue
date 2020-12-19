@@ -5,7 +5,7 @@
             <h4 class="card-title">Edit Profile</h4>
         </div>
         <div class="card-body">
-            <form @submit.prevent="updateProfile">
+            <form @submit.prevent="updateProfile"> 
                 <b-row>
                     <b-col cols="3">
                         <div class="form-group">
@@ -40,7 +40,7 @@
                             <input class="form-control" type="text" placeholder="Confirm Password">
                         </div>
                     </b-col>
-                    <b-col cols="6">
+                    <b-col cols="6"> 
                         <div class="form-group">
                             <label for="userId" class="control-label">http://localhost:8080/users/</label>
                             <input id="userId" v-model="user.userId" @change="updateCopy" class="form-control" type="text" placeholder="Your Url">
@@ -127,13 +127,19 @@ export default {
         userCopy: {}
       }
     },
+    props: {
+        userIdProp: {
+            type: String,
+            default: ""
+        }
+    },
     created () {
         this.fetchData();
     },
     methods: {
         async fetchData() {
             try {
-                const res = await axios.get(`http://localhost:4000/api/users/${this.$store.state.userId}`);
+                const res = await axios.get(`http://localhost:4000/api/users/${this.userIdProp ? this.userIdProp : this.$store.state.userId}`);
                 this.user = res.data;
             } catch (error) {
                 console.log(error)                
@@ -141,10 +147,10 @@ export default {
         },
         async updateProfile () {
             try {
-                const res = await axios.put(`http://localhost:4000/api/users/${this.$store.state.userId}`,this.userCopy,{
+                const res = await axios.put(`http://localhost:4000/api/users/${this.userIdProp ? this.userIdProp : this.$store.state.userId}`,this.userCopy,{
                     headers: { token: this.$store.state.token}
                 });
-                if (this.userCopy.userId) {
+                if (!this.userIdProp && this.userCopy.userId) {
                     this.$store.dispatch('updateUserId',this.userCopy.userId);
                 }
                 alert('Your data: ' + JSON.stringify(res.data))

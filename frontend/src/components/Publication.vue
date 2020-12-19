@@ -1,5 +1,19 @@
 <template>
   <div class="body-content">
+      <div class="buttons">
+        <b-link v-if="canEdit()" class="edit" :to="{path: `/edit/${publication.publicationId}`}"> 
+            <button class="btn btn-success">
+                Edit
+            </button>
+        </b-link>
+        <b-link v-if="canEdit()" class="edit"  @click="deleteP()"> 
+            <button class="btn btn-danger">
+                Delete
+            </button>
+        </b-link>
+      </div>
+      
+
       <h3>{{publication.title}}</h3>
       <p>{{publication.userName}}</p>
       <p>{{publication.organization}}</p>
@@ -17,6 +31,7 @@
 </template>
 
 <script>
+import { mapState } from 'vuex';
 import axios from 'axios';
 
 export default {
@@ -24,7 +39,9 @@ export default {
 
     data: () => {
         return {
-            publication: {}
+            publication: {
+                user:[]
+            }
         }
     },
     created () {
@@ -34,8 +51,18 @@ export default {
         async fetchData() {
             const res = await axios.get(`http://localhost:4000/api/publications/${this.$route.params.publicationId}`);
             this.publication = res.data;
+        },
+        canEdit() {
+            return (this.isAdmin) || (this.publication.user[0] === this.id)
+        },
+        async deleteP() {
+            const res = await axios.delete(`http://localhost:4000/api/publications/${this.$route.params.publicationId}`,{
+                headers: { token: this.$store.state.token}
+            });
+            this.$router.push({path: '/'})
         }
     },
+    computed: mapState(['isAdmin','id'])
 }
 </script>
 
@@ -58,5 +85,14 @@ export default {
 .body-content >>> blockquote p {
   display: inline;
   font-style: italic;
+}
+
+.edit {
+    margin-right: 15px;
+}
+
+.buttons {
+    display: flex;
+    justify-content: flex-end;
 }
 </style>

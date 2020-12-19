@@ -75,7 +75,6 @@ export const updatePublicationById = async (req, res) => {
 
 const publicationIdUnique = async (publicationId) => {
     const publication = await Publication.findOne({ publicationId });
-    console.log(publication);
     return publication;
 }
 

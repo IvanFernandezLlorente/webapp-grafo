@@ -1,13 +1,13 @@
 <template>
   <div>
-    <h1>New Publication</h1>
-    <CKEditor />    
+    <h1>Edit Publication</h1>
+    <CKEditor v-bind:isNew="false" />    
   </div>
 </template>
 
 <script>
 export default {
-  name: 'NewPublication',
+  name: 'EditPublication',
   components: {
     CKEditor: () => import('./CKEditor'),
   }

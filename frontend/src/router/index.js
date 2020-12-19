@@ -1,5 +1,6 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
+import axios from 'axios';
 import Index from '../views/Index.vue'
 import Publications from '../components/Publications';
 import People from '../components/People';
@@ -10,6 +11,7 @@ import store from '../store';
 import NewPublication from '../components/NewPublication';
 import Profile from '../components/Profile';
 import Publication from '../components/Publication';
+import EditPublication from '../components/EditPublication';
 
 Vue.use(VueRouter)
 
@@ -35,6 +37,18 @@ const routes = [
         component: Publication,
      }, 
      {
+        path: '/edit/:publicationId',
+        name: 'EditPublication',
+        component: EditPublication,
+        beforeEnter: async (to, from, next) => {
+            if (await canEditPublication(to.params.publicationId)) {
+                next();
+            } else {
+                next({path: '/login'})
+            }
+        }
+     },
+     {
         path: '/people',
         name: 'People',
         component: People,
@@ -48,8 +62,12 @@ const routes = [
         path: '/myprofile',
         name: 'EditProfile',
         component: EditProfile,
+        props: true,
         beforeEnter: (to, from, next) => {
-            if (store.state.token) {
+            if (store.state.isAdmin) {
+                next({params: {userIdProp: from.params.userId}})
+            }
+            else if (store.state.token) {
                 next();
             } else {
                 next({path: '/login'})
@@ -76,6 +94,11 @@ const routes = [
     component: Login,
   }
 ]
+
+const canEditPublication = async (publicationId) => {
+    const publication = await axios.get(`http://localhost:4000/api/publications/${publicationId}`);
+    return ((store.state.isAdmin) || (publication.data.user[0] === store.state.id))
+}
 
 const router = new VueRouter({
   mode: 'history',
