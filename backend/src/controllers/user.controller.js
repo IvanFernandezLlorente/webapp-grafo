@@ -17,7 +17,7 @@ export const getUsers = async (req, res) => {
 export const getUserById = async (req, res) => {
     try {
         const { userId } = req.params;
-        const user = await User.findOne({userId}).populate("publications");
+        const user = await User.findOne({userId}).populate("publications").populate("problems");
         res.status(200).json(user);
     } catch (error) {
         res.status(404).json({message: "User not found"});

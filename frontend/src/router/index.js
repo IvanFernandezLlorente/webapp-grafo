@@ -12,6 +12,8 @@ import NewPublication from '../components/NewPublication';
 import Profile from '../components/Profile';
 import Publication from '../components/Publication';
 import EditPublication from '../components/EditPublication';
+import Problems from '../components/Problems';
+import Problem from '../components/Problem';
 
 Vue.use(VueRouter)
 
@@ -47,6 +49,16 @@ const routes = [
                 next({path: '/login'})
             }
         }
+     },
+     {
+        path: '/problems',
+        name: 'Problems',
+        component: Problems,
+     },
+     {
+        path: '/problems/:problemId',
+        name: 'Problem',
+        component: Problem,
      },
      {
         path: '/people',

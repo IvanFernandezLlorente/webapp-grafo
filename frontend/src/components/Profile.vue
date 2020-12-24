@@ -30,10 +30,20 @@
                         <b-list-group-item>{{user.urjcUrl}}</b-list-group-item>
                     </b-list-group>
                 </b-tab>
-
+                <b-tab title="Problems">
+                    <b-list-group>
+                        <b-list-group-item  class="tabs-2-3" v-for="(problem,index) in user.problems"
+                            :key="index"
+                        >
+                            <b-link class="nav-link" :to="{path: `/problems/${problem.problemId}`}">
+                                <p>{{problem.name}}</p> 
+                            </b-link>
+                        </b-list-group-item>
+                    </b-list-group>
+                </b-tab>
                 <b-tab title="Publications">
                     <b-list-group>
-                        <b-list-group-item  class="publi" v-for="(publication,index) in user.publications"
+                        <b-list-group-item  class="tabs-2-3" v-for="(publication,index) in user.publications"
                             :key="index"
                         >
                             <b-link class="nav-link" :to="{path: `/publications/${publication.publicationId}`}">
@@ -95,7 +105,7 @@ export default {
 </script>
 
 <style scoped>
-.publi  a{
+.tabs-2-3  a{
     justify-content: space-between;
     display: flex;
 }

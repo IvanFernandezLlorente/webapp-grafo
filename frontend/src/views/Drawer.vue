@@ -11,6 +11,10 @@
                 <b-icon-file-person></b-icon-file-person>
                 <p>People</p>
             </b-nav-item>
+            <b-nav-item class="nav-link" to="/problems">
+                <b-icon-clipboard></b-icon-clipboard>
+                <p>Problems</p>
+            </b-nav-item>
             <b-nav-item class="nav-link" to="/publications">
                 <b-icon-chat-dots-fill></b-icon-chat-dots-fill>
                 <p>Publications</p>
