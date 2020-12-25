@@ -1,7 +1,7 @@
 <template>
   <div>
     <h1>New Publication</h1>
-    <CKEditor />    
+    <EditorPublications />    
   </div>
 </template>
 
@@ -9,7 +9,7 @@
 export default {
   name: 'NewPublication',
   components: {
-    CKEditor: () => import('./CKEditor'),
+    EditorPublications: () => import('./EditorPublications'),
   }
 }
 </script> 

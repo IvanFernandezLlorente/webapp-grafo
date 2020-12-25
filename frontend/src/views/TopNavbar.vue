@@ -26,6 +26,11 @@
         </ul>
         <ul class="navbar-nav ml-auto">
           <li v-if="token && !isAdmin" class="nav-item">
+            <b-link class="nav-link" :to="{name: 'NewProblem'}">
+              New Problem
+            </b-link>
+          </li>
+          <li v-if="token && !isAdmin" class="nav-item">
             <b-link class="nav-link" :to="{name: 'NewPublication'}">
               New Publication
             </b-link>

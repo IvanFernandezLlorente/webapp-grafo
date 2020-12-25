@@ -1,7 +1,7 @@
 <template>
   <div class="body-content">
       <div class="buttons">
-        <b-link v-if="canEdit()" class="edit" :to="{path: `/edit/${problem.problemId}`}"> 
+        <b-link v-if="canEdit()" class="edit" :to="{path: `/editproblems/${problem.problemId}`}"> 
             <button class="btn btn-success">
                 Edit
             </button>
@@ -61,28 +61,36 @@ export default {
                 user:[],
                 relatedProblems: [],
                 publications: []
-            }
+            },
+            url: ''
         }
     },
     created () {
+        this.url = this.$route.params.problemId;
         this.fetchData();
     },
     methods: {
         async fetchData() {
-            const res = await axios.get(`http://localhost:4000/api/problems/${this.$route.params.problemId}`);
+            const res = await axios.get(`http://localhost:4000/api/problems/${this.url}`);
             this.problem = res.data;
         },
         canEdit() {
             return (this.isAdmin) || (this.problem.user[0] === this.id)
         },
         async deleteP() {
-            const res = await axios.delete(`http://localhost:4000/api/problems/${this.$route.params.problemId}`,{
+            const res = await axios.delete(`http://localhost:4000/api/problems/${this.url}`,{
                 headers: { token: this.$store.state.token}
             });
             this.$router.push({path: '/'})
         }
     },
-    computed: mapState(['isAdmin','id'])
+    computed: mapState(['isAdmin','id']),
+
+    beforeRouteUpdate(to, from, next) {
+        this.url = to.params.problemId
+        this.fetchData()
+        next()
+    }
 }
 </script>
 

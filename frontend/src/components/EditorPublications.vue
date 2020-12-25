@@ -55,7 +55,7 @@ import ClassicEditor from '../ckeditor';
 import axios from 'axios';
 
 export default {
-    name: 'CKEditor',
+    name: 'EditorPublications',
     data() {
         return {
             publication: {

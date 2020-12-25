@@ -1,7 +1,7 @@
 <template>
   <div>
     <h1>Edit Publication</h1>
-    <CKEditor v-bind:isNew="false" />    
+    <EditorPublications v-bind:isNew="false" />    
   </div>
 </template>
 
@@ -9,7 +9,7 @@
 export default {
   name: 'EditPublication',
   components: {
-    CKEditor: () => import('./CKEditor'),
+    EditorPublications: () => import('./EditorPublications'),
   }
 }
 </script> 

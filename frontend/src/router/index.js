@@ -14,6 +14,8 @@ import Publication from '../components/Publication';
 import EditPublication from '../components/EditPublication';
 import Problems from '../components/Problems';
 import Problem from '../components/Problem';
+import EditProblem from '../components/EditProblem';
+import NewProblem from '../components/NewProblem';
 
 Vue.use(VueRouter)
 
@@ -39,11 +41,23 @@ const routes = [
         component: Publication,
      }, 
      {
-        path: '/edit/:publicationId',
+        path: '/editpublications/:publicationId',
         name: 'EditPublication',
         component: EditPublication,
         beforeEnter: async (to, from, next) => {
             if (await canEditPublication(to.params.publicationId)) {
+                next();
+            } else {
+                next({path: '/login'})
+            }
+        }
+     },
+     {
+        path: '/newpublication',
+        name: 'NewPublication',
+        component: NewPublication,
+        beforeEnter: (to, from, next) => {
+            if (store.state.token) {
                 next();
             } else {
                 next({path: '/login'})
@@ -59,6 +73,30 @@ const routes = [
         path: '/problems/:problemId',
         name: 'Problem',
         component: Problem,
+     }, 
+     {
+        path: '/editproblems/:problemId',
+        name: 'EditProblem',
+        component: EditProblem,
+        beforeEnter: async (to, from, next) => {
+            if (await canEditProblem(to.params.problemId)) {
+                next();
+            } else {
+                next({path: '/login'})
+            }
+        }
+     },
+     {
+        path: '/newproblem',
+        name: 'NewProblem',
+        component: NewProblem,
+        beforeEnter: (to, from, next) => {
+            if (store.state.token) {
+                next();
+            } else {
+                next({path: '/login'})
+            }
+        }
      },
      {
         path: '/people',
@@ -85,19 +123,7 @@ const routes = [
                 next({path: '/login'})
             }
         }
-     },
-     {
-        path: '/newpublication',
-        name: 'NewPublication',
-        component: NewPublication,
-        beforeEnter: (to, from, next) => {
-            if (store.state.token) {
-                next();
-            } else {
-                next({path: '/login'})
-            }
-        }
-    } 
+     }, 
     ]
   },
   {
@@ -110,6 +136,11 @@ const routes = [
 const canEditPublication = async (publicationId) => {
     const publication = await axios.get(`http://localhost:4000/api/publications/${publicationId}`);
     return ((store.state.isAdmin) || (publication.data.user[0] === store.state.id))
+}
+
+const canEditProblem = async (problemId) => {
+    const problem = await axios.get(`http://localhost:4000/api/problems/${problemId}`);
+    return ((store.state.isAdmin) || (problem.data.user[0] === store.state.id))
 }
 
 const router = new VueRouter({
