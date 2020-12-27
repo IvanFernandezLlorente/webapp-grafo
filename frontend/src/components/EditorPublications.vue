@@ -6,14 +6,22 @@
                 <input id="title" v-model="publication.title" @change="updateCopy" class="form-control" type="text" placeholder="Title">
             </div>
 
-            <div class="form-group">
-                <label for="userName" class="control-label">Name</label>
-                <input id="userName" v-model="publication.userName" @change="updateCopy" class="form-control" type="text" placeholder="Name">
+            <div class="form-group col-md-6 search" v-for="(theUser, index) in usersChosenToShow" :key="index" style="padding-left: 0px;display: flex;">
+                <vue-simple-suggest
+                    v-model="usersChosenToShow[index]"
+                    :list="usersToChoose"
+                    :min-length="2"
+                    :filter-by-query="true">
+                </vue-simple-suggest>
+                <button type="button" class="btn" @click="deleteUser(index)">
+                    <b-icon-x-square></b-icon-x-square> 
+                </button>
             </div>
-
+    
             <div class="form-group">
-                <label for="organization" class="control-label">Organization</label>
-                <input id="organization" v-model="publication.organization" @change="updateCopy" class="form-control" type="text" placeholder="Organization">
+                <button @click="addUser" type="button" class="btn btn-secondary">
+                    Add User
+                </button>
             </div>
 
             <div class="body-edit">
@@ -53,25 +61,36 @@
 <script>
 import ClassicEditor from '../ckeditor';
 import axios from 'axios';
+import VueSimpleSuggest from 'vue-simple-suggest'
+import 'vue-simple-suggest/dist/styles.css'
 
 export default {
     name: 'EditorPublications',
+    components: {
+        VueSimpleSuggest
+    },
     data() {
         return {
             publication: {
                 title: '',
-                userName: '',
-                organization: '',
                 description: '<p>Here can be your description...</p>',
                 state: '<p>Here can be your State of the Art Methods...</p>',
                 instances: '<p>Here can be your instances...</p>',
                 computationalExperience: '<p>Here can be your computational experience...</p>',
-                reference: '<p>Here can be your references...</p>'
+                reference: '<p>Here can be your references...</p>',
+                user: [],
+                usersNotRegistered: []
             },
             initialized: false,
-            publicationCopy: {},                
+            publicationCopy: {
+                user: [],
+                usersNotRegistered: []
+            },                
             editor: ClassicEditor,
-            editorConfig: ClassicEditor.defaultConfig
+            editorConfig: ClassicEditor.defaultConfig,
+            usersToChoose: [],
+            userMap: new Map(),
+            usersChosen: [''],
         };
     },
     props: {
@@ -81,6 +100,7 @@ export default {
         }
     },
     created () {
+        this.getUsers();
         if (!this.isNew) {
             this.fetchData();
         }
@@ -88,6 +108,7 @@ export default {
     methods: {
         async savePublication () {
             try {
+                this.prepareUsers();
                 if (this.isNew) {
                     const res = await axios.post(`http://localhost:4000/api/publications`,this.publication,{
                         headers: { token: this.$store.state.token}
@@ -106,14 +127,44 @@ export default {
         async fetchData() {
             const res = await axios.get(`http://localhost:4000/api/publications/${this.$route.params.publicationId}`);
             this.publication = res.data;
+            this.pushToChosen();
             this.$nextTick(() => {
                 this.initialized = true;
             })
         },
         updateCopy (valor) {
             this.publicationCopy[valor.target.id] = valor.target.value;
+        },
+        async getUsers() {
+            const res = await axios.get(`http://localhost:4000/api/users`);
+            res.data.forEach( user => {
+                this.userMap.set(user.name,user._id);
+                this.usersToChoose.push(user.name);
+            });
+        },
+        addUser() {
+            this.usersChosen.push('')
+        },
+        deleteUser(index) {
+            this.usersChosen.splice(index, 1);
+        },
+        prepareUsers() {
+            this.usersChosen.forEach( user => {
+                if (this.userMap.has(user)) {
+                    this.publication.user.push(this.userMap.get(user));
+                    this.publicationCopy.user.push(this.userMap.get(user));
+                } else {
+                    this.publication.usersNotRegistered.push(user);
+                    this.publicationCopy.usersNotRegistered.push(user);
+                }
+            });
+        },
+        pushToChosen() {
+            this.usersChosen = [...this.userMap.entries()].filter(({ 1: v }) => this.publication.user.includes(v)).map(([k]) => k);
+            if (this.publication.usersNotRegistered) {
+                this.publication.usersNotRegistered.forEach( user => this.usersChosen.push(user));
+            }
         }
-        
     },
     watch: {
         'publication.description': function (newValue){
@@ -140,6 +191,11 @@ export default {
             if (this.initialized) {
                 this.publicationCopy.reference = newValue
             }            
+        }
+    },
+    computed: {
+        usersChosenToShow() {
+            return this.usersChosen;
         }
     }
 };
@@ -183,5 +239,9 @@ export default {
   color: #cfcfca;
   opacity: 1;
   filter: alpha(opacity=100);
+}
+
+.search > div {
+    width: 100%
 }
 </style>

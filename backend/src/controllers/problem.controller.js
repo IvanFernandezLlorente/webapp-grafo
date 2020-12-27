@@ -54,9 +54,9 @@ export const updateProblemById = async (req, res) => {
     try {
         const problem = await Problem.findOne({ problemId: req.params.problemId });
         if (problem) {
-            const user = await User.findOne({ problems: problem._id });
-
-            if (req.isAdmin || req.id == user._id) {
+            const users = await User.find({ problems: problem._id })
+            if (req.isAdmin || (users.some(user => user._id == req.id))) {
+                
                 if (req.body.problemId && await problemIdUnique(req.body.problemId)) {
                     return res.status(400).json({ message: "The problem already exists" });
                 }
@@ -64,16 +64,13 @@ export const updateProblemById = async (req, res) => {
                 const promises = [];
                 const promises2 = [];
 
-                // Quitar las referencias del problema a todos los users
-                problem.user.forEach( userId => promises.push(User.findOne({ userId }, { password: 0 })))
-                const users = await Promise.all(promises);
-
+                // Quitar las referencias del problema a todos los user
                 users.forEach( user => {
                     const index = user.problems.indexOf(problem._id);
                     user.problems.splice(index, 1);
-                    promises2.push(user.save());
+                    promises.push(user.save());
                 });
-                await Promise.all(promises2);
+                await Promise.all(promises);
 
                 const updatedProblem = await Problem.findOneAndUpdate(
                     { problemId: req.params.problemId },
@@ -84,7 +81,6 @@ export const updateProblemById = async (req, res) => {
                 );
                 
                 promises.splice(0,promises.length);
-                promises2.splice(0, promises2.length);
                 
                 // poner las referencias del problema a los nuevos users
                 updatedProblem.user.forEach( userId => promises.push(User.findOne({ userId }, { password: 0 })))
@@ -119,18 +115,14 @@ export const deleteProblemById = async (req, res) => {
             if (req.isAdmin || (users.some( user => user._id == req.id))) {
 
                 const promises = [];
-                const promises2 = [];
-
-                users.forEach(user => promises.push(User.findOne({ userId: user.userId }, { password: 0 })));
-                const usersResolved = await Promise.all(promises);
                 
-                usersResolved.forEach( user => {
+                users.forEach( user => {
                     const index = user.problems.indexOf(problem._id);
                     user.problems.splice(index, 1);
-                    promises2.push(user.save());
+                    promises.push(user.save());
                 });
-                await Promise.all(promises2);
-
+                await Promise.all(promises);
+                
                 await Problem.findOneAndDelete({ problemId: problem.problemId });
                 return res.status(200).json();
             }

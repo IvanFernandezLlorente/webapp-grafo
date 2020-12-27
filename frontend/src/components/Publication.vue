@@ -15,8 +15,20 @@
       
 
       <h3>{{publication.title}}</h3>
-      <p>{{publication.userName}}</p>
-      <p>{{publication.organization}}</p>
+      <h4 v-if="users.length || publication.usersNotRegistered.length">Users</h4>
+      <div v-if="users.length">
+        <b-link v-for="(user,index) in users"
+          :key="index"
+          :to="{path: `/profile/${user.userId}`}"> 
+            <p>{{user.name}}</p>
+        </b-link>
+      </div>
+
+      <div v-if="publication.usersNotRegistered.length">
+        <p v-for="(name,index) in publication.usersNotRegistered" :key="index"> 
+            {{name}}
+        </p>
+      </div>
       <h4>Problem Description</h4>
       <div v-html="publication.description"></div>
       <h4>State of the Art Methods</h4>
@@ -40,9 +52,11 @@ export default {
     data: () => {
         return {
             publication: {
-                user:[]
+                user:[],
+                usersNotRegistered: []
             },
-            url: ''
+            url: '',
+            users: []
         }
     },
     created () {
@@ -53,9 +67,13 @@ export default {
         async fetchData() {
             const res = await axios.get(`http://localhost:4000/api/publications/${this.url}`);
             this.publication = res.data;
+            const promises = []
+            this.publication.user.forEach( user => promises.push(axios.get(`http://localhost:4000/api/users/${user}`)))
+            const users = await Promise.all(promises);
+            this.users = users.map( user => user.data);
         },
         canEdit() {
-            return (this.isAdmin) || (this.publication.user[0] === this.id)
+            return (this.isAdmin) || (this.publication.user.some( user => user == this.id));
         },
         async deleteP() {
             const res = await axios.delete(`http://localhost:4000/api/publications/${this.url}`,{

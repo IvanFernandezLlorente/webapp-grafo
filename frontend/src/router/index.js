@@ -135,7 +135,7 @@ const routes = [
 
 const canEditPublication = async (publicationId) => {
     const publication = await axios.get(`http://localhost:4000/api/publications/${publicationId}`);
-    return ((store.state.isAdmin) || (publication.data.user[0] === store.state.id))
+    return ((store.state.isAdmin) || (publication.data.user.some(user => user == store.state.id)));
 }
 
 const canEditProblem = async (problemId) => {

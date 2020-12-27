@@ -11,8 +11,6 @@ const publicationSchema = new Schema(
         type: String,
         unique: true
     },
-    userName: String,
-    organization: String,
     description: String,
     state: String,
     instances: String,
@@ -21,6 +19,13 @@ const publicationSchema = new Schema(
     user: [{
         ref: "User",
         type: Schema.Types.ObjectId
+    }],
+    relatedProblems: [{
+        ref: "Problem",
+        type: Schema.Types.ObjectId
+    }],
+    usersNotRegistered: [{
+        type: String
     }]
   },
   {
