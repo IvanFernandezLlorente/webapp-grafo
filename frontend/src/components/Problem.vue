@@ -17,6 +17,22 @@
       <h3>{{problem.name}}</h3>
       <p>{{problem.organization}}</p>
       <p>{{problem.alias}}</p>
+
+      <h4 v-if="users.length || problem.usersNotRegistered.length">Users</h4>
+      <div v-if="users.length">
+        <b-link v-for="(user,index) in users"
+          :key="index"
+          :to="{path: `/profile/${user.userId}`}"> 
+            <p>{{user.name}}</p>
+        </b-link>
+      </div>
+
+      <div v-if="problem.usersNotRegistered.length">
+        <p v-for="(name,index) in problem.usersNotRegistered" :key="index"> 
+            {{name}}
+        </p>
+      </div>
+
       <div v-if="problem.relatedProblems.length">
         <h4>Related Problems</h4>
         <b-link class="edit" v-for="(problemRelated,index) in problem.relatedProblems"
@@ -60,9 +76,11 @@ export default {
             problem: {
                 user:[],
                 relatedProblems: [],
-                publications: []
+                publications: [],
+                usersNotRegistered: []
             },
-            url: ''
+            url: '',
+            users: []
         }
     },
     created () {
@@ -73,9 +91,13 @@ export default {
         async fetchData() {
             const res = await axios.get(`http://localhost:4000/api/problems/${this.url}`);
             this.problem = res.data;
+            const promises = []
+            this.problem.user.forEach( user => promises.push(axios.get(`http://localhost:4000/api/users/${user}`)))
+            const users = await Promise.all(promises);
+            this.users = users.map( user => user.data);
         },
         canEdit() {
-            return (this.isAdmin) || (this.problem.user[0] === this.id)
+            return (this.isAdmin) || (this.problem.user.some( user => user == this.id));
         },
         async deleteP() {
             const res = await axios.delete(`http://localhost:4000/api/problems/${this.url}`,{

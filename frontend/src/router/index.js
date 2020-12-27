@@ -140,7 +140,7 @@ const canEditPublication = async (publicationId) => {
 
 const canEditProblem = async (problemId) => {
     const problem = await axios.get(`http://localhost:4000/api/problems/${problemId}`);
-    return ((store.state.isAdmin) || (problem.data.user[0] === store.state.id))
+    return ((store.state.isAdmin) || (problem.data.user.some(user => user == store.state.id)));
 }
 
 const router = new VueRouter({

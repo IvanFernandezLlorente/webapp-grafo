@@ -11,7 +11,6 @@ const problemSchema = new Schema(
         type: String,
         unique: true
     },
-    organization: String,
     alias: String,
     relatedProblems: [{
         ref: "Problem",
@@ -29,6 +28,9 @@ const problemSchema = new Schema(
     publications: [{
         ref: "Publication",
         type: Schema.Types.ObjectId
+    }],
+    usersNotRegistered: [{
+        type: String
     }]
   },
   {
