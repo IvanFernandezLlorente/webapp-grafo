@@ -18,12 +18,10 @@ const problemSchema = new Schema(
     computationalExperience: String,
     reference: String,
     user: [{
-        ref: "User",
-        type: Schema.Types.ObjectId
+        type: String
     }],
     publications: [{
-        ref: "Publication",
-        type: Schema.Types.ObjectId
+        type: String
     }],
     usersNotRegistered: [{
         type: String

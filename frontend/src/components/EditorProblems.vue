@@ -155,7 +155,7 @@ export default {
         async getUsers() {
             const res = await axios.get(`http://localhost:4000/api/users`);
             res.data.forEach( user => {
-                this.userMap.set(user.name,user._id);
+                this.userMap.set(user.name,user.userId);
                 this.usersToChoose.push(user.name);
             });
         },

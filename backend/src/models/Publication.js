@@ -17,12 +17,10 @@ const publicationSchema = new Schema(
     computationalExperience: String,
     reference: String,
     user: [{
-        ref: "User",
-        type: Schema.Types.ObjectId
+        type: String
     }],
     relatedProblems: [{
-        ref: "Problem",
-        type: Schema.Types.ObjectId
+        type: String
     }],
     usersNotRegistered: [{
         type: String

@@ -35,12 +35,10 @@ const userSchema = new Schema(
       },
     ],
     publications: [{
-        ref: "Publication",
-        type: Schema.Types.ObjectId
+        type: String
     }],
     problems: [{
-        ref: "Problem",
-        type: Schema.Types.ObjectId
+       type: String
     }],
   },
   {

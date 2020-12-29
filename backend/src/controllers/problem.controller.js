@@ -9,7 +9,7 @@ export const getProblems = async (req, res) => {
 export const getProblemById = async (req, res) => {
     try {
         const { problemId } = req.params;
-        const problem = await Problem.findOne({ problemId }).populate("publications");
+        const problem = await Problem.findOne({ problemId });
         res.status(200).json(problem);
     } catch (error) {
         res.status(404).json({ message: "Problem not found" });
@@ -37,7 +37,7 @@ export const createProblem = async (req, res) => {
             const users = await Promise.all(promises);
 
             users.forEach( user => {
-                user.problems.push(problemSaved._id);
+                user.problems.push(problemSaved.problemId);
                 promises2.push(user.save());
             });
             await Promise.all(promises2);
@@ -54,7 +54,7 @@ export const updateProblemById = async (req, res) => {
     try {
         const problem = await Problem.findOne({ problemId: req.params.problemId });
         if (problem) {
-            const users = await User.find({ problems: problem._id })
+            const users = await User.find({ problems: problem.problemId });
             if (req.isAdmin || (users.some(user => user._id == req.id))) {
                 
                 if (req.body.problemId && await problemIdUnique(req.body.problemId)) {
@@ -66,7 +66,7 @@ export const updateProblemById = async (req, res) => {
 
                 // Quitar las referencias del problema a todos los user
                 users.forEach( user => {
-                    const index = user.problems.indexOf(problem._id);
+                    const index = user.problems.indexOf(problem.problemId);
                     user.problems.splice(index, 1);
                     promises.push(user.save());
                 });
@@ -87,7 +87,7 @@ export const updateProblemById = async (req, res) => {
                 const users2 = await Promise.all(promises);
 
                 users2.forEach( user => {
-                    user.problems.push(updatedProblem._id);
+                    user.problems.push(updatedProblem.problemId);
                     promises2.push(user.save());
                 });
                 await Promise.all(promises2);
@@ -111,13 +111,13 @@ export const deleteProblemById = async (req, res) => {
     try {
         const problem = await Problem.findOne({ problemId: req.params.problemId });
         if (problem) {
-            const users = await User.find({ problems: problem._id })
+            const users = await User.find({ problems: problem.problemId })
             if (req.isAdmin || (users.some( user => user._id == req.id))) {
 
                 const promises = [];
                 
                 users.forEach( user => {
-                    const index = user.problems.indexOf(problem._id);
+                    const index = user.problems.indexOf(problem.problemId);
                     user.problems.splice(index, 1);
                     promises.push(user.save());
                 });

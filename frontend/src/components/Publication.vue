@@ -81,13 +81,13 @@ export default {
             this.publication = res.data;
 
             const promises = []
-            this.publication.user.forEach( user => promises.push(axios.get(`http://localhost:4000/api/users/${user}`)));
+            this.publication.user.forEach( userId => promises.push(axios.get(`http://localhost:4000/api/users/${userId}`)));
             const users = await Promise.all(promises);
             this.users = users.map( user => user.data);
 
             promises.splice(0,promises.length);
             
-            this.publication.relatedProblems.forEach( problem => promises.push(axios.get(`http://localhost:4000/api/problems/${problem}`)));
+            this.publication.relatedProblems.forEach( problemId => promises.push(axios.get(`http://localhost:4000/api/problems/${problemId}`)));
             const problems = await Promise.all(promises);
             this.problems = problems.map( problem => problem.data);
         },

@@ -15,7 +15,7 @@
     </div>
     <b-row style="justify-content: center;">
         <b-col cols="9">
-            <b-tabs content-class="mt-3" justified>
+            <b-tabs content-class="mt-3" v-model="tabIndex" justified>
                 <b-tab title="About" active>
                     <b-list-group>
                         <b-list-group-item>{{user.name}}</b-list-group-item>
@@ -32,7 +32,7 @@
                 </b-tab>
                 <b-tab title="Problems">
                     <b-list-group>
-                        <b-list-group-item  class="tabs-2-3" v-for="(problem,index) in user.problems"
+                        <b-list-group-item  class="tabs-2-3" v-for="(problem,index) in problems"
                             :key="index"
                         >
                             <b-link class="nav-link" :to="{path: `/problems/${problem.problemId}`}">
@@ -43,7 +43,7 @@
                 </b-tab>
                 <b-tab title="Publications">
                     <b-list-group>
-                        <b-list-group-item  class="tabs-2-3" v-for="(publication,index) in user.publications"
+                        <b-list-group-item  class="tabs-2-3" v-for="(publication,index) in publications"
                             :key="index"
                         >
                             <b-link class="nav-link" :to="{path: `/publications/${publication.publicationId}`}">
@@ -69,7 +69,15 @@ export default {
     
     data: () => {
         return {
-          user: {}
+          user: {
+                problems: [],
+                publications: []
+          },
+          tabIndex: 0,
+          problems: [],
+          problemsFetched: false,
+          publications: [],
+          publicationsFetched: false
         }
     },
     created () {
@@ -97,10 +105,32 @@ export default {
                 this.$store.dispatch('logout');
                 this.$router.push({path: '/login'})
             }
-            
+        },
+        async fetchProblems() {
+            const promises = [];
+            this.user.problems.forEach( problemId => promises.push(axios.get(`http://localhost:4000/api/problems/${problemId}`)));
+            const problems = await Promise.all(promises);
+            this.problems = problems.map( problem => problem.data);
+            this.problemsFetched = true;
+        },
+        async fetchPublications() {
+            const promises = [];
+            this.user.publications.forEach( publicationId => promises.push(axios.get(`http://localhost:4000/api/publications/${publicationId}`)));
+            const publications = await Promise.all(promises);
+            this.publications = publications.map( publication => publication.data);
+            this.publicationsFetched = true;
         }
     },
-    computed: mapState(['isAdmin','id'])
+    computed: mapState(['isAdmin','id']),
+    watch: {
+        async tabIndex(newIndex) {
+            if ((newIndex === 1) && !this.problemsFetched ) {
+                await this.fetchProblems();
+            } else if ((newIndex === 2) && !this.publicationsFetched) {
+                this.fetchPublications();
+            }
+        }
+    }
 }
 </script>
 

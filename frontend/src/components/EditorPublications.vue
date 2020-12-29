@@ -166,7 +166,7 @@ export default {
         async getUsers() {
             const res = await axios.get(`http://localhost:4000/api/users`);
             res.data.forEach( user => {
-                this.userMap.set(user.name,user._id);
+                this.userMap.set(user.name,user.userId);
                 this.usersToChoose.push(user.name);
             });
         },
@@ -196,7 +196,7 @@ export default {
         async getProblems() {
             const res = await axios.get(`http://localhost:4000/api/problems`);
             res.data.forEach( problem => {
-                this.problemsMap.set(problem.name,problem._id);
+                this.problemsMap.set(problem.name,problem.problemId);
                 this.problemsToChoose.push(problem.name);
             });
         },

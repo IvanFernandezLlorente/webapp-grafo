@@ -33,9 +33,9 @@
         </p>
       </div>
 
-      <div v-if="problem.publications.length">
+      <div v-if="publications.length">
         <h4>Related Publications</h4>
-        <b-link class="edit" v-for="(publication,index) in problem.publications"
+        <b-link v-for="(publication,index) in publications"
           :key="index"
           :to="{path: `/publications/${publication.publicationId}`}"> 
             <p>{{publication.title}}</p>
@@ -72,7 +72,8 @@ export default {
                 usersNotRegistered: []
             },
             url: '',
-            users: []
+            users: [],
+            publications: []
         }
     },
     created () {
@@ -83,10 +84,17 @@ export default {
         async fetchData() {
             const res = await axios.get(`http://localhost:4000/api/problems/${this.url}`);
             this.problem = res.data;
+
             const promises = []
-            this.problem.user.forEach( user => promises.push(axios.get(`http://localhost:4000/api/users/${user}`)))
+            this.problem.user.forEach( userId => promises.push(axios.get(`http://localhost:4000/api/users/${userId}`)));
             const users = await Promise.all(promises);
             this.users = users.map( user => user.data);
+
+            promises.splice(0,promises.length);
+
+            this.problem.publications.forEach( publicationId => promises.push(axios.get(`http://localhost:4000/api/publications/${publicationId}`)));
+            const publications = await Promise.all(promises);
+            this.publications = publications.map( publication => publication.data);
         },
         canEdit() {
             return (this.isAdmin) || (this.problem.user.some( user => user == this.id));
