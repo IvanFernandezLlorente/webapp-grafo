@@ -1,5 +1,6 @@
 import Publication from '../models/Publication';
 import User from '../models/User';
+import Problem from '../models/Problem';
 
 export const getPublications = async (req, res) => {
     const publications = await Publication.find();
@@ -42,6 +43,18 @@ export const createPublication = async (req, res) => {
             });
             await Promise.all(promises2);
 
+            promises.splice(0, promises.length);
+            promises2.splice(0, promises2.length);
+            
+            publicationSaved.relatedProblems.forEach( problemId => promises.push(Problem.findOne({ _id: problemId })));
+            const problems = await Promise.all(promises);
+
+            problems.forEach( problem => {
+                problem.publications.push(publicationSaved._id);
+                promises2.push(problem.save());
+            });
+            await Promise.all(promises2);
+
             return res.status(200).json(publicationSaved);
         }
         res.status(403).json({ message: "You can not create a publication" });
@@ -72,6 +85,14 @@ export const updatePublicationById = async (req, res) => {
                 });
                 await Promise.all(promises);
 
+                const problems = await Problem.find({ publications: publication._id });
+                problems.forEach( problem => {
+                    const index = problem.publications.indexOf(publication._id);
+                    problem.publications.splice(index, 1);
+                    promises2.push(problem.save());
+                });
+                await Promise.all(promises2);
+
                 const updatedPublication = await Publication.findOneAndUpdate(
                     { publicationId: req.params.publicationId },
                     req.body,
@@ -80,7 +101,8 @@ export const updatePublicationById = async (req, res) => {
                     }
                 );
 
-                promises.splice(0,promises.length);
+                promises.splice(0, promises.length);
+                promises2.splice(0, promises2.length);
                 
                 // poner las referencias de la publicacion a los nuevos users
                 updatedPublication.user.forEach( userId => promises.push(User.findOne({ userId }, { password: 0 })))
@@ -89,6 +111,17 @@ export const updatePublicationById = async (req, res) => {
                 users2.forEach( user => {
                     user.publications.push(updatedPublication._id);
                     promises2.push(user.save());
+                });
+                await Promise.all(promises2);
+
+                promises.splice(0, promises.length);
+                promises2.splice(0, promises2.length);
+
+                updatedPublication.relatedProblems.forEach(problemId => promises.push(Problem.findOne({ _id: problemId })));
+                const problems2 = await Promise.all(promises);
+                problems2.forEach( problem => {
+                    problem.publications.push(updatedPublication._id);
+                    promises2.push(problem.save());
                 });
                 await Promise.all(promises2);
 
@@ -115,6 +148,7 @@ export const deletePublicationById = async (req, res) => {
             if (req.isAdmin || (users.some( user => user._id == req.id))) {
 
                 const promises = [];
+                const promises2 = [];
 
                 users.forEach( user => {
                     const index = user.publications.indexOf(publication._id);
@@ -122,6 +156,14 @@ export const deletePublicationById = async (req, res) => {
                     promises.push(user.save());
                 });
                 await Promise.all(promises);
+
+                const problems = await Problem.find({ publications: publication._id });
+                problems.forEach( problem => {
+                    const index = problem.publications.indexOf(publication._id);
+                    problem.publications.splice(index, 1);
+                    promises2.push(problem.save());
+                });
+                await Promise.all(promises2);
                 
                 await Publication.findOneAndDelete({ publicationId: publication.publicationId });
                 return res.status(200).json();

@@ -6,6 +6,7 @@
                 <input id="title" v-model="publication.title" @change="updateCopy" class="form-control" type="text" placeholder="Title">
             </div>
 
+            <h4>Users</h4>
             <div class="form-group col-md-6 search" v-for="(theUser, index) in usersChosenToShow" :key="index" style="padding-left: 0px;display: flex;">
                 <vue-simple-suggest
                     v-model="usersChosenToShow[index]"
@@ -21,6 +22,25 @@
             <div class="form-group">
                 <button @click="addUser" type="button" class="btn btn-secondary">
                     Add User
+                </button>
+            </div>
+
+            <h4>Related Problems</h4>
+            <div class="form-group col-md-6 search" v-for="(theProblem, index) in problemsChosenToShow" :key="`${index} - p`" style="padding-left: 0px;display: flex;">
+                <vue-simple-suggest
+                    v-model="problemsChosenToShow[index]"
+                    :list="problemsToChoose"
+                    :min-length="2"
+                    :filter-by-query="true">
+                </vue-simple-suggest>
+                <button type="button" class="btn" @click="deleteProblem(index)">
+                    <b-icon-x-square></b-icon-x-square> 
+                </button>
+            </div>
+    
+            <div class="form-group">
+                <button @click="addProblem" type="button" class="btn btn-secondary">
+                    Add Problem
                 </button>
             </div>
 
@@ -79,18 +99,23 @@ export default {
                 computationalExperience: '<p>Here can be your computational experience...</p>',
                 reference: '<p>Here can be your references...</p>',
                 user: [],
-                usersNotRegistered: []
+                usersNotRegistered: [],
+                relatedProblems: []
             },
             initialized: false,
             publicationCopy: {
                 user: [],
-                usersNotRegistered: []
+                usersNotRegistered: [],
+                relatedProblems: []
             },                
             editor: ClassicEditor,
             editorConfig: ClassicEditor.defaultConfig,
             usersToChoose: [],
             userMap: new Map(),
             usersChosen: [''],
+            problemsToChoose: [],
+            problemsMap: new Map(),
+            problemsChosen: ['']
         };
     },
     props: {
@@ -101,6 +126,7 @@ export default {
     },
     created () {
         this.getUsers();
+        this.getProblems();
         if (!this.isNew) {
             this.fetchData();
         }
@@ -109,6 +135,7 @@ export default {
         async savePublication () {
             try {
                 this.prepareUsers();
+                this.prepareProblems();
                 if (this.isNew) {
                     const res = await axios.post(`http://localhost:4000/api/publications`,this.publication,{
                         headers: { token: this.$store.state.token}
@@ -127,7 +154,8 @@ export default {
         async fetchData() {
             const res = await axios.get(`http://localhost:4000/api/publications/${this.$route.params.publicationId}`);
             this.publication = res.data;
-            this.pushToChosen();
+            this.pushToUsersChosen();
+            this.pushToProblemsChosen();
             this.$nextTick(() => {
                 this.initialized = true;
             })
@@ -159,11 +187,35 @@ export default {
                 }
             });
         },
-        pushToChosen() {
+        pushToUsersChosen() {
             this.usersChosen = [...this.userMap.entries()].filter(({ 1: v }) => this.publication.user.includes(v)).map(([k]) => k);
             if (this.publication.usersNotRegistered) {
                 this.publication.usersNotRegistered.forEach( user => this.usersChosen.push(user));
             }
+        },
+        async getProblems() {
+            const res = await axios.get(`http://localhost:4000/api/problems`);
+            res.data.forEach( problem => {
+                this.problemsMap.set(problem.name,problem._id);
+                this.problemsToChoose.push(problem.name);
+            });
+        },
+        addProblem() {
+            this.problemsChosen.push('')
+        },
+        deleteProblem(index) {
+            this.problemsChosen.splice(index, 1);
+        },
+        prepareProblems() {
+            this.problemsChosen.forEach( problem => {
+                if (this.problemsMap.has(problem)) {
+                    this.publication.relatedProblems.push(this.problemsMap.get(problem));
+                    this.publicationCopy.relatedProblems.push(this.problemsMap.get(problem));
+                }
+            });
+        },
+        pushToProblemsChosen() {
+            this.problemsChosen = [...this.problemsMap.entries()].filter(({ 1: v }) => this.publication.relatedProblems.includes(v)).map(([k]) => k);
         }
     },
     watch: {
@@ -196,6 +248,9 @@ export default {
     computed: {
         usersChosenToShow() {
             return this.usersChosen;
+        },
+        problemsChosenToShow() {
+            return this.problemsChosen;
         }
     }
 };

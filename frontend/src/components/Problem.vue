@@ -33,21 +33,12 @@
         </p>
       </div>
 
-      <div v-if="problem.relatedProblems.length">
-        <h4>Related Problems</h4>
-        <b-link class="edit" v-for="(problemRelated,index) in problem.relatedProblems"
-          :key="index"
-          :to="{path: `/problems/${problemRelated.problemId}`}"> 
-            <p>{{problemRelated.name}}</p>
-        </b-link>
-      </div>
-
       <div v-if="problem.publications.length">
         <h4>Related Publications</h4>
         <b-link class="edit" v-for="(publication,index) in problem.publications"
           :key="index"
-          :to="{path: `/publications/${publications.publicationId}`}"> 
-            <p>{{publications.title}}</p>
+          :to="{path: `/publications/${publication.publicationId}`}"> 
+            <p>{{publication.title}}</p>
         </b-link>
       </div>
       
@@ -57,8 +48,10 @@
       <div v-html="problem.state"></div>
       <h4>Instances</h4>
       <div v-html="problem.instances"></div>
-      <h4>Computational Experience</h4>
-      <div v-html="problem.computationalExperience"></div>
+      <div v-if="problem.computationalExperience">
+        <h4>Computational Experience</h4>
+        <div v-html="problem.computationalExperience"></div>
+      </div>
       <h4>References</h4>
       <div v-html="problem.reference"></div>
   </div>
@@ -75,7 +68,6 @@ export default {
         return {
             problem: {
                 user:[],
-                relatedProblems: [],
                 publications: [],
                 usersNotRegistered: []
             },

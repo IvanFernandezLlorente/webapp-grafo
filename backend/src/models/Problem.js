@@ -12,10 +12,6 @@ const problemSchema = new Schema(
         unique: true
     },
     alias: String,
-    relatedProblems: [{
-        ref: "Problem",
-        type: Schema.Types.ObjectId
-    }],
     description: String,
     state: String,
     instances: String,

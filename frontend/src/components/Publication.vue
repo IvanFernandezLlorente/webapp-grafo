@@ -29,6 +29,16 @@
             {{name}}
         </p>
       </div>
+
+      <div v-if="problems.length">
+        <h4>Related Problems</h4>
+        <b-link v-for="(problem,index) in problems"
+          :key="index"
+          :to="{path: `/problems/${problem.problemId}`}"> 
+            <p>{{problem.name}}</p>
+        </b-link>
+      </div>
+      
       <h4>Problem Description</h4>
       <div v-html="publication.description"></div>
       <h4>State of the Art Methods</h4>
@@ -53,10 +63,12 @@ export default {
         return {
             publication: {
                 user:[],
-                usersNotRegistered: []
+                usersNotRegistered: [],
+                relatedProblems: []
             },
             url: '',
-            users: []
+            users: [],
+            problems: []
         }
     },
     created () {
@@ -67,10 +79,17 @@ export default {
         async fetchData() {
             const res = await axios.get(`http://localhost:4000/api/publications/${this.url}`);
             this.publication = res.data;
+
             const promises = []
-            this.publication.user.forEach( user => promises.push(axios.get(`http://localhost:4000/api/users/${user}`)))
+            this.publication.user.forEach( user => promises.push(axios.get(`http://localhost:4000/api/users/${user}`)));
             const users = await Promise.all(promises);
             this.users = users.map( user => user.data);
+
+            promises.splice(0,promises.length);
+            
+            this.publication.relatedProblems.forEach( problem => promises.push(axios.get(`http://localhost:4000/api/problems/${problem}`)));
+            const problems = await Promise.all(promises);
+            this.problems = problems.map( problem => problem.data);
         },
         canEdit() {
             return (this.isAdmin) || (this.publication.user.some( user => user == this.id));

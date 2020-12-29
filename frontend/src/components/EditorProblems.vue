@@ -46,8 +46,11 @@
             </div>
 
             <div class="body-edit">
-                <h3>Computational Experience</h3>
-                <ckeditor :editor="editor" v-model="problem.computationalExperience" :config="editorConfig"></ckeditor>
+                <div style="display: flex;">
+                    <h3 v-bind:class="{ cross: !checked}">Computational Experience</h3>
+                    <b-form-checkbox v-model="checked" name="check-button" switch style="align-self: center;margin-left: 16px;"></b-form-checkbox>
+                </div>
+                <ckeditor v-if="checked" :editor="editor" v-model="problem.computationalExperience" :config="editorConfig"></ckeditor>
             </div>
 
             <div class="body-edit">
@@ -98,7 +101,7 @@ export default {
             usersToChoose: [],
             userMap: new Map(),
             usersChosen: [''],
-            
+            checked: true
         };
     },
     props: {
@@ -117,6 +120,7 @@ export default {
         async saveProblem () {
             try {
                 this.prepareUsers();
+                this.computationalChecked();
                 if (this.isNew) {
                     const res = await axios.post(`http://localhost:4000/api/problems`,this.problem,{
                         headers: { token: this.$store.state.token}
@@ -135,6 +139,11 @@ export default {
         async fetchData() {
             const res = await axios.get(`http://localhost:4000/api/problems/${this.$route.params.problemId}`);
             this.problem = res.data;
+            if (res.data.computationalExperience) {
+                this.checked = true
+            } else {
+                this.checked = false
+            }
             this.pushToChosen();
             this.$nextTick(() => {
                 this.initialized = true;
@@ -171,6 +180,12 @@ export default {
             this.usersChosen = [...this.userMap.entries()].filter(({ 1: v }) => this.problem.user.includes(v)).map(([k]) => k);
             if (this.problem.usersNotRegistered) {
                 this.problem.usersNotRegistered.forEach( user => this.usersChosen.push(user));
+            }
+        },
+        computationalChecked () {
+            if (!this.checked) {
+                this.problem.computationalExperience = '';
+                this.problemCopy.computationalExperience = '';
             }
         }
     },
@@ -251,5 +266,9 @@ export default {
 
 .search > div {
     width: 100%
+}
+
+.cross {
+    text-decoration: line-through;
 }
 </style>

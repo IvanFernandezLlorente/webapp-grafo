@@ -9,7 +9,7 @@ export const getProblems = async (req, res) => {
 export const getProblemById = async (req, res) => {
     try {
         const { problemId } = req.params;
-        const problem = await Problem.findOne({ problemId }).populate("relatedProblems").populate("publications");
+        const problem = await Problem.findOne({ problemId }).populate("publications");
         res.status(200).json(problem);
     } catch (error) {
         res.status(404).json({ message: "Problem not found" });
