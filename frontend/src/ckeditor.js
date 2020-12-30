@@ -23,6 +23,7 @@ import Table from '@ckeditor/ckeditor5-table/src/table';
 import TableToolbar from '@ckeditor/ckeditor5-table/src/tabletoolbar';
 import TableProperties from '@ckeditor/ckeditor5-table/src/tableproperties';
 import TableCellProperties from '@ckeditor/ckeditor5-table/src/tablecellproperties';
+import MathType from '@wiris/mathtype-ckeditor5/src/plugin';
 
 export default class ClassicEditor extends ClassicEditorBase { }
 
@@ -45,7 +46,8 @@ ClassicEditor.builtinPlugins = [
     TableToolbar,
     TableProperties,
     TableCellProperties,
-    ListStyle
+    ListStyle,
+    MathType
 ];
 
 ClassicEditor.defaultConfig = {
@@ -68,7 +70,7 @@ ClassicEditor.defaultConfig = {
             'bulletedList',
             'numberedList',
             'insertTable',
-
+            'MathType',
             'undo',
             'redo'
         ]

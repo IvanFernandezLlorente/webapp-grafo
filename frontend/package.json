@@ -25,6 +25,7 @@
     "@ckeditor/ckeditor5-table": "^24.0.0",
     "@ckeditor/ckeditor5-theme-lark": "^24.0.0",
     "@ckeditor/ckeditor5-vue2": "^1.0.5",
+    "@wiris/mathtype-ckeditor5": "^7.24.4",
     "axios": "^0.21.0",
     "bootstrap": "^4.5.3",
     "bootstrap-vue": "^2.20.1",
