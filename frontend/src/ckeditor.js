@@ -25,6 +25,46 @@ import TableProperties from '@ckeditor/ckeditor5-table/src/tableproperties';
 import TableCellProperties from '@ckeditor/ckeditor5-table/src/tablecellproperties';
 import MathType from '@wiris/mathtype-ckeditor5/src/plugin';
 
+import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
+import ButtonView from '@ckeditor/ckeditor5-ui/src/button/buttonview';
+import bibtexIcon from '@ckeditor/ckeditor5-font/theme/icons/font-family.svg';
+
+import { bibtexify } from './bib-list';
+
+class Bibtex extends Plugin {
+
+    init() {
+        const editor = this.editor;
+
+        editor.ui.componentFactory.add( 'bibtex', locale => {
+            const view = new ButtonView( locale );
+
+            view.set( {
+                label: 'Add BibTeX',
+                icon: bibtexIcon,
+                tooltip: true
+            } );
+            
+            view.on('execute', () => {
+                
+                editor.model.change( () => {
+                    const bibtexText = prompt('BibTeX');
+                    
+                    let contents = bibtexify(bibtexText, [])
+                    contents.forEach(content => {
+                        const viewFragment = editor.data.processor.toView( content );
+                        const modelFragment = editor.data.toModel(viewFragment);
+                        editor.model.insertContent(modelFragment,editor.model.document.selection);
+                    });
+                });
+            });
+            return view;
+        });
+        
+    }
+}
+
+
 export default class ClassicEditor extends ClassicEditorBase { }
 
 ClassicEditor.builtinPlugins = [
@@ -47,7 +87,8 @@ ClassicEditor.builtinPlugins = [
     TableProperties,
     TableCellProperties,
     ListStyle,
-    MathType
+    MathType,
+    Bibtex
 ];
 
 ClassicEditor.defaultConfig = {
@@ -72,7 +113,8 @@ ClassicEditor.defaultConfig = {
             'insertTable',
             'MathType',
             'undo',
-            'redo'
+            'redo',
+            'bibtex'
         ]
     },
     alignment: {
