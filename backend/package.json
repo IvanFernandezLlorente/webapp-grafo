@@ -6,7 +6,8 @@
   "scripts": {
     "dev": "nodemon src/index.js --exec babel-node",
     "build": "babel src --out-dir build",
-    "start": "node build/index.js"
+    "start": "node build/index.js",
+    "test": "jest --reporters='default'"
   },
   "keywords": [],
   "author": "",
@@ -31,6 +32,8 @@
     "@babel/core": "^7.12.3",
     "@babel/node": "^7.12.1",
     "@babel/preset-env": "^7.12.1",
-    "nodemon": "^2.0.6"
+    "jest": "^26.6.3",
+    "nodemon": "^2.0.6",
+    "supertest": "^6.1.1"
   }
 }

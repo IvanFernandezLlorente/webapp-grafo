@@ -11,16 +11,19 @@ import { log } from "console";
 export const getUsers = async (req, res) => {
     //const users = await User.find().populate("roles");
     const users = await User.find({},{password: 0});
-    res.status(200).json(users);
+    return res.status(200).json(users);
 };
 
 export const getUserById = async (req, res) => {
     try {
         const { userId } = req.params;
         const user = await User.findOne({userId});
-        res.status(200).json(user);
+        if (user) {
+            return res.status(200).json(user);
+        }
+        return res.status(404).json({message: "User not found"});
     } catch (error) {
-        res.status(404).json({message: "User not found"});
+        return res.status(500).json({message: "Error"});
     }
 };
 
@@ -56,7 +59,7 @@ export const updateUserById = async (req, res) => {
         }
         return res.status(401).json({ message: "Unauthorized" });
     } catch (error) {
-        res.status(404).json({ message: "User not found" });
+        return res.status(500).json({ message: "Error" });
     }
 }
 
