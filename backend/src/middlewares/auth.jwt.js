@@ -7,7 +7,7 @@ export const verifyToken = async (req,res,next) => {
     try {
         const token = req.headers["token"];
         if (!token) {
-            return res.status(403).json({message: "No token"});
+            return res.status(403).json({ message: "No token" });
         }
 
         const decoded = jwt.verify(token,config.SECRET);
@@ -16,7 +16,7 @@ export const verifyToken = async (req,res,next) => {
         
         const user = await User.findById(req.id, { password: 0 });
         if (!user) {
-            return res.status(404).json({message: "Invalid token"});
+            return res.status(404).json({ message: "Invalid token" });
         }
 
         const roles = await Role.find({ _id: { $in: user.roles } });
@@ -24,7 +24,7 @@ export const verifyToken = async (req,res,next) => {
         
         next();
     } catch (error) {
-        return res.status(401).json({message: "Unauthorized"})
+        return res.status(500).json({ message: "Error" });
     }
 }
 
