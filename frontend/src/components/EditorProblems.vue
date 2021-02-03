@@ -221,11 +221,7 @@ export default {
         async fetchData() {
             const res = await axios.get(`http://localhost:4000/api/problems/${this.$route.params.problemId}`);
             this.problem = res.data;
-            if (res.data.computationalExperience) {
-                this.checked = true
-            } else {
-                this.checked = false
-            }
+            this.checked = res.data.computationalExperience ? true : false;
             this.pushToChosen();
             await this.organiceFiles();
             this.$nextTick(() => {
