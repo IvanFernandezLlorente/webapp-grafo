@@ -35,14 +35,50 @@
                 <ckeditor :editor="editor" v-model="problem.description" :config="editorConfig"></ckeditor>
             </div>
 
+            <div style="display: flex;align-items: baseline;">
+                <b-form-file v-model="fileDescription" class="inputfile mt-3" id="inputfileDescription" ref="file-input" multiple plain></b-form-file>
+                <label class="btn btn-secondary" for="inputfileDescription">Choose a file</label>
+
+                <ul>
+                    <li class="item-list" v-for="(file, index) in fileArrayDescription" :key="index">
+                        <span>{{ file ? file.name : '' }}</span>
+                        <button type="button" @click="deleteFile(index, fileArrayDescription, file)">x</button>
+                    </li> 
+                </ul>
+            </div>
+
             <div class="body-edit">
                 <h3>State of the Art Methods</h3>
                 <ckeditor :editor="editor" v-model="problem.state" :config="editorConfig"></ckeditor>
             </div>
 
+            <div style="display: flex;align-items: baseline;">
+                <b-form-file v-model="fileState" class="inputfile mt-3" id="inputfileState" ref="file-input" multiple plain></b-form-file>
+                <label class="btn btn-secondary" for="inputfileState">Choose a file</label>
+
+                <ul>
+                    <li class="item-list" v-for="(file, index) in fileArrayState" :key="index">
+                        <span>{{ file ? file.name : '' }}</span>
+                        <button type="button" @click="deleteFile(index, fileArrayState, file)">x</button>
+                    </li> 
+                </ul>
+            </div>
+
             <div class="body-edit">
                 <h3>Instances</h3>
                 <ckeditor :editor="editor" v-model="problem.instances" :config="editorConfig"></ckeditor>
+            </div>
+
+            <div style="display: flex;align-items: baseline;">
+                <b-form-file v-model="fileInstances" class="inputfile mt-3" id="inputfileInstances" ref="file-input" multiple plain></b-form-file>
+                <label class="btn btn-secondary" for="inputfileInstances">Choose a file</label>
+
+                <ul>
+                    <li class="item-list" v-for="(file, index) in fileArrayInstances" :key="index">
+                        <span>{{ file ? file.name : '' }}</span>
+                        <button type="button" @click="deleteFile(index, fileArrayInstances, file)">x</button>
+                    </li> 
+                </ul>
             </div>
 
             <div class="body-edit">
@@ -53,9 +89,33 @@
                 <ckeditor v-if="checked" :editor="editor" v-model="problem.computationalExperience" :config="editorConfig"></ckeditor>
             </div>
 
+            <div v-if="checked" style="display: flex;align-items: baseline;">
+                <b-form-file v-model="fileComputational" class="inputfile mt-3" id="inputfileComputational" ref="file-input" multiple plain></b-form-file>
+                <label class="btn btn-secondary" for="inputfileComputational">Choose a file</label>
+
+                <ul>
+                    <li class="item-list" v-for="(file, index) in fileArrayComputational" :key="index">
+                        <span>{{ file ? file.name : '' }}</span>
+                        <button type="button" @click="deleteFile(index, fileArrayComputational, file)">x</button>
+                    </li> 
+                </ul>
+            </div>
+
             <div class="body-edit">
                 <h3>References</h3>
                 <ckeditor :editor="editor" v-model="problem.reference" :config="editorConfig"></ckeditor>
+            </div>
+
+            <div style="display: flex;align-items: baseline;">
+                <b-form-file v-model="fileReferences" class="inputfile mt-3" id="inputfileReferences" ref="file-input" multiple plain></b-form-file>
+                <label class="btn btn-secondary" for="inputfileReferences">Choose a file</label>
+
+                <ul>
+                    <li class="item-list" v-for="(file, index) in fileArrayReferences" :key="index">
+                        <span>{{ file ? file.name : '' }}</span>
+                        <button type="button" @click="deleteFile(index, fileArrayReferences, file)">x</button>
+                    </li> 
+                </ul>
             </div>
 
             <div class="text-center" style="margin-bottom: 63px;">
@@ -70,6 +130,7 @@
 <script>
 import ClassicEditor from '../ckeditor';
 import axios from 'axios';
+import { v4 as uuid } from 'uuid';
 import VueSimpleSuggest from 'vue-simple-suggest'
 import 'vue-simple-suggest/dist/styles.css'
 
@@ -89,7 +150,8 @@ export default {
                 computationalExperience: '<p>Here can be your computational experience...</p>',
                 reference: '<p>Here can be your references...</p>',
                 user: [],
-                usersNotRegistered: []
+                usersNotRegistered: [],
+                attachments: []
             },
             initialized: false,
             problemCopy: {
@@ -101,7 +163,19 @@ export default {
             usersToChoose: [],
             userMap: new Map(),
             usersChosen: [''],
-            checked: true
+            checked: true,
+            filesToUpload: [],
+            filesToDelete: [],
+            fileDescription: null, 
+            fileArrayDescription: [],
+            fileState: null, 
+            fileArrayState: [],
+            fileInstances: null,
+            fileArrayInstances: [],
+            fileReferences: null,
+            fileArrayReferences: [],
+            fileComputational: null,
+            fileArrayComputational: []
         };
     },
     props: {
@@ -110,8 +184,8 @@ export default {
             default: true
         }
     },
-    created () {
-        this.getUsers();
+    async created () {
+        await this.getUsers();
         if (!this.isNew) {
             this.fetchData();
         }
@@ -121,12 +195,20 @@ export default {
             try {
                 this.prepareUsers();
                 this.computationalChecked();
+                let files;
+                if (this.filesToUpload) {
+                    files = await this.uploadFile();
+                }
+                if (this.filesToDelete) {
+                    await this.deleteFiles();
+                }
+                const idsFiles = [...new Set([...files, ...this.prepareFiles()])]
                 if (this.isNew) {
-                    const res = await axios.post(`http://localhost:4000/api/problems`,this.problem,{
+                    const res = await axios.post(`http://localhost:4000/api/problems`,{...this.problem, "attachments": idsFiles},{
                         headers: { token: this.$store.state.token}
                     });
                 } else {
-                    const res = await axios.put(`http://localhost:4000/api/problems/${this.$route.params.problemId}`,this.problemCopy,{
+                    const res = await axios.put(`http://localhost:4000/api/problems/${this.$route.params.problemId}`,{...this.problemCopy, "attachments": idsFiles},{
                         headers: { token: this.$store.state.token}
                     });
                 }
@@ -145,6 +227,7 @@ export default {
                 this.checked = false
             }
             this.pushToChosen();
+            await this.organiceFiles();
             this.$nextTick(() => {
                 this.initialized = true;
             })
@@ -186,7 +269,65 @@ export default {
             if (!this.checked) {
                 this.problem.computationalExperience = '';
                 this.problemCopy.computationalExperience = '';
+                const length = this.fileArrayComputational.length;
+                for (let i = 0; i < length; i++) {
+                    this.deleteFile(0, this.fileArrayComputational, this.fileArrayComputational[0])
+                    
+                }
             }
+        },
+        deleteFile(index, array, file) {
+            if ((this.initialized) && !(this.filesToUpload.includes(file))) {
+                this.filesToDelete.push(file)
+            }
+            if (this.filesToUpload.includes(file)) {
+                const index2 = this.filesToUpload.indexOf(file);
+                this.filesToUpload.splice(index2, 1);
+            } 
+            array.splice(index, 1)
+        },
+        async uploadFile() {
+            const promises = []
+            this.filesToUpload.forEach( file => {
+                let fd = new FormData();
+                fd.append('fileId',file.fileId)
+                fd.append('section',file.section)
+                fd.append('file',file)
+                promises.push(axios.post(`http://localhost:4000/api/files`,fd,{
+                    headers: { token: this.$store.state.token, 'Content-Type': 'multipart/form-data'}
+                }))
+            })
+            const res = await Promise.all(promises)
+            const response = res.map( res => res.data.fileId) 
+            return response;
+        },
+        async deleteFiles() {
+            const promises = []
+            this.filesToDelete.forEach( file => {
+                promises.push(axios.delete(`http://localhost:4000/api/files/${file.fileId}`,{
+                    headers: { token: this.$store.state.token}
+                }))
+            })
+            await Promise.all(promises)
+        },
+        async organiceFiles() {
+            const promises = [];
+            this.problem.attachments.forEach( fileId => promises.push(axios.get(`http://localhost:4000/api/files/${fileId}`)))
+            const res = await Promise.all(promises)
+            const files = res.map( res => res.data);
+            this.fileArrayDescription = files.filter( file => file.section == 'description')
+            this.fileArrayState = files.filter( file => file.section == 'state')
+            this.fileArrayInstances = files.filter( file => file.section == 'instances')
+            this.fileArrayReferences = files.filter( file => file.section == 'references')
+            this.fileArrayComputational = files.filter( file => file.section == 'computational')
+        },
+        prepareFiles() {
+            let ids = []
+            if (this.initialized) {
+                const files = [...this.fileArrayDescription, ...this.fileArrayState, ...this.fileArrayInstances, ...this.fileArrayReferences, ...this.fileArrayComputational]
+                ids = files.map( file => file.fileId)
+            }
+            return ids            
         }
     },
     watch: {
@@ -214,6 +355,56 @@ export default {
             if (this.initialized) {
                 this.problemCopy.reference = newValue
             }            
+        },
+        fileDescription() {
+            this.fileDescription.forEach(file => {
+                const fileId = uuid()
+                file.fileId = fileId
+                file.section = 'description'
+                this.filesToUpload.push(file)
+                this.fileArrayDescription.push(file)
+                this.problem.description += `<p>Download <a href="http://localhost:4000/api/files/downloads/${file.fileId}">${file.name}</a></p>`
+            })
+        },
+        fileState() {
+            this.fileState.forEach(file => {
+                const fileId = uuid()
+                file.fileId = fileId
+                file.section = 'state'
+                this.filesToUpload.push(file)
+                this.fileArrayState.push(file)
+                this.problem.state += `<p>Download <a href="http://localhost:4000/api/files/downloads/${file.fileId}">${file.name}</a></p>`
+            })
+        },
+        fileInstances() {
+            this.fileInstances.forEach(file => {
+                const fileId = uuid()
+                file.fileId = fileId
+                file.section = 'instances'
+                this.filesToUpload.push(file)
+                this.fileArrayInstances.push(file)
+                this.problem.instances += `<p>Download <a href="http://localhost:4000/api/files/downloads/${file.fileId}">${file.name}</a></p>`
+            })
+        },
+        fileReferences() {
+            this.fileReferences.forEach(file => {
+                const fileId = uuid()
+                file.fileId = fileId
+                file.section = 'references'
+                this.filesToUpload.push(file)
+                this.fileArrayReferences.push(file)
+                this.problem.reference += `<p>Download <a href="http://localhost:4000/api/files/downloads/${file.fileId}">${file.name}</a></p>`
+            })
+        },
+        fileComputational() {
+            this.fileComputational.forEach(file => {
+                const fileId = uuid()
+                file.fileId = fileId
+                file.section = 'computational'
+                this.filesToUpload.push(file)
+                this.fileArrayComputational.push(file)
+                this.problem.computationalExperience += `<p>Download <a href="http://localhost:4000/api/files/downloads/${file.fileId}">${file.name}</a></p>`
+            })
         }
     },
     computed: {
@@ -270,5 +461,45 @@ export default {
 
 .cross {
     text-decoration: line-through;
+}
+
+.inputfile {
+	width: 0.1px;
+	height: 0.1px;
+	opacity: 0;
+	overflow: hidden;
+	position: absolute;
+	z-index: -1;
+}
+
+.item-list {
+    display: inline-flex;
+    color: #fff;
+    background-color: #007bff;
+    padding: 4px 10px;
+    border-radius: 10rem;
+    margin-right: 7px;
+}
+
+.item-list span {
+    color: #fff;
+    font-size: 75%;
+}
+
+.item-list button {
+    color: inherit;
+    line-height: 1;
+    margin-left: .25rem;
+    cursor: pointer;
+    padding: 0;
+    background-color: transparent;
+    border: 0;
+    text-shadow: 0 1px 0 #fff;
+    opacity: .5;
+    font-weight: 700;
+}
+.item-list button:hover {
+    opacity: .75;
+    font-weight: 700;
 }
 </style>

@@ -25,6 +25,9 @@ const problemSchema = new Schema(
     }],
     usersNotRegistered: [{
         type: String
+    }],
+    attachments: [{
+        type: String
     }]
   },
   {
