@@ -13,6 +13,7 @@ describe('Publication Model', () => {
         user: ['el-userId-2'],
         relatedProblems: ['un-problem'],
         usersNotRegistered: ['pepe'],
+        attachments: ['file-attachment']
     })    
  
     it('_id is defined in Publication model', () => {
@@ -47,5 +48,8 @@ describe('Publication Model', () => {
     });
     it('Users Not Registered is defined in Publication model', () => {
         expect(publication.usersNotRegistered).toBeDefined()
+    });
+    it('Attachments is defined in Publication model', () => {
+        expect(publication.attachments).toBeDefined()
     });
 });

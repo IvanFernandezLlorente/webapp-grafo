@@ -24,6 +24,9 @@ const publicationSchema = new Schema(
     }],
     usersNotRegistered: [{
         type: String
+    }],
+    attachments: [{
+        type: String
     }]
   },
   {

@@ -47,7 +47,6 @@
       <div v-html="publication.instances"></div>
       
       <div v-if="publication.computationalExperience">
-        <div v-html="publication.computationalExperience"></div>
             <h4>Computational Experience</h4>
         <div v-html="publication.computationalExperience"></div>
       </div>
@@ -69,7 +68,8 @@ export default {
             publication: {
                 user:[],
                 usersNotRegistered: [],
-                relatedProblems: []
+                relatedProblems: [],
+                attachments: []
             },
             url: '',
             users: [],
@@ -100,6 +100,14 @@ export default {
             return (this.isAdmin) || (this.publication.user.some( user => user == this.id));
         },
         async deleteP() {
+            const promises = []
+            this.publication.attachments.forEach( fileId => {
+                promises.push(axios.delete(`http://localhost:4000/api/files/${fileId}`,{
+                    headers: { token: this.$store.state.token}
+                }))
+            })
+            await Promise.all(promises)
+
             const res = await axios.delete(`http://localhost:4000/api/publications/${this.url}`,{
                 headers: { token: this.$store.state.token}
             });

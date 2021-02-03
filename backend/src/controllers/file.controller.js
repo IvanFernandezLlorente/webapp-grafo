@@ -28,7 +28,7 @@ export const downloadFile = async (req, res) => {
 
 export const uploadFile = async (req, res) => {
     try {
-        const newFile = new File({ fileId: req.body.fileId, section: req.body.section });
+        const newFile = new File({ name: req.file.originalname, path: req.file.path, fileId: req.body.fileId, section: req.body.section });
         const fileSaved = await newFile.save();
         return res.status(200).json(fileSaved);
     } catch (error) {
