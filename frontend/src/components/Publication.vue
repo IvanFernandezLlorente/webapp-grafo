@@ -45,13 +45,8 @@
       <div v-html="publication.state"></div>
       <h4>Instances</h4>
       <div v-html="publication.instances"></div>
-      
-      <div v-if="publication.computationalExperience">
-        <div v-html="publication.computationalExperience"></div>
-            <h4>Computational Experience</h4>
-        <div v-html="publication.computationalExperience"></div>
-      </div>
-
+      <h4>Computational Experience</h4>
+      <div v-html="publication.computationalExperience"></div>
       <h4>References</h4>
       <div v-html="publication.reference"></div>
   </div>
