@@ -11,16 +11,19 @@ import { log } from "console";
 export const getUsers = async (req, res) => {
     //const users = await User.find().populate("roles");
     const users = await User.find({},{password: 0});
-    res.status(200).json(users);
+    return res.status(200).json(users);
 };
 
 export const getUserById = async (req, res) => {
     try {
         const { userId } = req.params;
         const user = await User.findOne({userId});
-        res.status(200).json(user);
+        if (user) {
+            return res.status(200).json(user);
+        }
+        return res.status(404).json({ message: "User not found" });
     } catch (error) {
-        res.status(404).json({message: "User not found"});
+        return res.status(500).json({ message: "Error" });
     }
 };
 
@@ -28,13 +31,13 @@ export const updateUserById = async (req, res) => {
     try {
         const user = await User.findOne({ userId: req.params.userId });
         if (!user) {
-            return res.status(404).json({message: "User not found"});
+            return res.status(404).json({ message: "User not found" });
         }
 
         if (req.isAdmin || req.userId == req.params.userId) {
             const { password, ...rest } = req.body;
             let allData;
-            if (rest.userId  && await userIdUnique(rest.userId)) {
+            if (rest.userId && await userIdUnique(rest.userId)) {
                 return res.status(400).json({ message: "The userId already exists" });
             }
 
@@ -56,7 +59,7 @@ export const updateUserById = async (req, res) => {
         }
         return res.status(401).json({ message: "Unauthorized" });
     } catch (error) {
-        res.status(404).json({ message: "User not found" });
+        return res.status(500).json({ message: "Error" });
     }
 }
 
@@ -82,7 +85,7 @@ export const deleteUserById = async (req, res) => {
         }
         return res.status(401).json({ message: "Unauthorized" });
     } catch (error) {
-        res.status(404).json({ message: "User not found" });
+        res.status(500).json({ message: "Error" });
     }
 }
 
@@ -97,10 +100,10 @@ export const signUp = async (req,res) => {
         })
         
         if(req.body.roles) {
-            const rolesFound = await Role.find({name:{$in: req.body.roles}});
+            const rolesFound = await Role.find({ name:{$in: req.body.roles} });
             newUser.roles = rolesFound.map(role => role._id);
         } else {
-            const role = await Role.findOne({name: "user"});
+            const role = await Role.findOne({ name: "user" });
             newUser.roles = [role._id]
         }
         const savedUser = await newUser.save();
@@ -119,23 +122,23 @@ export const signUp = async (req,res) => {
             //token
         });
     } catch (error) {
-        res.status(500).json({message: "Error"});
+        res.status(500).json({ message: "Error" });
     }
 }
 
 export const signIn = async (req,res) => {
     try {
-        const user =  await User.findOne({email: req.body.email}).populate("roles");
+        const user =  await User.findOne({ email: req.body.email });
         if (!user) {
-            return res.status(404).json({messge: "Email not found"});
+            return res.status(404).json({ message: "Email not found" });
         }
 
         const checkPassword = await User.comparePassword(req.body.password,user.password);
         if (!checkPassword) {
-            return res.status(401).json({token: null, message: "Invalid password"});
+            return res.status(401).json({ message: "Invalid password"});
         }
 
-        const token = jwt.sign({id: user._id, userId: user.userId}, config.SECRET, {
+        const token = jwt.sign({ id: user._id, userId: user.userId }, config.SECRET, {
             expiresIn:86400
         })
 
@@ -148,7 +151,7 @@ export const signIn = async (req,res) => {
             isAdmin: roles.some(rol => rol.name === "admin")
         });
     } catch (error) {
-        res.status(500).json({message: "Error"});
+        res.status(500).json({ message: "Error" });
     }
 }
 
