@@ -14,6 +14,7 @@ describe('Problem Model', () => {
         user: ['el-userId-2'],
         publications: ['una-publicacion'],
         usersNotRegistered: ['pepe'],
+        attachments: ['file-attachment']
     })    
  
     it('_id is defined in Problem model', () => {
@@ -51,5 +52,8 @@ describe('Problem Model', () => {
     });
     it('Users Not Registered is defined in Problem model', () => {
         expect(problem.usersNotRegistered).toBeDefined()
+    });
+    it('Attachments is defined in Problem model', () => {
+        expect(problem.attachments).toBeDefined()
     });
 });

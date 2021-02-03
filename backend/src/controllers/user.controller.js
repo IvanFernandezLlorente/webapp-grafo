@@ -2,11 +2,8 @@ import User from "../models/User";
 import Role from '../models/Rol';
 import jwt from 'jsonwebtoken';
 import config from '../config';
-import fs from 'fs-extra';
-import path from 'path';
 import nodemailer from 'nodemailer';
 import { google } from 'googleapis';
-import { log } from "console";
 
 export const getUsers = async (req, res) => {
     //const users = await User.find().populate("roles");
