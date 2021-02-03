@@ -69,7 +69,8 @@ export default {
             problem: {
                 user:[],
                 publications: [],
-                usersNotRegistered: []
+                usersNotRegistered: [],
+                attachments: []
             },
             url: '',
             users: [],
@@ -100,6 +101,14 @@ export default {
             return (this.isAdmin) || (this.problem.user.some( user => user == this.id));
         },
         async deleteP() {
+            const promises = []
+            this.problem.attachments.forEach( fileId => {
+                promises.push(axios.delete(`http://localhost:4000/api/files/${fileId}`,{
+                    headers: { token: this.$store.state.token}
+                }))
+            })
+            await Promise.all(promises)
+
             const res = await axios.delete(`http://localhost:4000/api/problems/${this.url}`,{
                 headers: { token: this.$store.state.token}
             });
