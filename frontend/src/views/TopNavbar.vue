@@ -41,41 +41,16 @@
             </b-link>
           </li>
           
-          <li v-if="isAdmin" class="nav-item">
-            <div>
-                <b-button v-b-modal.modal-admin>New User</b-button>
-
-                <b-modal centered 
-                id="modal-admin"
-                ref="modal"
-                title="Submit The New User"
-                @show="resetModal"
-                @hidden="resetModal"
-                @ok="handleOk"
-                >
-                <form ref="form" @submit.stop.prevent="handleSubmit">
-                    <b-form-group
-                    :state="emailState"
-                    label="Email"
-                    label-for="email-input"
-                    invalid-feedback="Email is required"
-                    >
-                    <b-form-input
-                        id="email-input"
-                        v-model="email"
-                        :state="emailState"
-                        required
-                    ></b-form-input>
-                    </b-form-group>
-                </form>
-                </b-modal>
-            </div>
-          </li>
 
           <li class="nav-item">
-            <b-link v-if="!token" :to="{path: '/login'}" class="nav-link">
-              Sign In 
-            </b-link>
+            <div v-if="!token" style="display: flex;">
+                <b-link  :to="{path: '/login'}" class="nav-link">
+                    Sign In 
+                </b-link>
+                <b-link  :to="{path: '/register'}" class="nav-link">
+                    Sign Up
+                </b-link>
+            </div>
             <b-link @click="logOut" v-else class="nav-link">
               Log Out
             </b-link>
@@ -87,53 +62,18 @@
 </template>
 <script>
 import { mapState } from 'vuex';
-import axios from 'axios';
 
 export default {
     name: 'TopNavbar',
 
     data: () => {
         return {
-            email: '',
-            emailState: null
         }
     },
     methods: {
         logOut () {
             this.$store.dispatch('logout');
             this.$router.push({path: '/login'})
-        },
-        checkFormValidity() {
-            const valid = this.$refs.form.checkValidity()
-            this.emailState = valid
-            return valid
-        },
-        resetModal() {
-            this.email= ''
-            this.emailState = null
-        },
-        handleOk(bvModalEvt) {
-            bvModalEvt.preventDefault()
-            this.handleSubmit()
-        },
-        async handleSubmit() {
-            if (!this.checkFormValidity()) {
-                return
-            }
-
-            await this.signUp()
-            this.$nextTick(() => {
-                this.$bvModal.hide('modal-admin')
-            })
-        },
-        async signUp () {
-            try {
-                const res = await axios.post("http://localhost:4000/api/users/signup",{email: this.email},{
-                    headers: { token: this.$store.state.token}
-                });
-            } catch (error) {
-                console.log(error) 
-            }
         }
     },
     computed: mapState(['token','isAdmin'])

@@ -16,6 +16,7 @@ import Problems from '../components/Problems';
 import Problem from '../components/Problem';
 import EditProblem from '../components/EditProblem';
 import NewProblem from '../components/NewProblem';
+import Register from '../pages/Register';
 
 Vue.use(VueRouter)
 
@@ -130,6 +131,11 @@ const routes = [
     path: '/login',
     name: 'Login',
     component: Login,
+  },
+  {
+    path: '/register',
+    name: 'Register',
+    component: Register,
   }
 ]
 

@@ -41,7 +41,11 @@ export default new Vuex.Store({
 
         updateUserId({ commit }, data) {
             commit('setUserId', data);
-        }
+        },
+
+        signup({ commit }, userData) {
+            commit('authUser', userData);
+        },
     },
 
     modules: {

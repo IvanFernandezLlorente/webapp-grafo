@@ -6,24 +6,27 @@
             </div>
         </b-link>
         <div class="form">
-            <form @submit.prevent="login">
+            <form @submit.prevent="signup">
                 <div class="header">
-                    <h1>Sign in to Grafo Research</h1>
+                    <h1>Sign Up to Grafo Research</h1>
                 </div>
                 <div class="form-body">
+                    <label for="name">Name</label>
+                    <input id="name" v-model="name" type="text" placeholder="Your name">
+
                     <label for="email" name="login">Email address</label>
                     <input id="email" v-model="email" type="text" placeholder="Email address">
 
                     <label for="password">Password</label>
                     <input id="password" v-model="password" name="password" placeholder="Password" type="password">
 
-                    <input type="submit" name="commit" value="Sign in">
+                    <input type="submit" name="commit" value="Sign Up">
                 </div>
             </form>
         </div>
          
-        <button @click="google">Sign In Google</button>
-        <button @click="github">Sign In Github</button>
+        <button @click="google">Sign Up Google</button>
+        <button @click="github">Sign Up Github</button>
 
         <p v-if="error">{{error}}</p>
   </div>
@@ -32,23 +35,25 @@
 <script>
 import axios from 'axios';
 export default {
-    name: 'Login',
+    name: 'Register',
     
     data: () => {
         return {
             email: '',
             password: '',
+            name: '',
             error: ''
         }
     },
     methods: {
-        async login () {
+        async signup () {
             try {
                 const info = {
                     email: this.email,
-                    password: this.password
+                    password: this.password,
+                    name: this.name
                 }
-                const res = await axios.post("http://localhost:4000/api/users/signin", info);
+                const res = await axios.post("http://localhost:4000/api/users/signup", info);
                 const { token, id, userId, isAdmin } = res.data;
                 const sended = {
                     token, 
@@ -56,25 +61,25 @@ export default {
                     userId, 
                     isAdmin
                 }
-                this.$store.dispatch('login',sended);
+                this.$store.dispatch('signup',sended);
                 this.$router.push({path: '/'})
             } catch (error) {
                 console.log(error)
             }            
         },
         google(){
-            window.open('http://localhost:4000/api/users/oauth/google/signin',"mywindow","location=1,status=1,scrollbars=1, width=800,height=800");
+            window.open('http://localhost:4000/api/users/oauth/google/signup',"mywindow","location=1,status=1,scrollbars=1, width=800,height=800");
             let listener = window.addEventListener('message', (message) => {
-                this.manageSignIn(message);
+                this.manageSignUp(message);
             });
         },
         github() {
-            window.open('http://localhost:4000/api/users/oauth/github/signin',"mywindow","location=1,status=1,scrollbars=1, width=800,height=800");
+            window.open('http://localhost:4000/api/users/oauth/github/signup',"mywindow","location=1,status=1,scrollbars=1, width=800,height=800");
             let listener = window.addEventListener('message', (message) => {
-                this.manageSignIn(message);
+                this.manageSignUp(message);
             });
         },
-        manageSignIn(message) {
+        manageSignUp(message) {
             if (message.data.user) {
                 const { token, id, userId, isAdmin } = message.data.user;
                 const sended = {
@@ -83,7 +88,7 @@ export default {
                     userId, 
                     isAdmin
                 }
-                this.$store.dispatch('login',sended);
+                this.$store.dispatch('signup',sended);
                 this.$router.push({path: '/'}).catch(()=>{});
             } else if (message.data.message) {
                 this.error = message.data.message

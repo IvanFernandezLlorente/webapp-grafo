@@ -86,15 +86,21 @@ export const deleteUserById = async (req, res) => {
     }
 }
 
-// Admin signUp
 export const signUp = async (req,res) => {
     try {
-        const { email } = req.body;
-        const password = Math.random().toString(36).substring(2);
+        const { email,  name, password } = req.body;
+        const emailFound = await User.findOne({ email });
+            
+        if (emailFound){
+            return res.status(400).json({ message: "The email already exists" });
+        }   
+
         const newUser = new User({
             email,
-            password: await User.encryptPassword(password)
-        })
+            password: await User.encryptPassword(password),
+            name,
+            method: 'local'
+        });
         
         if(req.body.roles) {
             const rolesFound = await Role.find({ name:{$in: req.body.roles} });
@@ -103,29 +109,80 @@ export const signUp = async (req,res) => {
             const role = await Role.findOne({ name: "user" });
             newUser.roles = [role._id]
         }
-        const savedUser = await newUser.save();
-        savedUser.userId = savedUser._id;
-        const finalUser = await savedUser.save();
-        // const token = jwt.sign({id: savedUser._id},config.SECRET,{
-        //     expiresIn: 86400
-        // });
 
+        const finalUser = await saveNewUser(newUser);
+
+        const token = jwt.sign({ id: finalUser._id, userId: finalUser.userId }, config.SECRET, {
+            expiresIn: 86400
+        });
+
+        const roles = await Role.find({ _id: { $in: finalUser.roles } });
         // Send Email
-        await sendMail(savedUser.email,password);
-        res.status(200).json({
-            email: finalUser.email,
-            password: password,
+        await sendMail(finalUser.email);
+        return res.status(200).json({
+            token,
+            id: finalUser._id,
             userId: finalUser.userId,
-            //token
+            isAdmin: roles.some(rol => rol.name === "admin")
         });
     } catch (error) {
         res.status(500).json({ message: "Error" });
     }
 }
 
+export const signUpSocial = async (req,res) => {
+    try {
+        let responseHTML = '<html><head><title>Main</title></head><body></body><script>res = %value%; window.opener.postMessage(res, "*");window.close();</script></html>';
+        if (req.user.message == 'Account already used.') {
+            responseHTML = responseHTML.replace('%value%', JSON.stringify({
+                message: "Account already used."
+            }));
+            return res.status(400).send(responseHTML);
+        }
+        const method = req.authInfo.method;
+        const newUser = new User({
+            method,
+            name: method == 'google' ? req.user.displayName : req.user.username,
+            email: method == 'google' ? req.user.emails[0].value : '',
+            methodId: req.user.id
+        });
+
+        const role = await Role.findOne({ name: "user" });
+        newUser.roles = [role._id];
+
+        const finalUser = await saveNewUser(newUser);
+
+        const token = jwt.sign({ id: finalUser._id, userId: finalUser.userId }, config.SECRET, {
+            expiresIn: 86400
+        });
+
+        if (finalUser.email) {
+            await sendMail(finalUser.email);
+        }
+
+        responseHTML = responseHTML.replace('%value%', JSON.stringify({
+            user: {
+                id: finalUser._id,
+                userId: finalUser.userId,
+                token,
+                isAdmin: false
+            }
+        }));
+        return res.status(200).send(responseHTML);
+    } catch (error) {
+        return res.status(500).json({ message: "Error" });
+    }
+}
+
+const saveNewUser = async (newUser) => {
+    const savedUser = await newUser.save();
+    savedUser.userId = savedUser._id;
+    return await savedUser.save();
+}
+
 export const signIn = async (req,res) => {
     try {
-        const user =  await User.findOne({ email: req.body.email });
+        const user =  await User.findOne({ email: req.body.email, method: 'local' });
         if (!user) {
             return res.status(404).json({ message: "Email not found" });
         }
@@ -152,10 +209,42 @@ export const signIn = async (req,res) => {
     }
 }
 
+export const signInSocial = async (req, res) => {
+    try {
+        let responseHTML = '<html><head><title>Main</title></head><body></body><script>res = %value%; window.opener.postMessage(res, "*");window.close();</script></html>';
+
+        if (req.user.message == 'Account not registered.') {
+            responseHTML = responseHTML.replace('%value%', JSON.stringify({
+                message: "Account not registered."
+            }));
+            return res.status(400).send(responseHTML);
+        }
+
+        const token = jwt.sign({ id: req.user._id, userId: req.user.userId }, config.SECRET, {
+            expiresIn:86400
+        })
+
+        const roles = await Role.find({ _id: { $in: req.user.roles } });
+
+        responseHTML = responseHTML.replace('%value%', JSON.stringify({
+            user: {
+                token,
+                id: req.user._id,
+                userId: req.user.userId,
+                isAdmin: roles.some(rol => rol.name === "admin")
+            }
+        }));
+        return res.status(200).send(responseHTML);
+    } catch (error) {
+        res.status(500).json({ message: "Error" });
+    }
+}
+
+
 const oAuth2Client = new google.auth.OAuth2(config.CLIENT_ID, config.CLIENT_SECRET);
 oAuth2Client.setCredentials({ refresh_token: config.REFRESH_TOKEN });
 
-const sendMail = async  (email, password) => {
+const sendMail = async  (email) => {
     try {
         const accessToken = await oAuth2Client.getAccessToken();
         const transport = nodemailer.createTransport({
@@ -173,7 +262,7 @@ const sendMail = async  (email, password) => {
             from: 'Grafo Research Support <grafo.research@gmail.com>',
             to: email,
             subject: "Welcome to Grafo Research",
-            text: `Your email is: ${email} \nYour temporal password is: ${password}`
+            text: `Welcome to Grafo Research\nYour email is: ${email}`
         };
         const result = await transport.sendMail(mailOptions);
         return result;

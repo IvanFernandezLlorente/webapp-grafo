@@ -1,6 +1,6 @@
 import User from "../../src/models/User";
 import Role from "../../src/models/Rol";
-import * as userController from '../../src/controllers/user.controller';
+const userController = require('../../src/controllers/user.controller');
 import request  from 'supertest';
 
 jest.mock('../../src/middlewares/auth.jwt');
@@ -263,7 +263,7 @@ describe('User controller', () => {
         });
     });
 
-    describe('User Sign In', () => {
+    describe('User Sign In Local', () => {
         
         it('User not found', async () => {
             User.findOne = jest.fn(() => mockUsers.some( user => user.email == "email no exist"));
@@ -299,6 +299,91 @@ describe('User controller', () => {
                 isAdmin: false
             }));
             expect(res.body.token).toBeDefined();
+        });
+    });
+
+    describe('User Sign Up Local', () => {
+        beforeEach(() => {
+            verifySignUp.checkDuplicateNameOrEmail.mockImplementation((req, res, next) => next());
+            verifySignUp.checkRolesExisted.mockImplementation((req, res, next) => next());
+        });
+        
+        it('User already exist', async () => {
+            User.findOne = jest.fn(() => mockUsers.some( user => user.email == "el email 2"));
+            const res = await request(app).post('/api/users/signup');
+            expect(res.statusCode).toEqual(400);
+            expect(res.body).toEqual(expect.objectContaining({ message: "The email already exists" }));
+        });
+
+        it('User sign up error', async () => {
+            User.findOne = jest.fn(() => {throw Error});
+            const res = await request(app).post('/api/users/signup');
+            expect(res.statusCode).toEqual(500);
+            expect(res.body).toEqual(expect.objectContaining({ message: "Error" }));
+        });
+
+        it('User sign up without rol', async () => {
+            User.findOne = jest.fn(() => mockUsers.some( user => user.email == "new email"));
+            User.encryptPassword = jest.fn(() => 'encrypted password');
+            Role.findOne = jest.fn(() => { return { _id: "el id", name: "user" } });
+            Role.find = jest.fn(() => [{ _id: "el id", name: "user" }]);
+
+            jest.spyOn(User.prototype, 'save')
+            .mockImplementationOnce(() => {
+                return { name: "the name", email: "new email", password: 'encrypted password' }
+            });
+            
+            const saveNewUser = jest.fn(() => {
+                mockUsers.push({ _id: 4, name: "the name", userId: 4, email: "new email", password: 'encrypted password' });
+                return { _id: 4, name: "the name", userId: 4, email: "new email", password: 'encrypted password' }
+            });
+            userController.__Rewire__('saveNewUser', saveNewUser)
+
+            const res = await request(app).post('/api/users/signup').send({
+                name: 'the name',
+                email: 'new email',
+                password: 'la pass'
+            });
+            expect(res.statusCode).toEqual(200);
+            expect(res.body).toEqual(expect.objectContaining({
+                id: 4,
+                userId: 4,
+                isAdmin: false
+            }));
+            expect(res.body.token).toBeDefined();
+            expect(mockUsers).toHaveLength(4);
+        });
+
+        it('User sign up with rol admin', async () => {
+            User.findOne = jest.fn(() => mockUsers.some( user => user.email == "new email"));
+            User.encryptPassword = jest.fn(() => 'encrypted password');
+            Role.find = jest.fn(() => [{ _id: "el id", name: "admin" }]);
+
+            jest.spyOn(User.prototype, 'save')
+            .mockImplementationOnce(() => {
+                return { name: "the name", email: "new email", password: 'encrypted password' }
+            });
+            
+            const saveNewUser = jest.fn(() => {
+                mockUsers.push({ _id: 4, name: "the name", userId: 4, email: "new email", password: 'encrypted password' });
+                return { _id: 4, name: "the name", userId: 4, email: "new email", password: 'encrypted password' }
+            });
+            userController.__Rewire__('saveNewUser', saveNewUser)
+
+            const res = await request(app).post('/api/users/signup').send({
+                name: 'the name',
+                email: 'new email',
+                password: 'la pass',
+                roles: ['admin']
+            });
+            expect(res.statusCode).toEqual(200);
+            expect(res.body).toEqual(expect.objectContaining({
+                id: 4,
+                userId: 4,
+                isAdmin: true
+            }));
+            expect(res.body.token).toBeDefined();
+            expect(mockUsers).toHaveLength(4);
         });
     });
 });

@@ -19,6 +19,8 @@ describe('User Model', () => {
         roles: ['user'],
         publications: ['una-publicacion'],
         problems: ['un-problema'],
+        method: 'google',
+        methodId: 'sdf235dfh'
     })    
 
     it('Encrypt password in User model', async () => {
@@ -83,5 +85,11 @@ describe('User Model', () => {
     });
     it('Problems is defined in User model', () => {
         expect(user.problems).toBeDefined()
+    });
+    it('method is defined in User model', () => {
+        expect(user.method).toBeDefined()
+    });
+    it('methodId is defined in User model', () => {
+        expect(user.methodId).toBeDefined()
     });
 });

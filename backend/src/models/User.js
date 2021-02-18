@@ -3,17 +3,23 @@ import bcrypt from "bcryptjs";
 
 const userSchema = new Schema(
   {
+    method: {
+      type: String,
+      enum: ['local', 'google', 'github'],
+      required: true
+    },
     name: {
       type: String,
-      unique: true,
     },
     email: {
       type: String,
       unique: true,
     },
     password: {
-      type: String,
-      required: true,
+      type: String
+    },
+    methodId: {
+      type: String
     },
     userId: {
       type: String,

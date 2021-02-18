@@ -27,21 +27,3 @@ export const verifyToken = async (req,res,next) => {
         return res.status(500).json({ message: "Error" });
     }
 }
-
-export const isAdmin = async (req,res,next) => {
-    try {
-        const user = await User.findOne({ userId: req.userId });
-        const roles = await Role.find({ _id: { $in: user.roles } });
-        
-        const isAdmin = roles.some(rol => rol.name === "admin");
-
-        if (isAdmin) {
-            next();
-            return;
-        }
-
-        return res.status(403).json({ message: "Require Admin Role!" });
-    } catch (error) {
-        return res.status(500).send({ message: error });
-    }
-}
