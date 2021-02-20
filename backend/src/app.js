@@ -1,13 +1,11 @@
 import express from 'express'
 import morgan from 'morgan';
-import {createRoles} from './libs/init';
 import router from './router';
 import path from 'path';
 import cors from 'cors';
 import config from './config';
 
 const app = express();
-createRoles(); 
 
 app.set("port",config.PORT || 4000);
 

@@ -1,5 +1,4 @@
 import User from "../models/User";
-import Role from '../models/Rol';
 import jwt from 'jsonwebtoken';
 import config from '../config';
 import nodemailer from 'nodemailer';
@@ -82,7 +81,7 @@ export const deleteUserById = async (req, res) => {
         }
         return res.status(401).json({ message: "Unauthorized" });
     } catch (error) {
-        res.status(500).json({ message: "Error" });
+        return res.status(500).json({ message: "Error" });
     }
 }
 
@@ -103,11 +102,9 @@ export const signUp = async (req,res) => {
         });
         
         if(req.body.roles) {
-            const rolesFound = await Role.find({ name:{$in: req.body.roles} });
-            newUser.roles = rolesFound.map(role => role._id);
+            newUser.roles = req.body.roles
         } else {
-            const role = await Role.findOne({ name: "user" });
-            newUser.roles = [role._id]
+            newUser.roles = ["user"]
         }
 
         const finalUser = await saveNewUser(newUser);
@@ -116,17 +113,16 @@ export const signUp = async (req,res) => {
             expiresIn: 86400
         });
 
-        const roles = await Role.find({ _id: { $in: finalUser.roles } });
         // Send Email
         await sendMail(finalUser.email);
         return res.status(200).json({
             token,
             id: finalUser._id,
             userId: finalUser.userId,
-            isAdmin: roles.some(rol => rol.name === "admin")
+            isAdmin: finalUser.roles.some(rol => rol === "admin")
         });
     } catch (error) {
-        res.status(500).json({ message: "Error" });
+        return res.status(500).json({ message: "Error" });
     }
 }
 
@@ -147,8 +143,7 @@ export const signUpSocial = async (req,res) => {
             methodId: req.user.id
         });
 
-        const role = await Role.findOne({ name: "user" });
-        newUser.roles = [role._id];
+        newUser.roles = ["user"]
 
         const finalUser = await saveNewUser(newUser);
 
@@ -193,19 +188,17 @@ export const signIn = async (req,res) => {
         }
 
         const token = jwt.sign({ id: user._id, userId: user.userId }, config.SECRET, {
-            expiresIn:86400
-        })
+            expiresIn: 86400
+        });
 
-        const roles = await Role.find({ _id: { $in: user.roles } });
-
-        res.status(200).json({
+        return res.status(200).json({
             token,
             id: user._id,
             userId: user.userId,
-            isAdmin: roles.some(rol => rol.name === "admin")
+            isAdmin: user.roles.some(rol => rol === "admin")
         });
     } catch (error) {
-        res.status(500).json({ message: "Error" });
+        return res.status(500).json({ message: "Error" });
     }
 }
 
@@ -221,22 +214,20 @@ export const signInSocial = async (req, res) => {
         }
 
         const token = jwt.sign({ id: req.user._id, userId: req.user.userId }, config.SECRET, {
-            expiresIn:86400
-        })
-
-        const roles = await Role.find({ _id: { $in: req.user.roles } });
+            expiresIn: 86400
+        });
 
         responseHTML = responseHTML.replace('%value%', JSON.stringify({
             user: {
                 token,
                 id: req.user._id,
                 userId: req.user.userId,
-                isAdmin: roles.some(rol => rol.name === "admin")
+                isAdmin: user.roles.some(rol => rol === "admin")
             }
         }));
         return res.status(200).send(responseHTML);
     } catch (error) {
-        res.status(500).json({ message: "Error" });
+        return res.status(500).json({ message: "Error" });
     }
 }
 

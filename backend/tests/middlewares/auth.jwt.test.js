@@ -1,5 +1,4 @@
 import User from "../../src/models/User";
-import Role from "../../src/models/Rol";
 import request from 'supertest';
 import jwt from 'jsonwebtoken';
 jest.mock('../../src/middlewares/verifySignUp');
@@ -17,7 +16,7 @@ describe('Verify SigUp Middleware', () => {
                 email: "el email 1",
                 password: "la pass 1",
                 userId: "el-userId-1",
-                roles: ['5f94531373dbf256c8900501']
+                roles: ['user']
             },
             {
                 _id: 2,
@@ -25,7 +24,7 @@ describe('Verify SigUp Middleware', () => {
                 email: "el email 2",
                 password: "la pass 2",
                 userId: "el-userId-2",
-                roles: ['5f94531373dbf256c8900501']
+                roles: ['user']
             },
             {
                 _id: 3,
@@ -33,7 +32,7 @@ describe('Verify SigUp Middleware', () => {
                 email: "el email 3",
                 password: "la pass 3",
                 userId: "no-copiar-id",
-                roles: ['5f94531373dbf256c8900501']
+                roles: ['user']
             }
         ]
     });
@@ -58,9 +57,8 @@ describe('Verify SigUp Middleware', () => {
         });
         
         it('Check correct , next()', async () => {
-            User.findById = jest.fn(() => mockUsers.filter(user => user._id == 2));
+            User.findById = jest.fn(() => mockUsers.filter(user => user._id == 2)[0]);
             User.findOne = jest.fn();
-            Role.find = jest.fn(() => ['user']);
             jwt.verify = jest.fn(() => ({ id: 2, userId: 'el-userId-2'}))
             const res = await request(app).put('/api/users/el-userId-2').set('token', 'valid token')
 

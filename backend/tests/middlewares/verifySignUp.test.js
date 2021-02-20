@@ -15,7 +15,7 @@ describe('Verify SigUp Middleware', () => {
                 email: "el email 1",
                 password: "la pass 1",
                 userId: "el-userId-1",
-                roles: ['5f94531373dbf256c8900501']
+                roles: ['user']
             },
             {
                 _id: 2,
@@ -23,7 +23,7 @@ describe('Verify SigUp Middleware', () => {
                 email: "el email 2",
                 password: "la pass 2",
                 userId: "el-userId-2",
-                roles: ['5f94531373dbf256c8900501']
+                roles: ['user']
             },
             {
                 _id: 3,
@@ -31,7 +31,7 @@ describe('Verify SigUp Middleware', () => {
                 email: "el email 3",
                 password: "la pass 3",
                 userId: "no-copiar-id",
-                roles: ['5f94531373dbf256c8900501']
+                roles: ['user']
             }
         ]
     });

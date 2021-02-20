@@ -1,5 +1,5 @@
 import User from "../models/User";
-import Role from "../models/Rol";
+import config from '../config';
 
 const checkDuplicateNameOrEmail = async (req, res, next) => {
     try {
@@ -29,11 +29,10 @@ const checkDuplicateNameOrEmail = async (req, res, next) => {
 
 const checkRolesExisted = async (req, res, next) => {
     if (req.body.roles) {
-        const roles = await Role.find();
+        const roles = config.ROLES;
 
-        const rolesFound = roles.map( rol => rol.name); 
         req.body.roles.forEach(rol => {
-            if (!rolesFound.includes(rol)) {
+            if (!roles.includes(rol)) {
                 return res.status(400).json({
                     message: `Role ${rol} does not exist`,
                 });

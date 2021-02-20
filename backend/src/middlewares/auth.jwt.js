@@ -1,7 +1,6 @@
 import jwt from 'jsonwebtoken';
 import config from '../config';
 import User from '../models/User';
-import Role from '../models/Rol';
 
 export const verifyToken = async (req,res,next) => {
     try {
@@ -19,9 +18,8 @@ export const verifyToken = async (req,res,next) => {
             return res.status(404).json({ message: "Invalid token" });
         }
 
-        const roles = await Role.find({ _id: { $in: user.roles } });
-        req.isAdmin = roles.some(rol => rol.name === "admin");
-        
+        req.isAdmin = user.roles.some(rol => rol === "admin")
+            
         next();
     } catch (error) {
         return res.status(500).json({ message: "Error" });

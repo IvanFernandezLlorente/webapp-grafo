@@ -1,5 +1,4 @@
 import User from "../../src/models/User";
-import Role from "../../src/models/Rol";
 const userController = require('../../src/controllers/user.controller');
 import request  from 'supertest';
 
@@ -20,7 +19,7 @@ describe('User controller', () => {
                 email: "el email 1",
                 password: "la pass 1",
                 userId: "el-userId-1",
-                roles: ['5f94531373dbf256c8900501']
+                roles: ['user']
             },
             {
                 _id: 2,
@@ -28,7 +27,7 @@ describe('User controller', () => {
                 email: "el email 2",
                 password: "la pass 2",
                 userId: "el-userId-2",
-                roles: ['5f94531373dbf256c8900501']
+                roles: ['user']
             },
             {
                 _id: 3,
@@ -36,7 +35,7 @@ describe('User controller', () => {
                 email: "el email 3",
                 password: "la pass 3",
                 userId: "no-copiar-id",
-                roles: ['5f94531373dbf256c8900501']
+                roles: ['user']
             }
         ]
     });
@@ -289,7 +288,6 @@ describe('User controller', () => {
 
         it('Sign in user', async () => {
             User.findOne = jest.fn(() => mockUsers.filter( user => user.email == "el email 2")[0]);
-            Role.find = jest.fn(() => ['user']);
             User.comparePassword = jest.fn(() => 'la pass 2' == 'la pass 2');
             const res = await request(app).post('/api/users/signin');
             expect(res.statusCode).toEqual(200);
@@ -325,17 +323,10 @@ describe('User controller', () => {
         it('User sign up without rol', async () => {
             User.findOne = jest.fn(() => mockUsers.some( user => user.email == "new email"));
             User.encryptPassword = jest.fn(() => 'encrypted password');
-            Role.findOne = jest.fn(() => { return { _id: "el id", name: "user" } });
-            Role.find = jest.fn(() => [{ _id: "el id", name: "user" }]);
-
-            jest.spyOn(User.prototype, 'save')
-            .mockImplementationOnce(() => {
-                return { name: "the name", email: "new email", password: 'encrypted password' }
-            });
             
             const saveNewUser = jest.fn(() => {
-                mockUsers.push({ _id: 4, name: "the name", userId: 4, email: "new email", password: 'encrypted password' });
-                return { _id: 4, name: "the name", userId: 4, email: "new email", password: 'encrypted password' }
+                mockUsers.push({ _id: 4, name: "the name", userId: 4, email: "new email", password: 'encrypted password', roles: ['user'] });
+                return { _id: 4, name: "the name", userId: 4, email: "new email", password: 'encrypted password', roles: ['user'] }
             });
             userController.__Rewire__('saveNewUser', saveNewUser)
 
@@ -357,16 +348,10 @@ describe('User controller', () => {
         it('User sign up with rol admin', async () => {
             User.findOne = jest.fn(() => mockUsers.some( user => user.email == "new email"));
             User.encryptPassword = jest.fn(() => 'encrypted password');
-            Role.find = jest.fn(() => [{ _id: "el id", name: "admin" }]);
 
-            jest.spyOn(User.prototype, 'save')
-            .mockImplementationOnce(() => {
-                return { name: "the name", email: "new email", password: 'encrypted password' }
-            });
-            
             const saveNewUser = jest.fn(() => {
-                mockUsers.push({ _id: 4, name: "the name", userId: 4, email: "new email", password: 'encrypted password' });
-                return { _id: 4, name: "the name", userId: 4, email: "new email", password: 'encrypted password' }
+                mockUsers.push({ _id: 4, name: "the name", userId: 4, email: "new email", password: 'encrypted password', roles: ['admin'] });
+                return { _id: 4, name: "the name", userId: 4, email: "new email", password: 'encrypted password', roles: ['admin'] }
             });
             userController.__Rewire__('saveNewUser', saveNewUser)
 

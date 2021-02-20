@@ -36,8 +36,8 @@ const userSchema = new Schema(
     imagenPath: String,
     roles: [
       {
-        ref: "Role",
-        type: Schema.Types.ObjectId,
+        type: String,
+        enum: ['user', 'admin', 'reader']
       },
     ],
     publications: [{
