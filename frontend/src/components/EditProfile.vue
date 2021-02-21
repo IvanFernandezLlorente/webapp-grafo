@@ -3,6 +3,7 @@
       <b-col class="card" cols="8">
         <div class="card-header">
             <h4 class="card-title">Edit Profile</h4>
+            <b-form-checkbox-group v-if="isAdmin" v-model="selected" :options="options"></b-form-checkbox-group>
         </div>
         <div class="card-body">
             <form @submit.prevent="updateProfile"> 
@@ -105,6 +106,7 @@
 
 <script>
 import axios from 'axios';
+import { mapState } from 'vuex';
 
 export default {
     name:'EditProfile',
@@ -126,14 +128,13 @@ export default {
         },
         userCopy: {},
         newPassword: '',
-        confirmPassword: ''
+        confirmPassword: '',
+        selected: [],
+        options: [
+            { text: 'Admin', value: 'admin' },
+            { text: 'Reader', value: 'reader' }
+        ]
       }
-    },
-    props: {
-        userIdProp: {
-            type: String,
-            default: ""
-        }
     },
     created () {
         this.fetchData();
@@ -141,8 +142,9 @@ export default {
     methods: {
         async fetchData() {
             try {
-                const res = await axios.get(`http://localhost:4000/api/users/${this.userIdProp ? this.userIdProp : this.$store.state.userId}`);
+                const res = await axios.get(`http://localhost:4000/api/users/${this.$route.params.userId ? this.$route.params.userId : this.$store.state.userId}`);
                 this.user = res.data;
+                this.selected = this.user.roles
             } catch (error) {
                 console.log(error)                
             }
@@ -152,13 +154,24 @@ export default {
                 if (this.newPassword && this.newPassword===this.confirmPassword) {
                     this.userCopy.password = this.newPassword;
                 }
-                const res = await axios.put(`http://localhost:4000/api/users/${this.userIdProp ? this.userIdProp : this.$store.state.userId}`,this.userCopy,{
+                this.userCopy.roles = this.selected;
+                const res = await axios.put(`http://localhost:4000/api/users/${this.$route.params.userId ? this.$route.params.userId : this.$store.state.userId}`,this.userCopy,{
                     headers: { token: this.$store.state.token}
                 });
-                if (!this.userIdProp && this.userCopy.userId) {
-                    this.$store.dispatch('updateUserId',this.userCopy.userId);
+                if (!this.$route.params.userId) {
+                    const res = await axios.get(`http://localhost:4000/api/users/token`, {
+                        headers: { token: this.$store.state.token}
+                    });
+                    const { token, id, userId, isAdmin } = res.data;
+                    const sended = {
+                        token, 
+                        id, 
+                        userId, 
+                        isAdmin
+                    }
+                    this.$store.dispatch('updateUser',sended);
                 }
-                alert('Your data: ' + JSON.stringify(res.data))
+                this.$router.push({path: '/'})
             } catch (error) {
                 console.log(error)                
             }
@@ -167,6 +180,7 @@ export default {
             this.userCopy[valor.target.id] = valor.target.value
         }
     },
+    computed: mapState(['isAdmin']),
 }
 </script>
 
@@ -181,6 +195,8 @@ export default {
     padding: 15px 15px 0;
     background-color: #fff;
     border-bottom: none !important;
+    display: flex;
+    justify-content: space-between;
 }
 
 .card-header>h4 {

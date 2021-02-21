@@ -6,7 +6,9 @@ import passportConfig from '../middlewares/passport';
 
 const router = Router();
 
-router.get('/',userController.getUsers);
+router.get('/', userController.getUsers);
+
+router.get('/token',[authJwt.verifyToken], userController.getToken); 
 
 router.get('/:userId', userController.getUserById);
 

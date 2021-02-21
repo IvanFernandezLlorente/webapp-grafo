@@ -304,7 +304,7 @@ describe('User controller', () => {
             expect(res.body).toEqual(expect.objectContaining({
                 id: 2,
                 userId: "el-userId-2",
-                isAdmin: false
+                roles: ['user']
             }));
             expect(res.body.token).toBeDefined();
         });
@@ -363,7 +363,7 @@ describe('User controller', () => {
             expect(res.body).toEqual(expect.objectContaining({
                 id: 4,
                 userId: 4,
-                isAdmin: false
+                roles: ['user']
             }));
             expect(res.body.token).toBeDefined();
             expect(mockUsers).toHaveLength(4);
@@ -391,11 +391,43 @@ describe('User controller', () => {
             expect(res.body).toEqual(expect.objectContaining({
                 id: 4,
                 userId: 4,
-                isAdmin: true
+                roles: ['admin']
             }));
             expect(res.body.token).toBeDefined();
             expect(mockUsers).toHaveLength(4);
             expect(mockApplications).toHaveLength(0);
+        });
+    });
+
+    describe('Get Token', () => {
+        beforeEach(() => {
+            authJwt.verifyToken.mockImplementation((req, res, next) => next());
+        });
+
+        it('Get token by user not found', async () => {
+            User.findById = jest.fn(() => mockUsers.some( user => user._id == 4));
+            const res = await request(app).get('/api/users/token');
+            expect(res.statusCode).toEqual(404);
+            expect(res.body).toEqual(expect.objectContaining({ message: "User not found" }));
+        });
+
+        it('Get user by userId error', async () => {
+            User.findById = jest.fn(() => {throw Error});
+            const res = await request(app).get('/api/users/token');
+            expect(res.statusCode).toEqual(500);
+            expect(res.body).toEqual(expect.objectContaining({ message: "Error" }));
+        });
+
+        it('Get token', async () => {
+            User.findById = jest.fn(() => mockUsers.filter( user => user._id == 2)[0]);
+            const res = await request(app).get('/api/users/token');
+            expect(res.statusCode).toEqual(200);
+            expect(res.body).toEqual(expect.objectContaining({
+                id: 2,
+                userId: "el-userId-2",
+                roles: ['user']
+            }));
+            expect(res.body.token).toBeDefined();
         });
     });
 });

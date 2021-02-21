@@ -49,15 +49,8 @@ export default {
                     password: this.password
                 }
                 const res = await axios.post("http://localhost:4000/api/users/signin", info);
-                const { token, id, userId, isAdmin } = res.data;
-                const sended = {
-                    token, 
-                    id, 
-                    userId, 
-                    isAdmin
-                }
-                this.$store.dispatch('login',sended);
-                this.$router.push({path: '/'})
+                console.log(res);
+                this.manageSignIn(res.data);
             } catch (error) {
                 console.log(error)
             }            
@@ -65,28 +58,30 @@ export default {
         google(){
             window.open('http://localhost:4000/api/users/oauth/google/signin',"mywindow","location=1,status=1,scrollbars=1, width=800,height=800");
             let listener = window.addEventListener('message', (message) => {
-                this.manageSignIn(message);
+                this.manageSignIn(message.data);
             });
         },
         github() {
             window.open('http://localhost:4000/api/users/oauth/github/signin',"mywindow","location=1,status=1,scrollbars=1, width=800,height=800");
             let listener = window.addEventListener('message', (message) => {
-                this.manageSignIn(message);
+                this.manageSignIn(message.data);
             });
         },
-        manageSignIn(message) {
-            if (message.data.user) {
-                const { token, id, userId, isAdmin } = message.data.user;
+        manageSignIn(data) {
+            console.log(data);
+            if (data.token) {
+                const { token, id, userId, roles } = data;
                 const sended = {
                     token, 
                     id, 
                     userId, 
-                    isAdmin
+                    isAdmin: roles.includes('admin'),
+                    isReader: roles.includes('reader')
                 }
                 this.$store.dispatch('login',sended);
                 this.$router.push({path: '/'}).catch(()=>{});
-            } else if (message.data.message) {
-                this.error = message.data.message
+            } else if (data.message) {
+                this.error = data.message
             } else {
                 this.error = 'An error has ocurried'
             }

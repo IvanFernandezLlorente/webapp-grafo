@@ -2,7 +2,7 @@
   <div>
     <h3>{{user.name}}</h3>
     <div class="buttons">
-        <b-link v-if="canEdit()" class="edit" :to="{name: 'EditProfile'}"> 
+        <b-link v-if="canEdit()" class="edit" :to="{path: linkToEdit}"> 
             <button class="btn btn-success">
                 Edit
             </button>
@@ -77,7 +77,8 @@ export default {
           problems: [],
           problemsFetched: false,
           publications: [],
-          publicationsFetched: false
+          publicationsFetched: false,
+          linkToEdit: ''
         }
     },
     created () {
@@ -93,17 +94,18 @@ export default {
             }
         },
         canEdit() {
+            this.linkToEdit = this.user._id === this.id ? '/settings' : `/admin/edit-profile/${this.user._id}`
             return (this.isAdmin) || (this.user._id === this.id)
         },
         async deleteU() {
             const res = await axios.delete(`http://localhost:4000/api/users/${this.$route.params.userId}`,{
                 headers: { token: this.$store.state.token}
             });
-            if (this.isAdmin) {
-                this.$router.push({path: '/'})
-            } else {
+            if (this.user._id === this.id) {
                 this.$store.dispatch('logout');
-                this.$router.push({path: '/login'})
+                this.$router.push({path: '/login'})                
+            } else {
+               this.$router.push({path: '/'})
             }
         },
         async fetchProblems() {

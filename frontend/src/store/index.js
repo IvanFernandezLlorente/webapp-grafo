@@ -8,26 +8,26 @@ export default new Vuex.Store({
         token: "",
         userId: "",
         id: "",
-        isAdmin: false
+        isAdmin: false,
+        isReader: false
     },
 
     mutations: {
         authUser(state, userData) {
-            const { token, id, userId, isAdmin } = userData
-            Vue.set(state,'isAdmin',isAdmin);
+            const { token, id, userId, isAdmin, isReader } = userData
+            Vue.set(state, 'isAdmin', isAdmin);
+            Vue.set(state, 'isReader',isReader);
             Vue.set(state, 'token', token);
             Vue.set(state, 'userId', userId);
-            Vue.set(state,'id',id);
+            Vue.set(state, 'id',id);
         },
         logoutUser(state) {
-            Vue.set(state,'isAdmin','');
+            Vue.set(state, 'isAdmin', '');
+            Vue.set(state, 'isReader','');
             Vue.set(state, 'token', '');
             Vue.set(state, 'userId', '');
-            Vue.set(state,'id','');
+            Vue.set(state, 'id','');
         },
-        setUserId(state, userId) {
-            Vue.set(state, 'userId', userId);
-        }
     },
 
     actions: {
@@ -39,8 +39,8 @@ export default new Vuex.Store({
             commit('logoutUser');
         },
 
-        updateUserId({ commit }, data) {
-            commit('setUserId', data);
+        updateUser({ commit }, data) {
+            commit('authUser', data);
         },
 
         signup({ commit }, userData) {

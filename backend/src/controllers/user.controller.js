@@ -23,6 +23,26 @@ export const getUserById = async (req, res) => {
     }
 };
 
+export const getToken = async (req, res) => {
+    try {
+        const user = await User.findById(req.id, { password: 0 });
+        if (user) {
+            const token = jwt.sign({ id: user._id, userId: user.userId }, config.SECRET, {
+                expiresIn: 86400
+            });
+            return res.status(200).json({
+                token,
+                id: user._id,
+                userId: user.userId,
+                roles: user.roles
+            });
+        }
+        return res.status(404).json({ message: "User not found" });
+    } catch (error) {
+        return res.status(500).json({ message: "Error" });
+    }
+};
+
 export const updateUserById = async (req, res) => {
     try {
         const user = await User.findOne({ userId: req.params.userId });
@@ -126,7 +146,7 @@ export const signUp = async (req,res) => {
             token,
             id: finalUser._id,
             userId: finalUser.userId,
-            isAdmin: finalUser.roles.some(rol => rol === "admin")
+            roles: finalUser.roles
         });
     } catch (error) {
         return res.status(500).json({ message: "Error" });
@@ -163,12 +183,10 @@ export const signUpSocial = async (req,res) => {
         }
 
         responseHTML = responseHTML.replace('%value%', JSON.stringify({
-            user: {
                 id: finalUser._id,
                 userId: finalUser.userId,
                 token,
-                isAdmin: false
-            }
+                roles: finalUser.roles
         }));
         return res.status(200).send(responseHTML);
     } catch (error) {
@@ -202,7 +220,7 @@ export const signIn = async (req,res) => {
             token,
             id: user._id,
             userId: user.userId,
-            isAdmin: user.roles.some(rol => rol === "admin")
+            roles: user.roles
         });
     } catch (error) {
         return res.status(500).json({ message: "Error" });
@@ -225,12 +243,10 @@ export const signInSocial = async (req, res) => {
         });
 
         responseHTML = responseHTML.replace('%value%', JSON.stringify({
-            user: {
-                token,
-                id: req.user._id,
-                userId: req.user.userId,
-                isAdmin: user.roles.some(rol => rol === "admin")
-            }
+            token,
+            id: req.user._id,
+            userId: req.user.userId,
+            roles: req.user.roles
         }));
         return res.status(200).send(responseHTML);
     } catch (error) {

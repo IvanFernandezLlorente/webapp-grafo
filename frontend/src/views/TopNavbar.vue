@@ -25,18 +25,18 @@
           </li>
         </ul>
         <ul class="navbar-nav ml-auto">
-          <li v-if="token && !isAdmin" class="nav-item">
+          <li v-if="token" class="nav-item">
             <b-link class="nav-link" :to="{name: 'NewProblem'}">
               New Problem
             </b-link>
           </li>
-          <li v-if="token && !isAdmin" class="nav-item">
+          <li v-if="token" class="nav-item">
             <b-link class="nav-link" :to="{name: 'NewPublication'}">
               New Publication
             </b-link>
           </li>
           <li v-if="token" class="nav-item">
-            <b-link class="nav-link" :to="{name: 'EditProfile'}">
+            <b-link class="nav-link" :to="{path: '/settings'}">
               Account
             </b-link>
           </li>
@@ -76,7 +76,7 @@ export default {
             this.$router.push({path: '/login'})
         }
     },
-    computed: mapState(['token','isAdmin'])
+    computed: mapState(['token'])
 }
 
 </script>

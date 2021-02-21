@@ -110,21 +110,29 @@ const routes = [
         component: Profile,
      },
      {
-        path: '/myprofile',
+        path: '/settings',
         name: 'EditProfile',
         component: EditProfile,
-        props: true,
         beforeEnter: (to, from, next) => {
-            if (store.state.isAdmin) {
-                next({params: {userIdProp: from.params.userId}})
-            }
-            else if (store.state.token) {
+            if (store.state.token) {
                 next();
             } else {
                 next({path: '/login'})
             }
         }
      }, 
+     {
+        path: '/admin/edit-profile/:userId',
+        name: 'EditProfile',
+        component: EditProfile,
+        beforeEnter: (to, from, next) => {
+            if (store.state.isAdmin) {
+                next();
+            } else {
+                next({path: '/'})
+            }
+        }
+     },
     ]
   },
   {
