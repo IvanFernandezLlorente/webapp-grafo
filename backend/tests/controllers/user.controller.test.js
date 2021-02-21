@@ -1,4 +1,5 @@
 import User from "../../src/models/User";
+import Application from '../../src/models/Application';
 const userController = require('../../src/controllers/user.controller');
 import request  from 'supertest';
 
@@ -10,6 +11,7 @@ import app from '../../src/app';
 
 
 let mockUsers;
+let mockApplications;
 describe('User controller', () => {
     beforeEach(() => {
         mockUsers = [
@@ -36,6 +38,14 @@ describe('User controller', () => {
                 password: "la pass 3",
                 userId: "no-copiar-id",
                 roles: ['user']
+            }
+        ],
+        mockApplications = [
+            {
+                _id: 1,
+                name: 'the name',
+                email: 'new email',
+                accepted: true,
             }
         ]
     });
@@ -320,10 +330,24 @@ describe('User controller', () => {
             expect(res.body).toEqual(expect.objectContaining({ message: "Error" }));
         });
 
+        it('Email application is not accepted', async () => {
+            User.findOne = jest.fn(() => mockUsers.some(user => user.email == "email no accepted"));
+            Application.findOne = jest.fn(() => mockApplications.some(application => application.email == "email no accepted"));
+            const res = await request(app).post('/api/users/signup').send({
+                name: 'the name',
+                email: 'email no accepted',
+                password: 'la pass'
+            });
+            expect(res.statusCode).toEqual(400);
+            expect(res.body).toEqual(expect.objectContaining({ message: "The email is not accepted" }));
+        });
+
         it('User sign up without rol', async () => {
             User.findOne = jest.fn(() => mockUsers.some( user => user.email == "new email"));
             User.encryptPassword = jest.fn(() => 'encrypted password');
-            
+            Application.findOne = jest.fn(() => mockApplications.some(application => application.email == "new email"));
+            Application.findOneAndDelete = jest.fn(() => mockApplications.splice(0,1));
+
             const saveNewUser = jest.fn(() => {
                 mockUsers.push({ _id: 4, name: "the name", userId: 4, email: "new email", password: 'encrypted password', roles: ['user'] });
                 return { _id: 4, name: "the name", userId: 4, email: "new email", password: 'encrypted password', roles: ['user'] }
@@ -343,12 +367,14 @@ describe('User controller', () => {
             }));
             expect(res.body.token).toBeDefined();
             expect(mockUsers).toHaveLength(4);
+            expect(mockApplications).toHaveLength(0);
         });
 
         it('User sign up with rol admin', async () => {
             User.findOne = jest.fn(() => mockUsers.some( user => user.email == "new email"));
             User.encryptPassword = jest.fn(() => 'encrypted password');
-
+            Application.findOne = jest.fn(() => mockApplications.some(application => application.email == "new email"));
+            Application.findOneAndDelete = jest.fn(() => mockApplications.splice(0,1));
             const saveNewUser = jest.fn(() => {
                 mockUsers.push({ _id: 4, name: "the name", userId: 4, email: "new email", password: 'encrypted password', roles: ['admin'] });
                 return { _id: 4, name: "the name", userId: 4, email: "new email", password: 'encrypted password', roles: ['admin'] }
@@ -369,6 +395,7 @@ describe('User controller', () => {
             }));
             expect(res.body.token).toBeDefined();
             expect(mockUsers).toHaveLength(4);
+            expect(mockApplications).toHaveLength(0);
         });
     });
 });

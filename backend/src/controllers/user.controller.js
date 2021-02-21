@@ -1,8 +1,8 @@
 import User from "../models/User";
+import Application from '../models/Application';
 import jwt from 'jsonwebtoken';
 import config from '../config';
-import nodemailer from 'nodemailer';
-import { google } from 'googleapis';
+import * as emailSend from '../libs/email';
 
 export const getUsers = async (req, res) => {
     //const users = await User.find().populate("roles");
@@ -87,12 +87,17 @@ export const deleteUserById = async (req, res) => {
 
 export const signUp = async (req,res) => {
     try {
-        const { email,  name, password } = req.body;
+        const { email, name, password } = req.body;
+        
         const emailFound = await User.findOne({ email });
-            
         if (emailFound){
             return res.status(400).json({ message: "The email already exists" });
         }   
+
+        const applicationFound = await Application.findOne({ email, accepted: true });
+        if (!applicationFound){
+            return res.status(400).json({ message: "The email is not accepted" });
+        }
 
         const newUser = new User({
             email,
@@ -108,13 +113,15 @@ export const signUp = async (req,res) => {
         }
 
         const finalUser = await saveNewUser(newUser);
+        await Application.findOneAndDelete({ email, accepted: true });
 
         const token = jwt.sign({ id: finalUser._id, userId: finalUser.userId }, config.SECRET, {
             expiresIn: 86400
         });
 
         // Send Email
-        await sendMail(finalUser.email);
+        await emailSend.emailWelcome(finalUser.email, finalUser.name);
+
         return res.status(200).json({
             token,
             id: finalUser._id,
@@ -152,7 +159,7 @@ export const signUpSocial = async (req,res) => {
         });
 
         if (finalUser.email) {
-            await sendMail(finalUser.email);
+            await emailSend.emailWelcome(finalUser.email, finalUser.name);
         }
 
         responseHTML = responseHTML.replace('%value%', JSON.stringify({
@@ -228,36 +235,5 @@ export const signInSocial = async (req, res) => {
         return res.status(200).send(responseHTML);
     } catch (error) {
         return res.status(500).json({ message: "Error" });
-    }
-}
-
-
-const oAuth2Client = new google.auth.OAuth2(config.CLIENT_ID, config.CLIENT_SECRET);
-oAuth2Client.setCredentials({ refresh_token: config.REFRESH_TOKEN });
-
-const sendMail = async  (email) => {
-    try {
-        const accessToken = await oAuth2Client.getAccessToken();
-        const transport = nodemailer.createTransport({
-            service: 'gmail',
-            auth: {
-                type: 'OAuth2',
-                user: 'grafo.research@gmail.com',
-                clientId: config.CLIENT_ID,
-                clientSecret: config.CLIENT_SECRET,
-                refreshToken: config.REFRESH_TOKEN,
-                accessToken
-            }
-        });
-        const mailOptions = {
-            from: 'Grafo Research Support <grafo.research@gmail.com>',
-            to: email,
-            subject: "Welcome to Grafo Research",
-            text: `Welcome to Grafo Research\nYour email is: ${email}`
-        };
-        const result = await transport.sendMail(mailOptions);
-        return result;
-    } catch (error) {
-        return error
     }
 }

@@ -89,4 +89,39 @@ describe('Verify SigUp Middleware', () => {
             expect(res.statusCode).toEqual(500);
         });
     });
+
+    describe('Check roles exists', () => {
+        
+        it('Roles exists', async () => {
+            User.findOne = jest.fn()
+            .mockReturnValueOnce(mockUsers.some( user => user.email == 'new email'))
+            .mockReturnValueOnce(mockUsers.some( user => user.name == 'new name'))
+            .mockReturnValueOnce(true);
+            
+            const res = await request(app).post('/api/users/signup').send({
+                name: "new name",
+                email: "new email",
+                roles: ['user', 'admin', 'reader']
+            });
+
+            expect(res.statusCode).toEqual(400);
+        });
+
+        it('Role doesnt exist', async () => {
+            User.findOne = jest.fn()
+            .mockReturnValueOnce(mockUsers.some( user => user.email == 'new email'))
+            .mockReturnValueOnce(mockUsers.some( user => user.name == 'new name'));
+            
+            const res = await request(app).post('/api/users/signup').send({
+                name: "new name",
+                email: "new email",
+                roles: ['test']
+            });
+
+            expect(res.statusCode).toEqual(400);
+            expect(res.body).toEqual(expect.objectContaining({message: "Role test does not exist"}));
+        });
+
+        
+    });
 });

@@ -1,4 +1,5 @@
 import User from "../../src/models/User";
+import Application from "../../src/models/Application";
 import request from 'supertest';
 import jwt from 'jsonwebtoken';
 jest.mock('../../src/middlewares/verifySignUp');
@@ -7,7 +8,7 @@ import app from '../../src/app';
 
 
 let mockUsers;
-describe('Verify SigUp Middleware', () => {
+describe('Auth JWT Middleware', () => {
     beforeEach(() => {
         mockUsers = [
             {
@@ -32,13 +33,13 @@ describe('Verify SigUp Middleware', () => {
                 email: "el email 3",
                 password: "la pass 3",
                 userId: "no-copiar-id",
-                roles: ['user']
+                roles: ['user', 'reader']
             }
         ]
     });
     verifySignUp.checkDuplicateNameOrEmail.mockImplementation((req, res, next) => next());
 
-    describe('Auth JWT Middleware', () => {
+    describe('Verify Token Middleware', () => {
         
         it('No token', async () => {
             const res = await request(app).put('/api/users/el-userId-2')
@@ -71,5 +72,36 @@ describe('Verify SigUp Middleware', () => {
 
             expect(res.statusCode).toEqual(500);
         });
+    });
+
+    describe('Reader Middleware', () => {
+        
+        it('The user is reader', async () => {
+            User.findById = jest.fn(() => mockUsers.filter(user => user._id == 3)[0]);
+            User.findOne = jest.fn(() => mockUsers.filter(user => user._id == 3)[0]);
+            Application.find = jest.fn(() => []);
+            jwt.verify = jest.fn(() => ({ id: 3, userId: 'el-userId-3'}))
+            const res = await request(app).get('/api/applications').set('token', 'valid token')
+            expect(res.statusCode).toEqual(200);
+        });
+
+        it('The user is not reader', async () => {
+            User.findById = jest.fn(() => mockUsers.filter(user => user._id == 2)[0]);
+            User.findOne = jest.fn(() => mockUsers.filter(user => user._id == 2)[0]);
+            jwt.verify = jest.fn(() => ({ id: 2, userId: 'el-userId-2'}))
+            const res = await request(app).get('/api/applications').set('token', 'valid token')
+            expect(res.statusCode).toEqual(403);
+            expect(res.body).toEqual(expect.objectContaining({ message: "Require Reader Role!" }));
+        });
+
+        it('Check error', async () => {
+            User.findById = jest.fn(() => mockUsers.filter(user => user._id == 2)[0]);
+            User.findOne = jest.fn(() => {throw Error});
+            jwt.verify = jest.fn(() => ({ id: 2, userId: 'el-userId-2'}))
+            const res = await request(app).get('/api/applications').set('token', 'valid token')
+            expect(res.statusCode).toEqual(500);
+            expect(res.body).toEqual(expect.objectContaining({ message: "Error" }));
+        });
+
     });
 });

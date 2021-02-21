@@ -3,7 +3,6 @@ module.exports = {
     collectCoverage: true,
     collectCoverageFrom: [
         './src/controllers/*.js',
-        './src/libs/*.js',
         './src/middlewares/*.js',
         './src/models/*.js'
     ],
