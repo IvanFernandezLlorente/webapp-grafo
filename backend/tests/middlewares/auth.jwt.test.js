@@ -33,7 +33,7 @@ describe('Auth JWT Middleware', () => {
                 email: "el email 3",
                 password: "la pass 3",
                 userId: "no-copiar-id",
-                roles: ['user', 'reader']
+                roles: ['user', 'collaborator']
             }
         ]
     });
@@ -74,9 +74,9 @@ describe('Auth JWT Middleware', () => {
         });
     });
 
-    describe('Reader Middleware', () => {
+    describe('Collaborator Middleware', () => {
         
-        it('The user is reader', async () => {
+        it('The user is collaborator', async () => {
             User.findById = jest.fn(() => mockUsers.filter(user => user._id == 3)[0]);
             User.findOne = jest.fn(() => mockUsers.filter(user => user._id == 3)[0]);
             Application.find = jest.fn(() => []);
@@ -85,13 +85,13 @@ describe('Auth JWT Middleware', () => {
             expect(res.statusCode).toEqual(200);
         });
 
-        it('The user is not reader', async () => {
+        it('The user is not collaborator', async () => {
             User.findById = jest.fn(() => mockUsers.filter(user => user._id == 2)[0]);
             User.findOne = jest.fn(() => mockUsers.filter(user => user._id == 2)[0]);
             jwt.verify = jest.fn(() => ({ id: 2, userId: 'el-userId-2'}))
             const res = await request(app).get('/api/applications').set('token', 'valid token')
             expect(res.statusCode).toEqual(403);
-            expect(res.body).toEqual(expect.objectContaining({ message: "Require Reader Role!" }));
+            expect(res.body).toEqual(expect.objectContaining({ message: "Require Collaborator Role!" }));
         });
 
         it('Check error', async () => {

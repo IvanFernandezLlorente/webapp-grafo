@@ -132,7 +132,7 @@ export default {
         selected: [],
         options: [
             { text: 'Admin', value: 'admin' },
-            { text: 'Reader', value: 'reader' }
+            { text: 'Collaborator', value: 'collaborator' }
         ]
       }
     },

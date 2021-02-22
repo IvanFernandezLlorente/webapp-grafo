@@ -21,5 +21,5 @@ export default {
             CLIENT_SECRET: process.env.GITHUB_CLIENT_SECRET || ''
         }
     },
-    ROLES: ['user', 'admin', 'reader']
+    ROLES: ['user', 'admin', 'collaborator']
 }

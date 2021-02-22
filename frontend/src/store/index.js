@@ -9,21 +9,21 @@ export default new Vuex.Store({
         userId: "",
         id: "",
         isAdmin: false,
-        isReader: false
+        isCollaborator: false
     },
 
     mutations: {
         authUser(state, userData) {
-            const { token, id, userId, isAdmin, isReader } = userData
+            const { token, id, userId, isAdmin, isCollaborator } = userData
             Vue.set(state, 'isAdmin', isAdmin);
-            Vue.set(state, 'isReader',isReader);
+            Vue.set(state, 'isCollaborator',isCollaborator);
             Vue.set(state, 'token', token);
             Vue.set(state, 'userId', userId);
             Vue.set(state, 'id',id);
         },
         logoutUser(state) {
             Vue.set(state, 'isAdmin', '');
-            Vue.set(state, 'isReader','');
+            Vue.set(state, 'isCollaborator','');
             Vue.set(state, 'token', '');
             Vue.set(state, 'userId', '');
             Vue.set(state, 'id','');

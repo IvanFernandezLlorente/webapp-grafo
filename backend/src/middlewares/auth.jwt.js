@@ -26,18 +26,18 @@ export const verifyToken = async (req,res,next) => {
     }
 }
 
-export const isReader = async (req,res,next) => {
+export const isCollaborator = async (req,res,next) => {
     try {
         const user = await User.findOne({ userId: req.userId });
 
-        const isReader = user.roles.some(rol => rol === "reader");
+        const isCollaborator = user.roles.some(rol => rol === "collaborator");
 
-        if (isReader) {
+        if (isCollaborator) {
             next();
             return;
         }
 
-        return res.status(403).json({ message: "Require Reader Role!" });
+        return res.status(403).json({ message: "Require Collaborator Role!" });
     } catch (error) {
         return res.status(500).send({ message: "Error" });
     }

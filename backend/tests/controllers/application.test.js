@@ -60,11 +60,11 @@ describe('Application controller', () => {
                 email: "el email 3",
                 password: "la pass 3",
                 userId: "no-copiar-id",
-                roles: ['user', 'reader']
+                roles: ['user', 'collaborator']
             }
         ],
         authJwt.verifyToken.mockImplementation((req, res, next) => next());
-        authJwt.isReader.mockImplementation((req, res, next) => next());
+        authJwt.isCollaborator.mockImplementation((req, res, next) => next());
     });
 
     describe('Get Applications', () => {

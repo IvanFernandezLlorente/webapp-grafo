@@ -4,12 +4,12 @@ import {authJwt}  from '../middlewares';
 
 const router = Router();
 
-router.get('/', [authJwt.verifyToken, authJwt.isReader], applicationController.getApplications);
+router.get('/', [authJwt.verifyToken, authJwt.isCollaborator], applicationController.getApplications);
 
 router.post('/', applicationController.createApplication);
 
-router.put('/accept/:id', [authJwt.verifyToken, authJwt.isReader], applicationController.acceptApplication);
+router.put('/accept/:id', [authJwt.verifyToken, authJwt.isCollaborator], applicationController.acceptApplication);
 
-router.delete('/reject/:id', [authJwt.verifyToken, authJwt.isReader], applicationController.rejectApplication);
+router.delete('/reject/:id', [authJwt.verifyToken, authJwt.isCollaborator], applicationController.rejectApplication);
 
 export default router;

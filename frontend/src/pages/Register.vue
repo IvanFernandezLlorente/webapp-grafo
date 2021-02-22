@@ -80,7 +80,7 @@ export default {
                     id, 
                     userId, 
                     isAdmin: roles.includes('admin'),
-                    isReader: roles.includes('reader')
+                    isCollaborator: roles.includes('collaborator')
                 }
                 this.$store.dispatch('signup',sended);
                 this.$router.push({path: '/'}).catch(()=>{});
