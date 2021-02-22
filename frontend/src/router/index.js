@@ -17,6 +17,7 @@ import Problem from '../components/Problem';
 import EditProblem from '../components/EditProblem';
 import NewProblem from '../components/NewProblem';
 import Register from '../pages/Register';
+import Application from '../pages/Application';
 
 Vue.use(VueRouter)
 
@@ -144,6 +145,11 @@ const routes = [
     path: '/register',
     name: 'Register',
     component: Register,
+  },
+  {
+    path: '/applications',
+    name: 'Application',
+    component: Application,
   }
 ]
 

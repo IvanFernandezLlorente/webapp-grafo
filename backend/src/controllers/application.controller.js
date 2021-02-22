@@ -33,9 +33,9 @@ export const createApplication = async (req, res) => {
             description
         });
 
-        const applicationSave = await newApplication.save();
+        const applicationSaved = await newApplication.save();
 
-        return res.status(200).json(applicationSave);
+        return res.status(200).json(applicationSaved);
     } catch (error) {
         return res.status(500).json({ message: "Error" });
     }

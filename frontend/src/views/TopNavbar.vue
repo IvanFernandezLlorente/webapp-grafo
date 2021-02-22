@@ -47,8 +47,8 @@
                 <b-link  :to="{path: '/login'}" class="nav-link">
                     Sign In 
                 </b-link>
-                <b-link  :to="{path: '/register'}" class="nav-link">
-                    Sign Up
+                <b-link  :to="{path: '/applications'}" class="nav-link">
+                    Request Sign Up
                 </b-link>
             </div>
             <b-link @click="logOut" v-else class="nav-link">
