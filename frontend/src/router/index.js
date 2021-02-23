@@ -17,7 +17,8 @@ import Problem from '../components/Problem';
 import EditProblem from '../components/EditProblem';
 import NewProblem from '../components/NewProblem';
 import Register from '../pages/Register';
-import Application from '../pages/Application';
+import RequestSignUp from '../pages/RequestSignUp';
+import Applications from '../components/Applications';
 
 Vue.use(VueRouter)
 
@@ -134,6 +135,18 @@ const routes = [
             }
         }
      },
+     {
+        path: '/applications',
+        name: 'Applications',
+        component: Applications,
+        beforeEnter: (to, from, next) => {
+            if (store.state.isCollaborator) {
+                next();
+            } else {
+                next({path: '/'})
+            }
+        }
+     }, 
     ]
   },
   {
@@ -142,14 +155,14 @@ const routes = [
     component: Login,
   },
   {
-    path: '/register',
+    path: '/register/:id/:token',
     name: 'Register',
     component: Register,
   },
   {
-    path: '/applications',
-    name: 'Application',
-    component: Application,
+    path: '/request-signUp',
+    name: 'RequestSignUp',
+    component: RequestSignUp,
   }
 ]
 

@@ -6,6 +6,8 @@ const router = Router();
 
 router.get('/', [authJwt.verifyToken, authJwt.isCollaborator], applicationController.getApplications);
 
+router.get('/:id', applicationController.getApplicationById);
+
 router.post('/', applicationController.createApplication);
 
 router.put('/accept/:id', [authJwt.verifyToken, authJwt.isCollaborator], applicationController.acceptApplication);

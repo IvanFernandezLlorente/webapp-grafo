@@ -107,7 +107,7 @@ export const deleteUserById = async (req, res) => {
 
 export const signUp = async (req,res) => {
     try {
-        const { email, name, password } = req.body;
+        const { email, name, password, token } = req.body;
         
         const emailFound = await User.findOne({ email });
         if (emailFound){
@@ -117,6 +117,11 @@ export const signUp = async (req,res) => {
         const applicationFound = await Application.findOne({ email, accepted: true });
         if (!applicationFound){
             return res.status(400).json({ message: "The email is not accepted" });
+        }
+
+        const decoded = jwt.verify(token,config.SECRET);
+        if (!((decoded.email === applicationFound.email) && (token === applicationFound.token))) {
+            return res.status(403).json({ message: "Invalid token" });
         }
 
         const newUser = new User({
@@ -135,7 +140,7 @@ export const signUp = async (req,res) => {
         const finalUser = await saveNewUser(newUser);
         await Application.findOneAndDelete({ email, accepted: true });
 
-        const token = jwt.sign({ id: finalUser._id, userId: finalUser.userId }, config.SECRET, {
+        const newToken = jwt.sign({ id: finalUser._id, userId: finalUser.userId }, config.SECRET, {
             expiresIn: 86400
         });
 
@@ -143,7 +148,7 @@ export const signUp = async (req,res) => {
         await emailSend.emailWelcome(finalUser.email, finalUser.name);
 
         return res.status(200).json({
-            token,
+            token: newToken,
             id: finalUser._id,
             userId: finalUser.userId,
             roles: finalUser.roles

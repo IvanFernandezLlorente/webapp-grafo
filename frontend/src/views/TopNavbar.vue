@@ -40,6 +40,12 @@
               Account
             </b-link>
           </li>
+
+          <li v-if="token" class="nav-item">
+            <b-link class="nav-link" :to="{path: '/applications'}">
+              Applications
+            </b-link>
+          </li>
           
 
           <li class="nav-item">
@@ -47,7 +53,7 @@
                 <b-link  :to="{path: '/login'}" class="nav-link">
                     Sign In 
                 </b-link>
-                <b-link  :to="{path: '/applications'}" class="nav-link">
+                <b-link  :to="{path: '/request-signUp'}" class="nav-link">
                     Request Sign Up
                 </b-link>
             </div>

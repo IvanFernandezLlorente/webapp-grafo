@@ -41,7 +41,7 @@
 <script>
 import axios from 'axios';
 export default {
-    name: 'Application',
+    name: 'RequestSignUp',
     
     data: () => {
         return {

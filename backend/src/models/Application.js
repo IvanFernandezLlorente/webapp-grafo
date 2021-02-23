@@ -12,7 +12,11 @@ const applicationSchema = new Schema(
       required: true
     },
     description: String,
-    accepted: Boolean
+    accepted: Boolean,
+    token: {
+        type: String,
+        required: true
+    }
   },
   {
     versionKey: false,

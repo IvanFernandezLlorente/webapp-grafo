@@ -1,7 +1,8 @@
 import User from "../../src/models/User";
 import Application from '../../src/models/Application';
 const userController = require('../../src/controllers/user.controller');
-import request  from 'supertest';
+import request from 'supertest';
+import jwt from 'jsonwebtoken';
 
 jest.mock('../../src/middlewares/auth.jwt');
 jest.mock('../../src/middlewares/verifySignUp');
@@ -46,6 +47,7 @@ describe('User controller', () => {
                 name: 'the name',
                 email: 'new email',
                 accepted: true,
+                token: 'the token'
             }
         ]
     });
@@ -342,11 +344,29 @@ describe('User controller', () => {
             expect(res.body).toEqual(expect.objectContaining({ message: "The email is not accepted" }));
         });
 
+        it('Invalid application token', async () => {
+            User.findOne = jest.fn(() => mockUsers.some( user => user.email == "new email"));
+            User.encryptPassword = jest.fn(() => 'encrypted password');
+            Application.findOne = jest.fn(() => mockApplications.filter(application => application.email == "new email")[0]);
+            Application.findOneAndDelete = jest.fn(() => mockApplications.splice(0, 1));
+            jwt.verify = jest.fn(() => { return { email: 'new email', token: 'the token' } });
+
+            const res = await request(app).post('/api/users/signup').send({
+                name: 'the name',
+                email: 'email no accepted',
+                password: 'la pass',
+                token: 'invalid'
+            });
+            expect(res.statusCode).toEqual(403);
+            expect(res.body).toEqual(expect.objectContaining({ message: "Invalid token" }));
+        });
+
         it('User sign up without rol', async () => {
             User.findOne = jest.fn(() => mockUsers.some( user => user.email == "new email"));
             User.encryptPassword = jest.fn(() => 'encrypted password');
-            Application.findOne = jest.fn(() => mockApplications.some(application => application.email == "new email"));
-            Application.findOneAndDelete = jest.fn(() => mockApplications.splice(0,1));
+            Application.findOne = jest.fn(() => mockApplications.filter(application => application.email == "new email")[0]);
+            Application.findOneAndDelete = jest.fn(() => mockApplications.splice(0, 1));
+            jwt.verify = jest.fn(() => { return { email: 'new email', token: 'the token' } });
 
             const saveNewUser = jest.fn(() => {
                 mockUsers.push({ _id: 4, name: "the name", userId: 4, email: "new email", password: 'encrypted password', roles: ['user'] });
@@ -357,7 +377,8 @@ describe('User controller', () => {
             const res = await request(app).post('/api/users/signup').send({
                 name: 'the name',
                 email: 'new email',
-                password: 'la pass'
+                password: 'la pass',
+                token: 'the token'
             });
             expect(res.statusCode).toEqual(200);
             expect(res.body).toEqual(expect.objectContaining({
@@ -373,8 +394,10 @@ describe('User controller', () => {
         it('User sign up with rol admin', async () => {
             User.findOne = jest.fn(() => mockUsers.some( user => user.email == "new email"));
             User.encryptPassword = jest.fn(() => 'encrypted password');
-            Application.findOne = jest.fn(() => mockApplications.some(application => application.email == "new email"));
-            Application.findOneAndDelete = jest.fn(() => mockApplications.splice(0,1));
+            Application.findOne = jest.fn(() => mockApplications.filter(application => application.email == "new email")[0]);
+            Application.findOneAndDelete = jest.fn(() => mockApplications.splice(0, 1));     
+            jwt.verify = jest.fn(() => { return { email: 'new email', token: 'the token' } });
+
             const saveNewUser = jest.fn(() => {
                 mockUsers.push({ _id: 4, name: "the name", userId: 4, email: "new email", password: 'encrypted password', roles: ['admin'] });
                 return { _id: 4, name: "the name", userId: 4, email: "new email", password: 'encrypted password', roles: ['admin'] }
@@ -385,7 +408,8 @@ describe('User controller', () => {
                 name: 'the name',
                 email: 'new email',
                 password: 'la pass',
-                roles: ['admin']
+                roles: ['admin'],
+                token: 'the token'
             });
             expect(res.statusCode).toEqual(200);
             expect(res.body).toEqual(expect.objectContaining({

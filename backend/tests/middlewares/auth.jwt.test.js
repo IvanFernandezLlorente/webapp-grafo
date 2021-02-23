@@ -44,7 +44,7 @@ describe('Auth JWT Middleware', () => {
         it('No token', async () => {
             const res = await request(app).put('/api/users/el-userId-2')
 
-            expect(res.statusCode).toEqual(403);
+            expect(res.statusCode).toEqual(401);
             expect(res.body).toEqual(expect.objectContaining({ message: "No token" }));
         });
 
@@ -53,7 +53,7 @@ describe('Auth JWT Middleware', () => {
             jwt.verify = jest.fn(() => ({ id: 'wrong id', userId: 'wrong userId'}))
             const res = await request(app).put('/api/users/wrong-id').set('token', 'this is a invalid token')
 
-            expect(res.statusCode).toEqual(404);
+            expect(res.statusCode).toEqual(403);
             expect(res.body).toEqual(expect.objectContaining({ message: "Invalid token" }));
         });
         

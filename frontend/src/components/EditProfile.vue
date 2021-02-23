@@ -3,7 +3,7 @@
       <b-col class="card" cols="8">
         <div class="card-header">
             <h4 class="card-title">Edit Profile</h4>
-            <b-form-checkbox-group v-if="isAdmin" v-model="selected" :options="options"></b-form-checkbox-group>
+            <b-form-checkbox-group v-if="isAdmin || isCollaborator" :disabled='!isAdmin' v-model="selected" :options="options"></b-form-checkbox-group>
         </div>
         <div class="card-body">
             <form @submit.prevent="updateProfile"> 
@@ -180,7 +180,7 @@ export default {
             this.userCopy[valor.target.id] = valor.target.value
         }
     },
-    computed: mapState(['isAdmin']),
+    computed: mapState(['isAdmin', 'isCollaborator']),
 }
 </script>
 

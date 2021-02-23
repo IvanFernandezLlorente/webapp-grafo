@@ -1,6 +1,8 @@
 import Application from "../models/Application";
 import User from "../models/User";
 import * as emailSend from '../libs/email';
+import jwt from 'jsonwebtoken';
+import config from '../config';
 
 export const getApplications = async (req, res) => {
     try {
@@ -10,6 +12,19 @@ export const getApplications = async (req, res) => {
         return res.status(500).json({ message: "Error" });
     }
 }
+
+export const getApplicationById = async (req, res) => {
+    try {
+        const { id } = req.params;
+        const application = await Application.findById(id);
+        if (application) {
+            return res.status(200).json(application);
+        }
+        return res.status(404).json({ message: "Application not found" });
+    } catch (error) {
+        return res.status(500).json({ message: "Error" });
+    }
+};
 
 export const createApplication = async (req, res) => {
     try {
@@ -27,10 +42,13 @@ export const createApplication = async (req, res) => {
             return res.status(400).json({ message: "The email already send a request" });
         } 
         
+        const token = jwt.sign({ email }, config.SECRET);
+
         const newApplication = new Application({
             email,
             name,
-            description
+            description,
+            token
         });
 
         const applicationSaved = await newApplication.save();
@@ -51,7 +69,7 @@ export const acceptApplication = async (req, res) => {
         if (req.body.accepted) {
             applicationFound.accepted = true;
             const applicationSaved = await applicationFound.save();
-            await emailSend.emailAccepted(applicationFound.email, applicationFound.name);
+            await emailSend.emailAccepted(applicationSaved);
             return res.status(200).json(applicationSaved);
         } 
         return res.status(400).json({ message: "Application not accepted" });

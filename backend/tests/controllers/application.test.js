@@ -81,6 +81,28 @@ describe('Application controller', () => {
             expect(res.statusCode).toEqual(500);
             expect(res.body).toEqual(expect.objectContaining({ message: "Error" }));
         });
+
+        it('Get applications by id', async () => {
+            Application.findById = jest.fn(() => mockApplications.filter( application => application._id == 2));
+            const res = await request(app).get('/api/applications/2');
+            expect(res.statusCode).toEqual(200);
+            expect(res.body).toHaveLength(1);
+            expect(res.body).toEqual(expect.arrayContaining([expect.objectContaining({ _id: 2, name: 'the name 2', email: 'new email 2', description: 'desc 2'})]));
+        });
+
+        it('Get application by id not found', async () => {
+            Application.findById = jest.fn(() => mockApplications.some( application => application._id == 'no-exist'));
+            const res = await request(app).get('/api/applications/no-exist');
+            expect(res.statusCode).toEqual(404);
+            expect(res.body).toEqual(expect.objectContaining({ message: "Application not found" }));
+        });
+
+        it('Get applications by id error', async () => {
+            Application.findById = jest.fn(() => {throw Error});
+            const res = await request(app).get('/api/applications/no-exist');
+            expect(res.statusCode).toEqual(500);
+            expect(res.body).toEqual(expect.objectContaining({ message: "Error" }));
+        });        
     });
 
     describe('Create Application', () => {

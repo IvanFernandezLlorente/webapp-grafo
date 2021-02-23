@@ -49,7 +49,6 @@ export default {
                     password: this.password
                 }
                 const res = await axios.post("http://localhost:4000/api/users/signin", info);
-                console.log(res);
                 this.manageSignIn(res.data);
             } catch (error) {
                 console.log(error)
@@ -68,7 +67,6 @@ export default {
             });
         },
         manageSignIn(data) {
-            console.log(data);
             if (data.token) {
                 const { token, id, userId, roles } = data;
                 const sended = {

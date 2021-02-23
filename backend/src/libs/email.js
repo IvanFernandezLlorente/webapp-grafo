@@ -5,7 +5,7 @@ import { google } from 'googleapis';
 
 
 
-const sendEmail = async  (email, subject, text) => {
+const sendEmail = async  (email, subject, text, html = '') => {
     try {
         const oAuth2Client = new google.auth.OAuth2(config.CLIENT_ID, config.CLIENT_SECRET);
         oAuth2Client.setCredentials({ refresh_token: config.REFRESH_TOKEN });
@@ -25,7 +25,8 @@ const sendEmail = async  (email, subject, text) => {
             from: 'Grafo Research Support <grafo.research@gmail.com>',
             to: email,
             subject,
-            text
+            text,
+            html
         };
         const result = await transport.sendMail(mailOptions);
         return result;
@@ -40,10 +41,11 @@ export const emailWelcome = async (email, name) => {
     await sendEmail(email, subject, text);
 }
 
-export const emailAccepted = async (email, name) => {
+export const emailAccepted = async (application) => {
     const subject = "Grafo Research | Your request has been accepted"
-    const text = `Hello ${name},\nYour request has been accepted.`
-    await sendEmail(email, subject, text);
+    const text = `Hello ${application.name},\nYour request has been accepted.`
+    const html =`<p>Hello ${application.name}</p><p>Your request has been accepted</p><a href="http://localhost:8080/register/${application._id}/${application.token}">Click here</a>`
+    await sendEmail(application.email, subject, text, html);
 }
 
 export const emailRejected = async (email, name) => {

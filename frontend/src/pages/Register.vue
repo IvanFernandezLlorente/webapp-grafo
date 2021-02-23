@@ -12,10 +12,10 @@
                 </div>
                 <div class="form-body">
                     <label for="name">Name</label>
-                    <input id="name" v-model="name" type="text" placeholder="Your name">
+                    <input disabled style="background-color: #e9ecef;" id="name" v-model="application.name" type="text" placeholder="Your name">
 
                     <label for="email" name="login">Email address</label>
-                    <input id="email" v-model="email" type="text" placeholder="Email address">
+                    <input disabled style="background-color: #e9ecef;" id="email" v-model="application.email" type="text" placeholder="Email address">
 
                     <label for="password">Password</label>
                     <input id="password" v-model="password" name="password" placeholder="Password" type="password">
@@ -25,8 +25,6 @@
             </form>
         </div>
          
-        <button @click="google">Sign Up Google</button>
-        <button @click="github">Sign Up Github</button>
 
         <p v-if="error">{{error}}</p>
   </div>
@@ -39,37 +37,36 @@ export default {
     
     data: () => {
         return {
-            email: '',
+            application: {},
             password: '',
-            name: '',
             error: ''
         }
     },
+    created () {
+        this.fetchData();
+    },
     methods: {
+        async fetchData() {
+            try {
+                const res = await axios.get(`http://localhost:4000/api/applications/${this.$route.params.id}`);
+                this.application = res.data;
+            } catch (error) {
+                console.log(error)                
+            }
+        },
         async signup () {
             try {
                 const info = {
-                    email: this.email,
+                    email: this.application.email,
                     password: this.password,
-                    name: this.name
+                    name: this.application.name,
+                    token: this.application.token
                 }
                 const res = await axios.post("http://localhost:4000/api/users/signup", info);
-                this.manageSignIn(res.data);
+                this.manageSignUp(res.data);
             } catch (error) {
                 console.log(error)
             }            
-        },
-        google(){
-            window.open('http://localhost:4000/api/users/oauth/google/signup',"mywindow","location=1,status=1,scrollbars=1, width=800,height=800");
-            let listener = window.addEventListener('message', (message) => {
-                this.manageSignUp(message.data);
-            });
-        },
-        github() {
-            window.open('http://localhost:4000/api/users/oauth/github/signup',"mywindow","location=1,status=1,scrollbars=1, width=800,height=800");
-            let listener = window.addEventListener('message', (message) => {
-                this.manageSignUp(message.data);
-            });
         },
         manageSignUp(data) {
             console.log(data);
