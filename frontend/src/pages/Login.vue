@@ -55,13 +55,13 @@ export default {
             }            
         },
         google(){
-            window.open('http://localhost:4000/api/users/oauth/google/signin',"mywindow","location=1,status=1,scrollbars=1, width=800,height=800");
+            window.open('http://localhost:4000/api/users/oauth/google/signin',"windowLoginGoogle","location=1,status=1,scrollbars=1,width=800,height=800");
             let listener = window.addEventListener('message', (message) => {
                 this.manageSignIn(message.data);
             });
         },
         github() {
-            window.open('http://localhost:4000/api/users/oauth/github/signin',"mywindow","location=1,status=1,scrollbars=1, width=800,height=800");
+            window.open('http://localhost:4000/api/users/oauth/github/signin',"windowLoginGithub","location=1,status=1,scrollbars=1,width=800,height=800");
             let listener = window.addEventListener('message', (message) => {
                 this.manageSignIn(message.data);
             });

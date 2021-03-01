@@ -127,8 +127,7 @@ export const signUp = async (req,res) => {
         const newUser = new User({
             email,
             password: await User.encryptPassword(password),
-            name,
-            method: 'local'
+            name
         });
         
         if(req.body.roles) {
@@ -158,40 +157,19 @@ export const signUp = async (req,res) => {
     }
 }
 
-export const signUpSocial = async (req,res) => {
+export const connectSocial = async (req,res) => {
     try {
         let responseHTML = '<html><head><title>Main</title></head><body></body><script>res = %value%; window.opener.postMessage(res, "*");window.close();</script></html>';
-        if (req.user.message == 'Account already used.') {
+        if (req.user.message) {
             responseHTML = responseHTML.replace('%value%', JSON.stringify({
-                message: "Account already used."
+                message: req.user.message,
+                method: req.user.method
             }));
             return res.status(400).send(responseHTML);
         }
-        const method = req.authInfo.method;
-        const newUser = new User({
-            method,
-            name: method == 'google' ? req.user.displayName : req.user.username,
-            email: method == 'google' ? req.user.emails[0].value : '',
-            methodId: req.user.id
-        });
-
-        newUser.roles = ["user"]
-
-        const finalUser = await saveNewUser(newUser);
-
-        const token = jwt.sign({ id: finalUser._id, userId: finalUser.userId }, config.SECRET, {
-            expiresIn: 86400
-        });
-
-        if (finalUser.email) {
-            await emailSend.emailWelcome(finalUser.email, finalUser.name);
-        }
 
         responseHTML = responseHTML.replace('%value%', JSON.stringify({
-                id: finalUser._id,
-                userId: finalUser.userId,
-                token,
-                roles: finalUser.roles
+                user: req.user 
         }));
         return res.status(200).send(responseHTML);
     } catch (error) {
@@ -207,7 +185,7 @@ const saveNewUser = async (newUser) => {
 
 export const signIn = async (req,res) => {
     try {
-        const user =  await User.findOne({ email: req.body.email, method: 'local' });
+        const user =  await User.findOne({ email: req.body.email });
         if (!user) {
             return res.status(404).json({ message: "Email not found" });
         }

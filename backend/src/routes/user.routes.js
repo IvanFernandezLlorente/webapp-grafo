@@ -17,15 +17,17 @@ router.post('/signup', [verifySignUp.checkDuplicateNameOrEmail, verifySignUp.che
 router.post('/signin', userController.signIn);
 
 
-router.get('/oauth/google/signup', passport.authenticate('signupGoogle', { scope: ['profile', 'email'] }, { session: false }));
+router.get('/oauth/google/connect/:userId/:token', function (req, res, next) {
+    passport.authenticate('connectGoogle', { scope: ['profile', 'email'], state: true, state: (JSON.stringify({ userId: req.params.userId, token: req.params.token })) }, { session: false })(req, res, next)
+});
 
-router.get('/oauth/google/callback/signup', passport.authenticate('signupGoogle', { session: false }), userController.signUpSocial);
+router.get('/oauth/google/callback/connect', passport.authenticate('connectGoogle', { session: false }), userController.connectSocial);
 
 
 
 router.get('/oauth/github/signup', passport.authenticate('signupGithub', { session: false }));
 
-router.get('/oauth/github/callback/signup', passport.authenticate('signupGithub', { session: false }), userController.signUpSocial);
+router.get('/oauth/github/callback/signup', passport.authenticate('signupGithub', { session: false }), userController.connectSocial);
 
 
 

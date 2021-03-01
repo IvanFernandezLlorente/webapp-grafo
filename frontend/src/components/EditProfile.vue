@@ -93,6 +93,14 @@
                         </div>
                     </b-col>
                 </b-row>
+                
+                <p v-if="errorGoogle">{{errorGoogleText}}</p>
+                <button v-if="!(user.google) || ((user.google) && !(user.google.methodId))" type="button" @click="google">Connect Google</button>
+                
+                <div v-else>
+                    <p>{{user.google.email}}</p>
+                    <button type="button" @click="disconnectGoogle">Disconnect Google</button>
+                </div>
                 <div class="text-center">
                     <button type="submit" class="btn btn-info float-right">
                     Update Profile
@@ -124,7 +132,11 @@ export default {
           description: '',
           linkedinUrl: '',
           scholarUrl: '',
-          urjcUrl: ''
+          urjcUrl: '',
+          google: {
+                methodId: '',
+                email: ''
+          }
         },
         userCopy: {},
         newPassword: '',
@@ -133,7 +145,9 @@ export default {
         options: [
             { text: 'Admin', value: 'admin' },
             { text: 'Collaborator', value: 'collaborator' }
-        ]
+        ],
+        errorGoogle: false,
+        errorGoogleText: ''
       }
     },
     created () {
@@ -178,6 +192,26 @@ export default {
         },
         updateCopy (valor) {
             this.userCopy[valor.target.id] = valor.target.value
+        },
+        google(){
+            window.open(`http://localhost:4000/api/users/oauth/google/connect/${this.$store.state.userId}/${this.$store.state.token}`,"windowProfile","location=1,status=1,scrollbars=1,width=800,height=800");          
+            let listener = window.addEventListener('message', (message) => {
+                if ((message.data.method == 'connectGoogle') && (message.data.message)) {
+                    this.errorGoogle = true; 
+                    this.errorGoogleText = message.data.message;
+                } else if ((message.data.user) && (message.data.user.method == 'connectGoogle')) {
+                        this.user = message.data.user.user;
+                }
+            });
+            
+        },
+        async disconnectGoogle() {
+            this.userCopy.roles = this.selected;
+            this.userCopy.google = { name: '', email: '', methodId: '' };
+            const res = await axios.put(`http://localhost:4000/api/users/${this.$route.params.userId ? this.$route.params.userId : this.$store.state.userId}`,this.userCopy,{
+                headers: { token: this.$store.state.token}
+            });
+            this.user = res.data;
         }
     },
     computed: mapState(['isAdmin', 'isCollaborator']),
