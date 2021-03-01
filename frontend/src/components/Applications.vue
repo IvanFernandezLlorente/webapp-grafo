@@ -3,11 +3,15 @@
       <b-col class="card" cols="10">
         <div class="card-header">
             <h4 class="card-title">Applications</h4>
+            <div>
+                <button @click="acceptAll">Accept All</button>
+                <button @click="rejectAll">Reject All</button>
+            </div>
         </div>
         <div v-if="applications" class="card-body">
             <b-row>
                 <b-col cols="3" class="application-list">
-                    <div class="application-object" @click="select(index)" :style="[true ? {'background-color': '#d0d0d0;'} : {'background-color': '#fff'}]" v-for="(application,index) in applications" :key="index">
+                    <div class="application-object" @click="select(index)" :class="indexSelected == index ? 'application-selected' : 'application-not-selected'" v-for="(application,index) in applications" :key="index">
                         <div>
                             <p><b>Name: </b>{{application.name}}</p> 
                             <p><b>Email: </b>{{application.email}}</p>
@@ -80,12 +84,40 @@ export default {
                 console.log(error);
             }
         },
+        async acceptAll() {
+            try {
+                const promises = []
+                this.applications.forEach(application => {
+                    promises.push(axios.put(`http://localhost:4000/api/applications/accept/${application._id}`,{ accepted: true },{
+                        headers: { token: this.$store.state.token}
+                    }));
+                });
+                await Promise.all(promises);
+                this.applications = [];
+            } catch (error) {
+                console.log(error);
+            }
+        },
         async reject() {
             try {
                 const res = await axios.delete(`http://localhost:4000/api/applications/reject/${this.applicationSelected._id}`,{
                     headers: { token: this.$store.state.token}
                 });
                 this.deleteApplication();
+            } catch (error) {
+                console.log(error);
+            }
+        },
+        async rejectAll() {
+            try {
+                const promises = []
+                this.applications.forEach(application => {
+                    promises.push(axios.delete(`http://localhost:4000/api/applications/reject/${application._id}`,{
+                        headers: { token: this.$store.state.token}
+                    }));
+                });
+                await Promise.all(promises);
+                this.applications = [];
             } catch (error) {
                 console.log(error);
             }
@@ -148,5 +180,12 @@ export default {
 
 .application-buttons button{
     margin-right: 30px;
+}
+
+.application-selected {
+    background-color:#d0d0d0;;
+}
+.application-not-selected {
+    background-color:#fff;;
 }
 </style>
