@@ -14,10 +14,10 @@ passport.use('signinGoogle', new GoogleStrategy({
     try {
         const existingUser = await User.findOne({ 'google.methodId': profile.id, 'google.email': profile.emails[0].value });
         if (existingUser) {
-            return done(null, existingUser);
+            return done(null, { user: existingUser, method: 'signinGoogle' });
         }
 
-        return done(null, { message: "Account not registered." });
+        return done(null, { message: "Account not registered.", method: 'signinGoogle' });
     } catch(error) {
         return done(error, false, error.message);
     }
@@ -29,12 +29,12 @@ passport.use('signinGitHub', new GitHubStrategy({
     callbackURL: 'http://localhost:4000/api/users/oauth/github/callback/signin'
 }, async (accessToken, refreshToken, profile, done) => {
     try {
-        const existingUser = await User.findOne({ methodId: profile.id, method: "github" });
+        const existingUser = await User.findOne({ 'github.methodId': profile.id, 'github.name': profile.username });
         if (existingUser) {
-            return done(null, existingUser);
+            return done(null, { user: existingUser, method: 'signinGitHub' });
         }
 
-        return done(null, { message: "Account not registered." });
+        return done(null, { message: "Account not registered.", method: 'signinGitHub' });
     } catch(error) {
         return done(error, false, error.message);
     }
@@ -80,19 +80,39 @@ passport.use('connectGoogle', new GoogleStrategy({
     }
 }));
 
-passport.use('signupGithub',new GitHubStrategy({
+passport.use('connectGithub',new GitHubStrategy({
     clientID: config.OAUTH.GITHUB.CLIENT_ID,
     clientSecret: config.OAUTH.GITHUB.CLIENT_SECRET,
-    callbackURL: 'http://localhost:4000/api/users/oauth/github/callback/signup',
-    scope: [ 'user:email' ]
-}, async (accessToken, refreshToken, profile, done) => {
-        try {
-        const existingUser = await User.findOne({ method: profile.provider, methodId: profile.id });
-        if (existingUser) {
-            return done(null, { message: "Account already used." });
-        }
+    callbackURL: 'http://localhost:4000/api/users/oauth/github/callback/connect',
+    passReqToCallback: true,
+}, async (req,accessToken, refreshToken, profile, done) => {
+    try {
+        const res = JSON.parse(req.query.state);   
+        const { userId, token } = res;
+        const decoded = jwt.verify(token, config.SECRET);
 
-        return done(null, profile, { method: "github"});
+        if (decoded.userId == userId) {
+            const user = await User.findOne({ userId });
+            if (!user) {
+                return done(null, { message: "Invalid token", method: 'connectGithub' });
+            }
+
+            if ((user.github) && (user.github.hasOwnProperty('methodId')) && (user.github.methodId)) {
+                return done(null, { message: "Your account has already been connected.", method: 'connectGithub' });
+            }
+
+            const existingUser = await User.findOne({ 'github.name': profile.username, 'github.methodId': profile.id });
+            if (existingUser) {
+                return done(null, { message: "Account already used.", method: 'connectGithub' });
+            }         
+
+            user.github.methodId = profile.id;
+            user.github.name = profile.username;
+            const userSaved = await user.save();
+            return done(null, { user: userSaved, method: 'connectGithub' });
+        }        
+
+        return done(null, { message: "Unauthorized", method: 'connectGithub' });
     } catch(error) {
         return done(error, false, error.message);
     }

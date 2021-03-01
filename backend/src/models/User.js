@@ -42,6 +42,10 @@ const userSchema = new Schema(
         name: String,
         email: String,
         methodId: String,
+    },
+    github: {
+        name: String,
+        methodId: String,
     }
   },
   {

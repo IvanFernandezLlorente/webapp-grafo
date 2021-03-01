@@ -23,6 +23,10 @@ describe('User Model', () => {
             name: '',
             email: '',
             methodId: ''
+        },
+        github: {
+            name: '',
+            methodId: ''
         }
     })    
 
@@ -91,5 +95,8 @@ describe('User Model', () => {
     });
     it('Google is defined in User model', () => {
         expect(user.google).toBeDefined()
+    });
+    it('GitHub is defined in User model', () => {
+        expect(user.github).toBeDefined()
     });
 });

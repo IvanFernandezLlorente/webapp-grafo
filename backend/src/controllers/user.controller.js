@@ -216,20 +216,22 @@ export const signInSocial = async (req, res) => {
 
         if (req.user.message == 'Account not registered.') {
             responseHTML = responseHTML.replace('%value%', JSON.stringify({
-                message: "Account not registered."
+                message: "Account not registered.",
+                method: req.user.method
             }));
             return res.status(400).send(responseHTML);
         }
 
-        const token = jwt.sign({ id: req.user._id, userId: req.user.userId }, config.SECRET, {
+        const token = jwt.sign({ id: req.user.user._id, userId: req.user.user.userId }, config.SECRET, {
             expiresIn: 86400
         });
 
         responseHTML = responseHTML.replace('%value%', JSON.stringify({
             token,
-            id: req.user._id,
-            userId: req.user.userId,
-            roles: req.user.roles
+            id: req.user.user._id,
+            userId: req.user.user.userId,
+            roles: req.user.user.roles,
+            method: req.user.method
         }));
         return res.status(200).send(responseHTML);
     } catch (error) {

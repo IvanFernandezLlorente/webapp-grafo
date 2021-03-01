@@ -57,32 +57,34 @@ export default {
         google(){
             window.open('http://localhost:4000/api/users/oauth/google/signin',"windowLoginGoogle","location=1,status=1,scrollbars=1,width=800,height=800");
             let listener = window.addEventListener('message', (message) => {
-                this.manageSignIn(message.data);
+                if ((message.data.method == 'signinGoogle') && (message.data.message)) {
+                    this.error = message.data.message;
+                } else if ((message.data.token) && (message.data.method == 'signinGoogle')) {
+                    this.manageSignIn(message.data);
+                }
             });
         },
         github() {
             window.open('http://localhost:4000/api/users/oauth/github/signin',"windowLoginGithub","location=1,status=1,scrollbars=1,width=800,height=800");
             let listener = window.addEventListener('message', (message) => {
-                this.manageSignIn(message.data);
+                if ((message.data.method == 'signinGitHub') && (message.data.message)) {
+                    this.error = message.data.message;
+                } else if ((message.data.token) && (message.data.method == 'signinGitHub')) {
+                    this.manageSignIn(message.data);
+                }
             });
         },
         manageSignIn(data) {
-            if (data.token) {
-                const { token, id, userId, roles } = data;
-                const sended = {
-                    token, 
-                    id, 
-                    userId, 
-                    isAdmin: roles.includes('admin'),
-                    isCollaborator: roles.includes('collaborator')
-                }
-                this.$store.dispatch('login',sended);
-                this.$router.push({path: '/'}).catch(()=>{});
-            } else if (data.message) {
-                this.error = data.message
-            } else {
-                this.error = 'An error has ocurried'
+            const { token, id, userId, roles } = data;
+            const sended = {
+                token, 
+                id, 
+                userId, 
+                isAdmin: roles.includes('admin'),
+                isCollaborator: roles.includes('collaborator')
             }
+            this.$store.dispatch('login',sended);
+            this.$router.push({path: '/'}).catch(()=>{});
         }
     }
 }

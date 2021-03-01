@@ -97,10 +97,20 @@
                 <p v-if="errorGoogle">{{errorGoogleText}}</p>
                 <button v-if="!(user.google) || ((user.google) && !(user.google.methodId))" type="button" @click="google">Connect Google</button>
                 
-                <div v-else>
+                <div v-else style="display: flex;">
                     <p>{{user.google.email}}</p>
                     <button type="button" @click="disconnectGoogle">Disconnect Google</button>
                 </div>
+
+
+                <p v-if="errorGithub">{{errorGithubText}}</p>
+                <button v-if="!(user.github) || ((user.github) && !(user.github.methodId))" type="button" @click="github">Connect GitHub</button>
+                
+                <div v-else style="display: flex;">
+                    <p>{{user.github.name}}</p>
+                    <button type="button" @click="disconnectGithub">Disconnect GitHub</button>
+                </div>
+
                 <div class="text-center">
                     <button type="submit" class="btn btn-info float-right">
                     Update Profile
@@ -136,6 +146,10 @@ export default {
           google: {
                 methodId: '',
                 email: ''
+          },
+          github: {
+                methodId: '',
+                name: ''
           }
         },
         userCopy: {},
@@ -147,7 +161,9 @@ export default {
             { text: 'Collaborator', value: 'collaborator' }
         ],
         errorGoogle: false,
-        errorGoogleText: ''
+        errorGoogleText: '',
+        errorGithub: false,
+        errorGithubText: ''
       }
     },
     created () {
@@ -200,7 +216,7 @@ export default {
                     this.errorGoogle = true; 
                     this.errorGoogleText = message.data.message;
                 } else if ((message.data.user) && (message.data.user.method == 'connectGoogle')) {
-                        this.user = message.data.user.user;
+                    this.user = message.data.user.user;
                 }
             });
             
@@ -211,6 +227,28 @@ export default {
             const res = await axios.put(`http://localhost:4000/api/users/${this.$route.params.userId ? this.$route.params.userId : this.$store.state.userId}`,this.userCopy,{
                 headers: { token: this.$store.state.token}
             });
+            delete this.userCopy.google
+            this.user = res.data;
+        },
+        github(){
+            window.open(`http://localhost:4000/api/users/oauth/github/connect/${this.$store.state.userId}/${this.$store.state.token}`,"windowProfile","location=1,status=1,scrollbars=1,width=800,height=800");          
+            let listener = window.addEventListener('message', (message) => {
+                if ((message.data.method == 'connectGithub') && (message.data.message)) {
+                    this.errorGithub = true; 
+                    this.errorGithubText = message.data.message;
+                } else if ((message.data.user) && (message.data.user.method == 'connectGithub')) {
+                    this.user = message.data.user.user;
+                }
+            });
+            
+        },
+        async disconnectGithub() {
+            this.userCopy.roles = this.selected;
+            this.userCopy.github = { name: '', methodId: '' };
+            const res = await axios.put(`http://localhost:4000/api/users/${this.$route.params.userId ? this.$route.params.userId : this.$store.state.userId}`,this.userCopy,{
+                headers: { token: this.$store.state.token}
+            });
+            delete this.userCopy.github;
             this.user = res.data;
         }
     },
