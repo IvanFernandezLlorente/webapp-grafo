@@ -16,6 +16,8 @@ router.post('/signup', [verifySignUp.checkDuplicateNameOrEmail, verifySignUp.che
 
 router.post('/signin', userController.signIn);
 
+router.post('/images/:userId',[authJwt.verifyToken], userController.imageProfile);
+
 
 router.get('/oauth/google/connect/:userId/:token', function (req, res, next) {
     passport.authenticate('connectGoogle', { scope: ['profile', 'email'], state: (JSON.stringify({ userId: req.params.userId, token: req.params.token })) }, { session: false })(req, res, next)

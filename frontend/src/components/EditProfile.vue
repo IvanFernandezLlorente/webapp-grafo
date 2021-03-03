@@ -119,12 +119,21 @@
             </form>
         </div>
       </b-col>
+      <div class="profile-image">
+        <img :src="imgDataUrl">
+        <a class="btn btn-info" @click="toggleShow">Upload new photo</a>
+        <my-upload 
+            @crop-success="cropSuccess"
+            v-model="show"
+            lang-type="en"></my-upload>
+      </div>
   </b-row>
 </template>
 
 <script>
 import axios from 'axios';
 import { mapState } from 'vuex';
+import myUpload from 'vue-image-crop-upload';
 
 export default {
     name:'EditProfile',
@@ -163,8 +172,13 @@ export default {
         errorGoogle: false,
         errorGoogleText: '',
         errorGithub: false,
-        errorGithubText: ''
+        errorGithubText: '',
+        show: false,
+        imgDataUrl: '',
       }
+    },
+    components: {
+        'my-upload': myUpload
     },
     created () {
         this.fetchData();
@@ -175,6 +189,7 @@ export default {
                 const res = await axios.get(`http://localhost:4000/api/users/${this.$route.params.userId ? this.$route.params.userId : this.$store.state.userId}`);
                 this.user = res.data;
                 this.selected = this.user.roles
+                this.imgDataUrl = this.user.imagenProfile ? this.user.imagenProfile : '' 
             } catch (error) {
                 console.log(error)                
             }
@@ -250,7 +265,21 @@ export default {
             });
             delete this.userCopy.github;
             this.user = res.data;
-        }
+        },
+        toggleShow() {
+            this.show = !this.show;
+        },
+        async cropSuccess(imgDataUrl, field){
+            this.imgDataUrl = imgDataUrl;
+            try {
+                const res = await axios.post(`http://localhost:4000/api/users/images/${this.$route.params.userId ? this.$route.params.userId : this.$store.state.userId}`,{ imagenProfile: this.imgDataUrl },{
+                    headers: { token: this.$store.state.token}
+                });
+            } catch (error) {
+                console.log(error);
+            }
+        },
+        
     },
     computed: mapState(['isAdmin', 'isCollaborator']),
 }
@@ -307,5 +336,15 @@ export default {
   color: #cfcfca;
   opacity: 1;
   filter: alpha(opacity=100);
+}
+
+.profile-image {
+    left: 50px;
+    position: relative;
+}
+
+.profile-image a {
+    display: flex;
+    margin-top: 10px;
 }
 </style>

@@ -10,6 +10,29 @@ export const getUsers = async (req, res) => {
     return res.status(200).json(users);
 };
 
+export const imageProfile = async (req, res) => {
+    try {
+        const userFound = await User.findOne({ userId: req.params.userId });
+        if (!userFound) {
+            return res.status(404).json({ message: "User not found" });
+        }
+
+        if (req.isAdmin || req.userId == req.params.userId) { 
+            const updatedUser = await User.findOneAndUpdate(
+                { userId: req.params.userId },
+                req.body,
+                {
+                    new: true
+                }
+            )
+            return res.status(200).json();
+        }
+        return res.status(401).json({ message: "Unauthorized" });
+    } catch (error) {
+        return res.status(500).json({ message: "Error" });
+    }
+};
+
 export const getUserById = async (req, res) => {
     try {
         const { userId } = req.params;
@@ -144,7 +167,7 @@ export const signUp = async (req,res) => {
         });
 
         // Send Email
-        await emailSend.emailWelcome(finalUser.email, finalUser.name);
+        await emailSend.emailWelcome(finalUser);
 
         return res.status(200).json({
             token: newToken,

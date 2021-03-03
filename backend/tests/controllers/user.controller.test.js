@@ -84,6 +84,74 @@ describe('User controller', () => {
         });
     });
 
+    describe('User image profile', () => {
+        beforeEach(() => {
+            authJwt.verifyToken.mockImplementation((req, res, next) => next());
+        });
+        
+        it('Get user not found', async () => {
+            User.findOne = jest.fn(() => mockUsers.some( user => user.userId == "no-exist"));
+            const res = await request(app).post('/api/users/images/no-exist');
+            expect(res.statusCode).toEqual(404);
+            expect(res.body).toEqual(expect.objectContaining({ message: "User not found" }));
+        });
+
+        it('Get user error', async () => {
+            User.findOne = jest.fn(() => {throw Error});
+            const res = await request(app).post('/api/users/images/no-exist');
+            expect(res.statusCode).toEqual(500);
+            expect(res.body).toEqual(expect.objectContaining({ message: "Error" }));
+        });
+
+        it('User doesnt have rights to upload the image', async () => {
+            User.findOne = jest.fn(() => mockUsers.filter( user => user.userId == 'el-userId-2'));
+            authJwt.verifyToken.mockImplementation((req, res, next) => { 
+                req.isAdmin = false; 
+                req.userId = 'el-userId-2'
+                next() 
+            });
+
+            const res = await request(app).post('/api/users/images/no-exist');
+            expect(res.statusCode).toEqual(401);
+            expect(res.body).toEqual(expect.objectContaining({ message: "Unauthorized" }));
+        });
+
+        it('User can upload the image', async () => {
+            User.findOne = jest.fn(() => mockUsers.some( user => user.userId == 'el-userId-2'));
+            User.findOneAndUpdate = jest.fn(() => {
+                mockUsers[1] = {
+                    _id: 2,
+                    name: "el nombre 2",
+                    email: "el email 2",
+                    password: "la pass 2",
+                    userId: "el-userId-2",
+                    roles: ['user'],
+                    imagenProfile: 'imagen'
+                };
+                return mockUsers[1];
+            });
+            authJwt.verifyToken.mockImplementation((req, res, next) => { 
+                req.isAdmin = false; 
+                req.userId = 'el-userId-2'
+                next() 
+            });
+
+            const res = await request(app).post('/api/users/images/el-userId-2').send({
+                imagenProfile: 'imagen'
+            });
+            expect(res.statusCode).toEqual(200);
+            expect(mockUsers).toEqual(expect.arrayContaining([{
+                _id: 2,
+                name: "el nombre 2",
+                email: "el email 2",
+                password: "la pass 2",
+                userId: "el-userId-2",
+                roles: ['user'],
+                imagenProfile: 'imagen'
+            }]));
+        });
+    });
+
     describe('Update User', () => {
         beforeEach(() => {
             authJwt.verifyToken.mockImplementation((req, res, next) => next());

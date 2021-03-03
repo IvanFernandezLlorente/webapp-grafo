@@ -7,7 +7,7 @@
     <b-link class="nav-link" :to="{path: `/profile/${person.userId}`}">
         <b-card
         :title=person.name
-        img-src="https://icon-library.com/images/blank-person-icon/blank-person-icon-12.jpg"
+        :img-src="`${person.imagenProfile ? person.imagenProfile : 'https://icon-library.com/images/blank-person-icon/blank-person-icon-12.jpg'}`"
         img-alt="Image"
         img-top
         style="height: 76%;width: 76%;"

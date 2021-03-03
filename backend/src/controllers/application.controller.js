@@ -85,7 +85,7 @@ export const rejectApplication = async (req, res) => {
             return res.status(404).json({ message: "Application not found" });
         }
        
-        await emailSend.emailRejected(applicationFound.email, applicationFound.name);
+        await emailSend.emailRejected(applicationFound);
         await Application.findOneAndDelete({ _id: req.params.id });
                  
         return res.status(200).json();

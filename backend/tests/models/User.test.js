@@ -15,7 +15,7 @@ describe('User Model', () => {
         linkedinUrl: "el linked 1",
         urjcUrl: "el urjc 1",
         scholarUrl: "el scholar 1",
-        imagenPath: "la imagen",
+        imagenProfile: "la imagen",
         roles: ['user'],
         publications: ['una-publicacion'],
         problems: ['un-problema'],
@@ -98,5 +98,8 @@ describe('User Model', () => {
     });
     it('GitHub is defined in User model', () => {
         expect(user.github).toBeDefined()
+    });
+    it('imagenProfile is defined in User model', () => {
+        expect(user.imagenProfile).toBeDefined()
     });
 });

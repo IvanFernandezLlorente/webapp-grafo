@@ -35,10 +35,10 @@ const sendEmail = async  (email, subject, text, html = '') => {
     }
 }
 
-export const emailWelcome = async (email, name) => {
+export const emailWelcome = async (user) => {
     const subject = "Welcome to Grafo Research"
-    const text = `Hello ${name},\nWelcome to Grafo Research\nYour email is: ${email}`
-    await sendEmail(email, subject, text);
+    const text = `Hello ${user.name},\nWelcome to Grafo Research\nYour email is: ${user.email}`
+    await sendEmail(user.email, subject, text);
 }
 
 export const emailAccepted = async (application) => {
@@ -48,8 +48,8 @@ export const emailAccepted = async (application) => {
     await sendEmail(application.email, subject, text, html);
 }
 
-export const emailRejected = async (email, name) => {
+export const emailRejected = async (application) => {
     const subject = "Grafo Research | Your request has been rejected"
-    const text = `Hello ${name},\nYour request has been rejected`
-    await sendEmail(email, subject, text);
+    const text = `Hello ${application.name},\nYour request has been rejected`
+    await sendEmail(application.email, subject, text);
 }

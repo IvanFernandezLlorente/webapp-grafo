@@ -3,9 +3,7 @@ import bcrypt from "bcryptjs";
 
 const userSchema = new Schema(
   {
-    name: {
-      type: String,
-    },
+    name: String,
     email: {
       type: String,
       unique: true,
@@ -25,7 +23,7 @@ const userSchema = new Schema(
     linkedinUrl:String,
     urjcUrl:String,
     scholarUrl:String,
-    imagenPath: String,
+    imagenProfile: String,
     roles: [
       {
         type: String,
