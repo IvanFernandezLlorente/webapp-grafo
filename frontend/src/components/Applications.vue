@@ -68,7 +68,6 @@ export default {
             if (this.applications) {
                 this.indexSelected = index;
                 this.applicationSelected = this.applications[index];
-                console.log(index);
             } else {
                 this.indexSelected = -1;
             }

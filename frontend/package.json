@@ -24,6 +24,7 @@
     "@ckeditor/ckeditor5-paragraph": "^24.0.0",
     "@ckeditor/ckeditor5-table": "^24.0.0",
     "@ckeditor/ckeditor5-theme-lark": "^24.0.0",
+    "@ckeditor/ckeditor5-upload": "^24.0.0",
     "@ckeditor/ckeditor5-vue2": "^1.0.5",
     "@wiris/mathtype-ckeditor5": "^7.24.4",
     "axios": "^0.21.0",

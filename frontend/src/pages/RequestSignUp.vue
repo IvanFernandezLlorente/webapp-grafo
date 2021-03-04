@@ -66,8 +66,6 @@ export default {
                     this.error = false
                     this.submitedApplication = true
                 }
-                console.log(res);
-
             } catch (error) {
                 this.error = true
                 this.errorMessage = error.response.data.message ? error.response.data.message : 'An error has ocurried'

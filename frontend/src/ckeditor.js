@@ -16,6 +16,8 @@ import Image from '@ckeditor/ckeditor5-image/src/image';
 import ImageToolbar from '@ckeditor/ckeditor5-image/src/imagetoolbar';
 import ImageStyle from '@ckeditor/ckeditor5-image/src/imagestyle';
 import ImageResize from '@ckeditor/ckeditor5-image/src/imageresize';
+import ImageUpload from '@ckeditor/ckeditor5-image/src/imageupload.js';
+import Base64UploadAdapter from '@ckeditor/ckeditor5-upload/src/adapters/base64uploadadapter';
 import Indent from '@ckeditor/ckeditor5-indent/src/indent';
 import IndentBlock from '@ckeditor/ckeditor5-indent/src/indentblock'
 import ListStyle from '@ckeditor/ckeditor5-list/src/liststyle';
@@ -68,6 +70,12 @@ class Bibtex extends Plugin {
 export default class ClassicEditor extends ClassicEditorBase { }
 
 ClassicEditor.builtinPlugins = [
+    Base64UploadAdapter,
+    Image,
+    ImageUpload,
+    ImageResize,
+    ImageToolbar,
+    ImageStyle,
     EssentialsPlugin,
     Paragraph,
     Alignment,
@@ -114,7 +122,17 @@ ClassicEditor.defaultConfig = {
             'MathType',
             'undo',
             'redo',
-            'bibtex'
+            'bibtex',
+            'imageUpload'
+        ]
+    },
+    image: {
+        styles: [
+            'alignLeft', 'alignCenter', 'alignRight'
+        ],
+
+        toolbar: [
+            'imageStyle:alignLeft', 'imageStyle:alignCenter', 'imageStyle:alignRight'
         ]
     },
     alignment: {
