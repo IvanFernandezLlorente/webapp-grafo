@@ -13,7 +13,6 @@
 </template>
 
 <script>
-import axios from 'axios';
 
 export default {
     name: 'Publications',
@@ -28,7 +27,7 @@ export default {
     },
     methods: {
         async fetchData() {
-            const res = await axios.get("http://localhost:4000/api/publications");
+            const res = await this.axios.get("publications");
             this.publications = res.data;
         }
     },

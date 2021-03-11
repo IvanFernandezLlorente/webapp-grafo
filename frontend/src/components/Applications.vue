@@ -42,7 +42,6 @@
 </template>
 
 <script>
-import axios from 'axios';
 
 export default {
     name: 'Applications',
@@ -59,7 +58,7 @@ export default {
     },
     methods: {
         async fetchData() {
-            const res = await axios.get("http://localhost:4000/api/applications",{
+            const res = await this.axios.get("applications",{
                 headers: { token: this.$store.state.token}
             });
             this.applications = res.data;
@@ -75,7 +74,7 @@ export default {
         },
         async accept() {
             try {
-                const res = await axios.put(`http://localhost:4000/api/applications/accept/${this.applicationSelected._id}`,{ accepted: true },{
+                const res = await this.axios.put(`applications/accept/${this.applicationSelected._id}`,{ accepted: true },{
                     headers: { token: this.$store.state.token}
                 });
                 this.deleteApplication();
@@ -87,7 +86,7 @@ export default {
             try {
                 const promises = []
                 this.applications.forEach(application => {
-                    promises.push(axios.put(`http://localhost:4000/api/applications/accept/${application._id}`,{ accepted: true },{
+                    promises.push(this.axios.put(`applications/accept/${application._id}`,{ accepted: true },{
                         headers: { token: this.$store.state.token}
                     }));
                 });
@@ -99,7 +98,7 @@ export default {
         },
         async reject() {
             try {
-                const res = await axios.delete(`http://localhost:4000/api/applications/reject/${this.applicationSelected._id}`,{
+                const res = await this.axios.delete(`applications/reject/${this.applicationSelected._id}`,{
                     headers: { token: this.$store.state.token}
                 });
                 this.deleteApplication();
@@ -111,7 +110,7 @@ export default {
             try {
                 const promises = []
                 this.applications.forEach(application => {
-                    promises.push(axios.delete(`http://localhost:4000/api/applications/reject/${application._id}`,{
+                    promises.push(this.axios.delete(`applications/reject/${application._id}`,{
                         headers: { token: this.$store.state.token}
                     }));
                 });

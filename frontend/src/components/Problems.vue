@@ -13,7 +13,6 @@
 </template>
 
 <script>
-import axios from 'axios';
 
 export default {
     name: 'Problems',
@@ -28,7 +27,7 @@ export default {
     },
     methods: {
         async fetchData() {
-            const res = await axios.get("http://localhost:4000/api/problems");
+            const res = await this.axios.get("problems");
             this.problems = res.data;
         }
     },

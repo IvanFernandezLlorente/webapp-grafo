@@ -39,7 +39,6 @@
 </template>
 
 <script>
-import axios from 'axios';
 export default {
     name: 'RequestSignUp',
     
@@ -61,7 +60,7 @@ export default {
                     name: this.name,
                     description: this.description
                 }
-                const res = await axios.post("http://localhost:4000/api/applications", info);
+                const res = await this.axios.post("applications", info);
                 if (res.status == 200) {
                     this.error = false
                     this.submitedApplication = true

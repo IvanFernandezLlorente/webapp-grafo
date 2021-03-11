@@ -58,7 +58,6 @@
 
 <script>
 import { mapState } from 'vuex';
-import axios from 'axios';
 
 export default {
     name: 'Publication',
@@ -82,17 +81,17 @@ export default {
     },
     methods: {
         async fetchData() {
-            const res = await axios.get(`http://localhost:4000/api/publications/${this.url}`);
+            const res = await this.axios.get(`publications/${this.url}`);
             this.publication = res.data;
 
             const promises = []
-            this.publication.user.forEach( userId => promises.push(axios.get(`http://localhost:4000/api/users/${userId}`)));
+            this.publication.user.forEach( userId => promises.push(this.axios.get(`users/${userId}`)));
             const users = await Promise.all(promises);
             this.users = users.map( user => user.data);
 
             promises.splice(0,promises.length);
             
-            this.publication.relatedProblems.forEach( problemId => promises.push(axios.get(`http://localhost:4000/api/problems/${problemId}`)));
+            this.publication.relatedProblems.forEach( problemId => promises.push(this.axios.get(`problems/${problemId}`)));
             const problems = await Promise.all(promises);
             this.problems = problems.map( problem => problem.data);
         },
@@ -102,13 +101,13 @@ export default {
         async deleteP() {
             const promises = []
             this.publication.attachments.forEach( fileId => {
-                promises.push(axios.delete(`http://localhost:4000/api/files/${fileId}`,{
+                promises.push(this.axios.delete(`files/${fileId}`,{
                     headers: { token: this.$store.state.token}
                 }))
             })
             await Promise.all(promises)
 
-            const res = await axios.delete(`http://localhost:4000/api/publications/${this.url}`,{
+            const res = await this.axios.delete(`publications/${this.url}`,{
                 headers: { token: this.$store.state.token}
             });
             this.$router.push({path: '/'})

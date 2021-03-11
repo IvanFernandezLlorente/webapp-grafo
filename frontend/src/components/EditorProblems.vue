@@ -129,7 +129,6 @@
 
 <script>
 import ClassicEditor from '../ckeditor';
-import axios from 'axios';
 import { v4 as uuid } from 'uuid';
 import VueSimpleSuggest from 'vue-simple-suggest'
 import 'vue-simple-suggest/dist/styles.css'
@@ -204,11 +203,11 @@ export default {
                 }
                 const idsFiles = [...new Set([...files, ...this.prepareFiles()])]
                 if (this.isNew) {
-                    const res = await axios.post(`http://localhost:4000/api/problems`,{...this.problem, "attachments": idsFiles},{
+                    const res = await this.axios.post(`problems`,{...this.problem, "attachments": idsFiles},{
                         headers: { token: this.$store.state.token}
                     });
                 } else {
-                    const res = await axios.put(`http://localhost:4000/api/problems/${this.$route.params.problemId}`,{...this.problemCopy, "attachments": idsFiles},{
+                    const res = await this.axios.put(`problems/${this.$route.params.problemId}`,{...this.problemCopy, "attachments": idsFiles},{
                         headers: { token: this.$store.state.token}
                     });
                 }
@@ -219,7 +218,7 @@ export default {
             }
         },
         async fetchData() {
-            const res = await axios.get(`http://localhost:4000/api/problems/${this.$route.params.problemId}`);
+            const res = await this.axios.get(`problems/${this.$route.params.problemId}`);
             this.problem = res.data;
             this.checked = res.data.computationalExperience ? true : false;
             this.pushToChosen();
@@ -232,7 +231,7 @@ export default {
             this.problemCopy[valor.target.id] = valor.target.value;
         },
         async getUsers() {
-            const res = await axios.get(`http://localhost:4000/api/users`);
+            const res = await this.axios.get(`users`);
             res.data.forEach( user => {
                 this.userMap.set(user.name,user.userId);
                 this.usersToChoose.push(user.name);
@@ -289,7 +288,7 @@ export default {
                 fd.append('fileId',file.fileId)
                 fd.append('section',file.section)
                 fd.append('file',file)
-                promises.push(axios.post(`http://localhost:4000/api/files`,fd,{
+                promises.push(this.axios.post(`files`,fd,{
                     headers: { token: this.$store.state.token, 'Content-Type': 'multipart/form-data'}
                 }))
             })
@@ -300,7 +299,7 @@ export default {
         async deleteFiles() {
             const promises = []
             this.filesToDelete.forEach( file => {
-                promises.push(axios.delete(`http://localhost:4000/api/files/${file.fileId}`,{
+                promises.push(this.axios.delete(`files/${file.fileId}`,{
                     headers: { token: this.$store.state.token}
                 }))
             })
@@ -308,7 +307,7 @@ export default {
         },
         async organiceFiles() {
             const promises = [];
-            this.problem.attachments.forEach( fileId => promises.push(axios.get(`http://localhost:4000/api/files/${fileId}`)))
+            this.problem.attachments.forEach( fileId => promises.push(this.axios.get(`files/${fileId}`)))
             const res = await Promise.all(promises)
             const files = res.map( res => res.data);
             this.fileArrayDescription = files.filter( file => file.section == 'description')
@@ -359,7 +358,7 @@ export default {
                 file.section = 'description'
                 this.filesToUpload.push(file)
                 this.fileArrayDescription.push(file)
-                this.problem.description += `<p>Download <a href="http://localhost:4000/api/files/downloads/${file.fileId}">${file.name}</a></p>`
+                this.problem.description += `<p>Download <a href="https://localhost:3443/api/files/downloads/${file.fileId}">${file.name}</a></p>`
             })
         },
         fileState() {
@@ -369,7 +368,7 @@ export default {
                 file.section = 'state'
                 this.filesToUpload.push(file)
                 this.fileArrayState.push(file)
-                this.problem.state += `<p>Download <a href="http://localhost:4000/api/files/downloads/${file.fileId}">${file.name}</a></p>`
+                this.problem.state += `<p>Download <a href="https://localhost:3443/api/files/downloads/${file.fileId}">${file.name}</a></p>`
             })
         },
         fileInstances() {
@@ -379,7 +378,7 @@ export default {
                 file.section = 'instances'
                 this.filesToUpload.push(file)
                 this.fileArrayInstances.push(file)
-                this.problem.instances += `<p>Download <a href="http://localhost:4000/api/files/downloads/${file.fileId}">${file.name}</a></p>`
+                this.problem.instances += `<p>Download <a href="https://localhost:3443/api/files/downloads/${file.fileId}">${file.name}</a></p>`
             })
         },
         fileReferences() {
@@ -389,7 +388,7 @@ export default {
                 file.section = 'references'
                 this.filesToUpload.push(file)
                 this.fileArrayReferences.push(file)
-                this.problem.reference += `<p>Download <a href="http://localhost:4000/api/files/downloads/${file.fileId}">${file.name}</a></p>`
+                this.problem.reference += `<p>Download <a href="https://localhost:3443/api/files/downloads/${file.fileId}">${file.name}</a></p>`
             })
         },
         fileComputational() {
@@ -399,7 +398,7 @@ export default {
                 file.section = 'computational'
                 this.filesToUpload.push(file)
                 this.fileArrayComputational.push(file)
-                this.problem.computationalExperience += `<p>Download <a href="http://localhost:4000/api/files/downloads/${file.fileId}">${file.name}</a></p>`
+                this.problem.computationalExperience += `<p>Download <a href="https://localhost:3443/api/files/downloads/${file.fileId}">${file.name}</a></p>`
             })
         }
     },

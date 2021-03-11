@@ -30,7 +30,6 @@
 </template>
 
 <script>
-import axios from 'axios';
 export default {
     name: 'Login',
     
@@ -48,14 +47,14 @@ export default {
                     email: this.email,
                     password: this.password
                 }
-                const res = await axios.post("http://localhost:4000/api/users/signin", info);
+                const res = await this.axios.post("users/signin", info);
                 this.manageSignIn(res.data);
             } catch (error) {
                 console.log(error)
             }            
         },
         google(){
-            window.open('http://localhost:4000/api/users/oauth/google/signin',"windowLoginGoogle","location=1,status=1,scrollbars=1,width=800,height=800");
+            window.open('https://localhost:3443/api/users/oauth/google/signin',"windowLoginGoogle","location=1,status=1,scrollbars=1,width=800,height=800");
             let listener = window.addEventListener('message', (message) => {
                 if ((message.data.method == 'signinGoogle') && (message.data.message)) {
                     this.error = message.data.message;
@@ -65,7 +64,7 @@ export default {
             });
         },
         github() {
-            window.open('http://localhost:4000/api/users/oauth/github/signin',"windowLoginGithub","location=1,status=1,scrollbars=1,width=800,height=800");
+            window.open('https://localhost:3443/api/users/oauth/github/signin',"windowLoginGithub","location=1,status=1,scrollbars=1,width=800,height=800");
             let listener = window.addEventListener('message', (message) => {
                 if ((message.data.method == 'signinGitHub') && (message.data.message)) {
                     this.error = message.data.message;

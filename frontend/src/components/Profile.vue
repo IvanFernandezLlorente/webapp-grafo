@@ -61,7 +61,6 @@
 </template>
 
 <script>
-import axios from 'axios';
 import { mapState } from 'vuex';
 
 export default {
@@ -87,7 +86,7 @@ export default {
     methods: {
         async fetchData() {
             try {
-                const res = await axios.get(`http://localhost:4000/api/users/${this.$route.params.userId}`);
+                const res = await this.axios.get(`users/${this.$route.params.userId}`);
                 this.user = res.data;
             } catch (error) {
                 console.log(error)                
@@ -98,7 +97,7 @@ export default {
             return (this.isAdmin) || (this.user._id === this.id)
         },
         async deleteU() {
-            const res = await axios.delete(`http://localhost:4000/api/users/${this.$route.params.userId}`,{
+            const res = await this.axios.delete(`users/${this.$route.params.userId}`,{
                 headers: { token: this.$store.state.token}
             });
             if (this.user._id === this.id) {
@@ -110,14 +109,14 @@ export default {
         },
         async fetchProblems() {
             const promises = [];
-            this.user.problems.forEach( problemId => promises.push(axios.get(`http://localhost:4000/api/problems/${problemId}`)));
+            this.user.problems.forEach( problemId => promises.push(this.axios.get(`problems/${problemId}`)));
             const problems = await Promise.all(promises);
             this.problems = problems.map( problem => problem.data);
             this.problemsFetched = true;
         },
         async fetchPublications() {
             const promises = [];
-            this.user.publications.forEach( publicationId => promises.push(axios.get(`http://localhost:4000/api/publications/${publicationId}`)));
+            this.user.publications.forEach( publicationId => promises.push(this.axios.get(`publications/${publicationId}`)));
             const publications = await Promise.all(promises);
             this.publications = publications.map( publication => publication.data);
             this.publicationsFetched = true;

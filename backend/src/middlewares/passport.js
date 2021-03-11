@@ -9,7 +9,7 @@ const GitHubStrategy = require('passport-github').Strategy;
 passport.use('signinGoogle', new GoogleStrategy({
     clientID: config.OAUTH.GOOGLE.CLIENT_ID,
     clientSecret: config.OAUTH.GOOGLE.CLIENT_SECRET,
-    callbackURL: 'http://localhost:4000/api/users/oauth/google/callback/signin'
+    callbackURL: 'https://localhost:3443/api/users/oauth/google/callback/signin'
 }, async (accessToken, refreshToken, profile, done) => {
     try {
         const existingUser = await User.findOne({ 'google.methodId': profile.id, 'google.email': profile.emails[0].value });
@@ -26,7 +26,7 @@ passport.use('signinGoogle', new GoogleStrategy({
 passport.use('signinGitHub', new GitHubStrategy({
     clientID: config.OAUTH.GITHUB.CLIENT_ID,
     clientSecret: config.OAUTH.GITHUB.CLIENT_SECRET,
-    callbackURL: 'http://localhost:4000/api/users/oauth/github/callback/signin'
+    callbackURL: 'https://localhost:3443/api/users/oauth/github/callback/signin'
 }, async (accessToken, refreshToken, profile, done) => {
     try {
         const existingUser = await User.findOne({ 'github.methodId': profile.id, 'github.name': profile.username });
@@ -44,7 +44,7 @@ passport.use('signinGitHub', new GitHubStrategy({
 passport.use('connectGoogle', new GoogleStrategy({
     clientID: config.OAUTH.GOOGLE.CLIENT_ID,
     clientSecret: config.OAUTH.GOOGLE.CLIENT_SECRET,
-    callbackURL: 'http://localhost:4000/api/users/oauth/google/callback/connect',
+    callbackURL: 'https://localhost:3443/api/users/oauth/google/callback/connect',
     passReqToCallback: true,
 }, async (req, accessToken, refreshToken, profile, done) => {
     try {
@@ -83,7 +83,7 @@ passport.use('connectGoogle', new GoogleStrategy({
 passport.use('connectGithub',new GitHubStrategy({
     clientID: config.OAUTH.GITHUB.CLIENT_ID,
     clientSecret: config.OAUTH.GITHUB.CLIENT_SECRET,
-    callbackURL: 'http://localhost:4000/api/users/oauth/github/callback/connect',
+    callbackURL: 'https://localhost:3443/api/users/oauth/github/callback/connect',
     passReqToCallback: true,
 }, async (req,accessToken, refreshToken, profile, done) => {
     try {

@@ -59,7 +59,6 @@
 
 <script>
 import { mapState } from 'vuex';
-import axios from 'axios';
 
 export default {
     name: 'Problem',
@@ -83,17 +82,17 @@ export default {
     },
     methods: {
         async fetchData() {
-            const res = await axios.get(`http://localhost:4000/api/problems/${this.url}`);
+            const res = await this.axios.get(`problems/${this.url}`);
             this.problem = res.data;
 
             const promises = []
-            this.problem.user.forEach( userId => promises.push(axios.get(`http://localhost:4000/api/users/${userId}`)));
+            this.problem.user.forEach( userId => promises.push(this.axios.get(`users/${userId}`)));
             const users = await Promise.all(promises);
             this.users = users.map( user => user.data);
 
             promises.splice(0,promises.length);
 
-            this.problem.publications.forEach( publicationId => promises.push(axios.get(`http://localhost:4000/api/publications/${publicationId}`)));
+            this.problem.publications.forEach( publicationId => promises.push(this.axios.get(`publications/${publicationId}`)));
             const publications = await Promise.all(promises);
             this.publications = publications.map( publication => publication.data);
         },
@@ -103,13 +102,13 @@ export default {
         async deleteP() {
             const promises = []
             this.problem.attachments.forEach( fileId => {
-                promises.push(axios.delete(`http://localhost:4000/api/files/${fileId}`,{
+                promises.push(this.axios.delete(`files/${fileId}`,{
                     headers: { token: this.$store.state.token}
                 }))
             })
             await Promise.all(promises)
 
-            const res = await axios.delete(`http://localhost:4000/api/problems/${this.url}`,{
+            const res = await this.axios.delete(`problems/${this.url}`,{
                 headers: { token: this.$store.state.token}
             });
             this.$router.push({path: '/'})

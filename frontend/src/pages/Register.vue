@@ -31,7 +31,6 @@
 </template>
 
 <script>
-import axios from 'axios';
 export default {
     name: 'Register',
     
@@ -48,7 +47,7 @@ export default {
     methods: {
         async fetchData() {
             try {
-                const res = await axios.get(`http://localhost:4000/api/applications/${this.$route.params.id}`);
+                const res = await this.axios.get(`applications/${this.$route.params.id}`);
                 this.application = res.data;
             } catch (error) {
                 console.log(error)                
@@ -62,7 +61,7 @@ export default {
                     name: this.application.name,
                     token: this.application.token
                 }
-                const res = await axios.post("http://localhost:4000/api/users/signup", info);
+                const res = await this.axios.post("users/signup", info);
                 this.manageSignUp(res.data);
             } catch (error) {
                 console.log(error)

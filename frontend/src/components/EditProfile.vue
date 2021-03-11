@@ -131,7 +131,6 @@
 </template>
 
 <script>
-import axios from 'axios';
 import { mapState } from 'vuex';
 import myUpload from 'vue-image-crop-upload';
 
@@ -186,7 +185,7 @@ export default {
     methods: {
         async fetchData() {
             try {
-                const res = await axios.get(`http://localhost:4000/api/users/${this.$route.params.userId ? this.$route.params.userId : this.$store.state.userId}`);
+                const res = await this.axios.get(`users/${this.$route.params.userId ? this.$route.params.userId : this.$store.state.userId}`);
                 this.user = res.data;
                 this.selected = this.user.roles
                 this.imgDataUrl = this.user.imagenProfile ? this.user.imagenProfile : '' 
@@ -200,11 +199,11 @@ export default {
                     this.userCopy.password = this.newPassword;
                 }
                 this.userCopy.roles = this.selected;
-                const res = await axios.put(`http://localhost:4000/api/users/${this.$route.params.userId ? this.$route.params.userId : this.$store.state.userId}`,this.userCopy,{
+                const res = await this.axios.put(`users/${this.$route.params.userId ? this.$route.params.userId : this.$store.state.userId}`,this.userCopy,{
                     headers: { token: this.$store.state.token}
                 });
                 if (!this.$route.params.userId) {
-                    const res = await axios.get(`http://localhost:4000/api/users/token`, {
+                    const res = await this.axios.get(`users/token`, {
                         headers: { token: this.$store.state.token}
                     });
                     const { token, id, userId, isAdmin } = res.data;
@@ -225,7 +224,7 @@ export default {
             this.userCopy[valor.target.id] = valor.target.value
         },
         google(){
-            window.open(`http://localhost:4000/api/users/oauth/google/connect/${this.$store.state.userId}/${this.$store.state.token}`,"windowProfile","location=1,status=1,scrollbars=1,width=800,height=800");          
+            window.open(`https://localhost:3443/api/users/oauth/google/connect/${this.$store.state.userId}/${this.$store.state.token}`,"windowProfile","location=1,status=1,scrollbars=1,width=800,height=800");          
             let listener = window.addEventListener('message', (message) => {
                 if ((message.data.method == 'connectGoogle') && (message.data.message)) {
                     this.errorGoogle = true; 
@@ -239,14 +238,14 @@ export default {
         async disconnectGoogle() {
             this.userCopy.roles = this.selected;
             this.userCopy.google = { name: '', email: '', methodId: '' };
-            const res = await axios.put(`http://localhost:4000/api/users/${this.$route.params.userId ? this.$route.params.userId : this.$store.state.userId}`,this.userCopy,{
+            const res = await this.axios.put(`users/${this.$route.params.userId ? this.$route.params.userId : this.$store.state.userId}`,this.userCopy,{
                 headers: { token: this.$store.state.token}
             });
             delete this.userCopy.google
             this.user = res.data;
         },
         github(){
-            window.open(`http://localhost:4000/api/users/oauth/github/connect/${this.$store.state.userId}/${this.$store.state.token}`,"windowProfile","location=1,status=1,scrollbars=1,width=800,height=800");          
+            window.open(`https://localhost:3443/users/oauth/github/connect/${this.$store.state.userId}/${this.$store.state.token}`,"windowProfile","location=1,status=1,scrollbars=1,width=800,height=800");          
             let listener = window.addEventListener('message', (message) => {
                 if ((message.data.method == 'connectGithub') && (message.data.message)) {
                     this.errorGithub = true; 
@@ -260,7 +259,7 @@ export default {
         async disconnectGithub() {
             this.userCopy.roles = this.selected;
             this.userCopy.github = { name: '', methodId: '' };
-            const res = await axios.put(`http://localhost:4000/api/users/${this.$route.params.userId ? this.$route.params.userId : this.$store.state.userId}`,this.userCopy,{
+            const res = await this.axios.put(`users/${this.$route.params.userId ? this.$route.params.userId : this.$store.state.userId}`,this.userCopy,{
                 headers: { token: this.$store.state.token}
             });
             delete this.userCopy.github;
@@ -272,7 +271,7 @@ export default {
         async cropSuccess(imgDataUrl, field){
             this.imgDataUrl = imgDataUrl;
             try {
-                const res = await axios.post(`http://localhost:4000/api/users/images/${this.$route.params.userId ? this.$route.params.userId : this.$store.state.userId}`,{ imagenProfile: this.imgDataUrl },{
+                const res = await this.axios.post(`users/images/${this.$route.params.userId ? this.$route.params.userId : this.$store.state.userId}`,{ imagenProfile: this.imgDataUrl },{
                     headers: { token: this.$store.state.token}
                 });
             } catch (error) {
