@@ -22,33 +22,30 @@ export const getPublicationById = async (req, res) => {
 
 export const createPublication = async (req, res) => {
     try {
-        if (!req.isAdmin) {
-            const publicationId = (req.body.title.toLowerCase().split(" ")).join('-');
+        const publicationId = (req.body.title.toLowerCase().split(" ")).join('-');
 
-            const publication = await Publication.findOne({ publicationId });
-            if (publication) {
-                return res.status(400).json({ message: "The publication already exists" });
-            }
-            
-            const newPublication = new Publication(req.body)
-            newPublication.publicationId = publicationId;
-            const publicationSaved = await newPublication.save();
-
-            const promises = [];
-            const promises2 = [];
-            
-            publicationSaved.user.forEach( userId => promises.push(User.findOne({ userId }, { password: 0 })))
-            const users = await Promise.all(promises);
-            await Promise.all(saveReferences(users, publicationSaved));
-
-            
-            publicationSaved.relatedProblems.forEach( problemId => promises2.push(Problem.findOne({ problemId })));
-            const problems = await Promise.all(promises2);
-            await Promise.all(saveReferences(problems, publicationSaved));
-
-            return res.status(200).json(publicationSaved);
+        const publication = await Publication.findOne({ publicationId });
+        if (publication) {
+            return res.status(400).json({ message: "The publication already exists" });
         }
-        res.status(403).json({ message: "You can not create a publication" });
+        
+        const newPublication = new Publication(req.body)
+        newPublication.publicationId = publicationId;
+        const publicationSaved = await newPublication.save();
+
+        const promises = [];
+        const promises2 = [];
+        
+        publicationSaved.user.forEach( userId => promises.push(User.findOne({ userId }, { password: 0 })))
+        const users = await Promise.all(promises);
+        await Promise.all(saveReferences(users, publicationSaved));
+
+        
+        publicationSaved.relatedProblems.forEach( problemId => promises2.push(Problem.findOne({ problemId })));
+        const problems = await Promise.all(promises2);
+        await Promise.all(saveReferences(problems, publicationSaved));
+
+        return res.status(200).json(publicationSaved);
     } catch (error) {
         res.status(500).json({ message: "Error" });
     }

@@ -100,16 +100,6 @@ describe('Problem controller', () => {
             authJwt.verifyToken.mockImplementation((req, res, next) => next());
         });
 
-        it('Admin can not create a problem', async () => {
-            authJwt.verifyToken.mockImplementation((req, res, next) => { 
-                req.isAdmin = true; 
-                next() 
-            });
-            const res = await request(app).post('/api/problems');
-            expect(res.statusCode).toEqual(403);
-            expect(res.body).toEqual(expect.objectContaining({ message: "You can not create a problem" }));
-        });
-        
         it('Create problem error', async () => {
             Problem.findOne = jest.fn(() => {throw Error});
             const res = await request(app).post('/api/problems');

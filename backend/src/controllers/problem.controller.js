@@ -21,29 +21,26 @@ export const getProblemById = async (req, res) => {
 
 export const createProblem = async (req, res) => {
     try {
-        if (!req.isAdmin) {
-            const problemId = (req.body.name.toLowerCase().split(" ")).join('-');
+        const problemId = (req.body.name.toLowerCase().split(" ")).join('-');
 
-            const problem = await Problem.findOne({ problemId });
-            if (problem) {
-                return res.status(400).json({ message: "The problem already exists" });
-            }
-            
-            const newProblem = new Problem(req.body)
-            newProblem.problemId = problemId;
-            const problemSaved = await newProblem.save();
-
-            const promises = [];
-
-            problemSaved.user.forEach( userId => promises.push(User.findOne({ userId }, { password: 0 })))
-            const users = await Promise.all(promises);
-
-            
-            await Promise.all(saveReferences(users, problemSaved));
-
-            return res.status(200).json(problemSaved);
+        const problem = await Problem.findOne({ problemId });
+        if (problem) {
+            return res.status(400).json({ message: "The problem already exists" });
         }
-        return res.status(403).json({ message: "You can not create a problem" });
+        
+        const newProblem = new Problem(req.body)
+        newProblem.problemId = problemId;
+        const problemSaved = await newProblem.save();
+
+        const promises = [];
+
+        problemSaved.user.forEach( userId => promises.push(User.findOne({ userId }, { password: 0 })))
+        const users = await Promise.all(promises);
+
+        
+        await Promise.all(saveReferences(users, problemSaved));
+
+        return res.status(200).json(problemSaved);
     } catch (error) {
         return res.status(500).json({ message: "Error" });
     }

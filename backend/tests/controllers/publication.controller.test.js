@@ -128,16 +128,6 @@ describe('Publications controller', () => {
             authJwt.verifyToken.mockImplementation((req, res, next) => next());
         });
 
-        it('Admin can not create a publication', async () => {
-            authJwt.verifyToken.mockImplementation((req, res, next) => { 
-                req.isAdmin = true; 
-                next() 
-            });
-            const res = await request(app).post('/api/publications');
-            expect(res.statusCode).toEqual(403);
-            expect(res.body).toEqual(expect.objectContaining({ message: "You can not create a publication" }));
-        });
-        
         it('Create publication error', async () => {
             Publication.findOne = jest.fn(() => {throw Error});
             const res = await request(app).post('/api/publications');
