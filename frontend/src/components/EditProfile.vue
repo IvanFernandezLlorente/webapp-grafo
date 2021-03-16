@@ -3,7 +3,7 @@
       <b-col class="card" cols="8">
         <div class="card-header">
             <h4 class="card-title">Edit Profile</h4>
-            <b-form-checkbox-group v-if="isAdmin || isCollaborator" :disabled='!isAdmin' v-model="selected" :options="options"></b-form-checkbox-group>
+            <b-form-checkbox-group v-if="isAdmin" :disabled='!isAdmin' v-model="selected" :options="options"></b-form-checkbox-group>
         </div>
         <div class="card-body">
             <form @submit.prevent="updateProfile"> 
@@ -165,8 +165,7 @@ export default {
         confirmPassword: '',
         selected: [],
         options: [
-            { text: 'Admin', value: 'admin' },
-            { text: 'Collaborator', value: 'collaborator' }
+            { text: 'Admin', value: 'admin' }
         ],
         errorGoogle: false,
         errorGoogleText: '',
@@ -280,7 +279,7 @@ export default {
         },
         
     },
-    computed: mapState(['isAdmin', 'isCollaborator']),
+    computed: mapState(['isAdmin']),
 }
 </script>
 

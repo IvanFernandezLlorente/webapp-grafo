@@ -140,7 +140,7 @@ const routes = [
         name: 'Applications',
         component: Applications,
         beforeEnter: (to, from, next) => {
-            if (store.state.isCollaborator || store.state.isAdmin) {
+            if (store.state.isAdmin) {
                 next();
             } else {
                 next({path: '/'})

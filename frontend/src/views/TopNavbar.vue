@@ -41,7 +41,7 @@
             </b-link>
           </li>
 
-          <li v-if="isCollaborator" class="nav-item">
+          <li v-if="isAdmin" class="nav-item">
             <b-link class="nav-link" :to="{path: '/applications'}">
               Applications
             </b-link>
@@ -82,7 +82,7 @@ export default {
             this.$router.push({path: '/login'})
         }
     },
-    computed: mapState(['token', 'isCollaborator'])
+    computed: mapState(['token', 'isAdmin'])
 }
 
 </script>

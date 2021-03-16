@@ -101,7 +101,7 @@ describe('Verify SigUp Middleware', () => {
             const res = await request(app).post('/api/users/signup').send({
                 name: "new name",
                 email: "new email",
-                roles: ['user', 'admin', 'collaborator']
+                roles: ['user', 'admin']
             });
 
             expect(res.statusCode).toEqual(400);

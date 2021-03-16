@@ -25,20 +25,3 @@ export const verifyToken = async (req,res,next) => {
         return res.status(500).json({ message: "Error" });
     }
 }
-
-export const isCollaborator = async (req,res,next) => {
-    try {
-        const user = await User.findOne({ userId: req.userId });
-
-        const isCollaborator = user.roles.some(rol => rol === "collaborator");
-
-        if (isCollaborator) {
-            next();
-            return;
-        }
-
-        return res.status(403).json({ message: "Require Collaborator Role!" });
-    } catch (error) {
-        return res.status(500).send({ message: "Error" });
-    }
-}

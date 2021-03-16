@@ -60,11 +60,13 @@ describe('Application controller', () => {
                 email: "el email 3",
                 password: "la pass 3",
                 userId: "no-copiar-id",
-                roles: ['user', 'collaborator']
+                roles: ['user']
             }
         ],
-        authJwt.verifyToken.mockImplementation((req, res, next) => next());
-        authJwt.isCollaborator.mockImplementation((req, res, next) => next());
+        authJwt.verifyToken.mockImplementation((req, res, next) => { 
+            req.isAdmin = true;
+            next() 
+        });
     });
 
     describe('Get Applications', () => {
@@ -102,7 +104,17 @@ describe('Application controller', () => {
             const res = await request(app).get('/api/applications/no-exist');
             expect(res.statusCode).toEqual(500);
             expect(res.body).toEqual(expect.objectContaining({ message: "Error" }));
-        });        
+        });
+        
+        it('User is not admin', async () => {
+            authJwt.verifyToken.mockImplementation((req, res, next) => { 
+                req.isAdmin = false; 
+                next() 
+            });
+            const res = await request(app).get('/api/applications');
+            expect(res.statusCode).toEqual(401);
+            expect(res.body).toEqual(expect.objectContaining({ message: "Unauthorized" }));
+        });  
     });
 
     describe('Create Application', () => {
@@ -183,6 +195,18 @@ describe('Application controller', () => {
             expect(res.body).toEqual(expect.objectContaining({ message: "Error" }));
         });
 
+        it('User is not admin', async () => {
+            authJwt.verifyToken.mockImplementation((req, res, next) => { 
+                req.isAdmin = false; 
+                next() 
+            });
+            const res = await request(app).put('/api/applications/accept/2').send({
+                accepted: true
+            });
+            expect(res.statusCode).toEqual(401);
+            expect(res.body).toEqual(expect.objectContaining({ message: "Unauthorized" }));
+        });
+
         // it('Application is accepted', async () => {
         //     Application.findById = jest.fn(() => mockApplications.filter(application => application._id == 2)[0]);
         //     emailSend.emailAccepted = jest.fn()
@@ -231,6 +255,16 @@ describe('Application controller', () => {
             expect(res.statusCode).toEqual(200);
             expect(mockApplications).toHaveLength(3);
             expect(mockApplications).toEqual(expect.not.arrayContaining([{ _id: 2, name: 'the name 2', email: 'new email 2', description: 'desc 2' }]));
+        });
+
+        it('User is not admin', async () => {
+            authJwt.verifyToken.mockImplementation((req, res, next) => { 
+                req.isAdmin = false; 
+                next() 
+            });
+            const res = await request(app).delete('/api/applications/reject/2');
+            expect(res.statusCode).toEqual(401);
+            expect(res.body).toEqual(expect.objectContaining({ message: "Unauthorized" }));
         });
     });;
 });

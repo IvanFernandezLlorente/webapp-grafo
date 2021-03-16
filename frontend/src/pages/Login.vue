@@ -79,8 +79,7 @@ export default {
                 token, 
                 id, 
                 userId, 
-                isAdmin: roles.includes('admin'),
-                isCollaborator: roles.includes('collaborator')
+                isAdmin: roles.includes('admin')
             }
             this.$store.dispatch('login',sended);
             this.$router.push({path: '/'}).catch(()=>{});

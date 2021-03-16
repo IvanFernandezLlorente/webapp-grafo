@@ -6,8 +6,11 @@ import config from '../config';
 
 export const getApplications = async (req, res) => {
     try {
-        const applications = await Application.find();
-        return res.status(200).json(applications)
+        if (req.isAdmin) {
+            const applications = await Application.find();
+            return res.status(200).json(applications);
+        }
+        return res.status(401).json({ message: "Unauthorized" });
     } catch (error) {
         return res.status(500).json({ message: "Error" });
     }
@@ -61,18 +64,21 @@ export const createApplication = async (req, res) => {
 
 export const acceptApplication = async (req, res) => {
     try {
-        const applicationFound = await Application.findById(req.params.id)
-        if (!applicationFound) {
-            return res.status(404).json({ message: "Application not found" });
-        }
+        if (req.isAdmin) {
+            const applicationFound = await Application.findById(req.params.id)
+            if (!applicationFound) {
+                return res.status(404).json({ message: "Application not found" });
+            }
 
-        if (req.body.accepted) {
-            applicationFound.accepted = true;
-            const applicationSaved = await applicationFound.save();
-            await emailSend.emailAccepted(applicationSaved);
-            return res.status(200).json(applicationSaved);
-        } 
-        return res.status(400).json({ message: "Application not accepted" });
+            if (req.body.accepted) {
+                applicationFound.accepted = true;
+                const applicationSaved = await applicationFound.save();
+                await emailSend.emailAccepted(applicationSaved);
+                return res.status(200).json(applicationSaved);
+            } 
+            return res.status(400).json({ message: "Application not accepted" });
+        }
+        return res.status(401).json({ message: "Unauthorized" });
     } catch (error) {
         return res.status(500).json({message: "Error"});
     }
@@ -80,15 +86,18 @@ export const acceptApplication = async (req, res) => {
 
 export const rejectApplication = async (req, res) => {
     try {
-        const applicationFound = await Application.findById(req.params.id)
-        if (!applicationFound) {
-            return res.status(404).json({ message: "Application not found" });
+        if (req.isAdmin) {
+            const applicationFound = await Application.findById(req.params.id)
+            if (!applicationFound) {
+                return res.status(404).json({ message: "Application not found" });
+            }
+        
+            await emailSend.emailRejected(applicationFound);
+            await Application.findOneAndDelete({ _id: req.params.id });
+                    
+            return res.status(200).json();
         }
-       
-        await emailSend.emailRejected(applicationFound);
-        await Application.findOneAndDelete({ _id: req.params.id });
-                 
-        return res.status(200).json();
+        return res.status(401).json({ message: "Unauthorized" });
     } catch (error) {
         return res.status(500).json({message: "Error"});
     }
