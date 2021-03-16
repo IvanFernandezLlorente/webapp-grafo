@@ -12,11 +12,26 @@ const problemSchema = new Schema(
         unique: true
     },
     alias: String,
-    description: String,
-    state: String,
-    instances: String,
-    computationalExperience: String,
-    reference: String,
+    description: {
+        content: String,
+        visible: Boolean,
+    },
+    state: {
+        content: String,
+        visible: Boolean,
+    },
+    instances: {
+        content: String,
+        visible: Boolean,
+    },
+    computationalExperience: {
+        content: String,
+        visible: Boolean,
+    },
+    reference: {
+        content: String,
+        visible: Boolean,
+    },
     user: [{
         type: String
     }],

@@ -31,8 +31,11 @@
             </div>
 
             <div class="body-edit">
-                <h3>Problem Description</h3>
-                <ckeditor :editor="editor" v-model="problem.description" :config="editorConfig"></ckeditor>
+                <div style="display: flex;">
+                    <h3>Problem Description</h3>
+                    <b-form-checkbox v-model="problem.description.visible" name="visible-button" switch style="align-self: center;margin-left: 30px;">Visible</b-form-checkbox>
+                </div>
+                <ckeditor :editor="editor" v-model="problem.description.content" :config="editorConfig"></ckeditor>
             </div>
 
             <div style="display: flex;align-items: baseline;">
@@ -48,8 +51,11 @@
             </div>
 
             <div class="body-edit">
-                <h3>State of the Art Methods</h3>
-                <ckeditor :editor="editor" v-model="problem.state" :config="editorConfig"></ckeditor>
+                <div style="display: flex;">
+                    <h3>State of the Art Methods</h3>
+                    <b-form-checkbox v-model="problem.state.visible" name="visible-button" switch style="align-self: center;margin-left: 30px;">Visible</b-form-checkbox>
+                </div>
+                <ckeditor :editor="editor" v-model="problem.state.content" :config="editorConfig"></ckeditor>
             </div>
 
             <div style="display: flex;align-items: baseline;">
@@ -65,8 +71,11 @@
             </div>
 
             <div class="body-edit">
-                <h3>Instances</h3>
-                <ckeditor :editor="editor" v-model="problem.instances" :config="editorConfig"></ckeditor>
+                <div style="display: flex;">
+                    <h3>Instances</h3>
+                    <b-form-checkbox v-model="problem.instances.visible" name="visible-button" switch style="align-self: center;margin-left: 30px;">Visible</b-form-checkbox>
+                </div>
+                <ckeditor :editor="editor" v-model="problem.instances.content" :config="editorConfig"></ckeditor>
             </div>
 
             <div style="display: flex;align-items: baseline;">
@@ -84,9 +93,10 @@
             <div class="body-edit">
                 <div style="display: flex;">
                     <h3 v-bind:class="{ cross: !checked}">Computational Experience</h3>
-                    <b-form-checkbox v-model="checked" name="check-button" switch style="align-self: center;margin-left: 16px;"></b-form-checkbox>
+                    <b-form-checkbox v-model="checked" name="check-button" switch style="align-self: center;margin-left: 16px;">Optional</b-form-checkbox>
+                    <b-form-checkbox v-if="checked" v-model="problem.computationalExperience.visible" name="visible-button" switch style="align-self: center;margin-left: 70px;">Visible</b-form-checkbox>
                 </div>
-                <ckeditor v-if="checked" :editor="editor" v-model="problem.computationalExperience" :config="editorConfig"></ckeditor>
+                <ckeditor v-if="checked" :editor="editor" v-model="problem.computationalExperience.content" :config="editorConfig"></ckeditor>
             </div>
 
             <div v-if="checked" style="display: flex;align-items: baseline;">
@@ -102,8 +112,11 @@
             </div>
 
             <div class="body-edit">
-                <h3>References</h3>
-                <ckeditor :editor="editor" v-model="problem.reference" :config="editorConfig"></ckeditor>
+                <div style="display: flex;">
+                    <h3>References</h3>
+                    <b-form-checkbox v-model="problem.reference.visible" name="visible-button" switch style="align-self: center;margin-left: 30px;">Visible</b-form-checkbox>
+                </div>
+                <ckeditor :editor="editor" v-model="problem.reference.content" :config="editorConfig"></ckeditor>
             </div>
 
             <div style="display: flex;align-items: baseline;">
@@ -143,11 +156,26 @@ export default {
             problem: {
                 name: '',
                 alias: '',
-                description: '<p>Here can be your description...</p>',
-                state: '<p>Here can be your State of the Art Methods...</p>',
-                instances: '<p>Here can be your instances...</p>',
-                computationalExperience: '<p>Here can be your computational experience...</p>',
-                reference: '<p>Here can be your references...</p>',
+                description: {
+                    content: '<p>Here can be your description...</p>',
+                    visible: true,
+                },
+                state: {
+                    content: '<p>Here can be your State of the Art Methods...</p>',
+                    visible: true,
+                },
+                instances: {
+                    content: '<p>Here can be your instances...</p>',
+                    visible: true,
+                },
+                computationalExperience: {
+                    content: '<p>Here can be your computational experience...</p>',
+                    visible: true,
+                },
+                reference: {
+                    content: '<p>Here can be your references...</p>',
+                    visible: true,
+                },
                 user: [],
                 usersNotRegistered: [],
                 attachments: []
@@ -193,6 +221,7 @@ export default {
         async saveProblem () {
             try {
                 this.prepareUsers();
+                this.prepareContent();
                 this.computationalChecked();
                 let files;
                 if (this.filesToUpload) {
@@ -220,7 +249,7 @@ export default {
         async fetchData() {
             const res = await this.axios.get(`problems/${this.$route.params.problemId}`);
             this.problem = res.data;
-            this.checked = res.data.computationalExperience ? true : false;
+            this.checked = res.data.computationalExperience.content ? true : false;
             this.pushToChosen();
             await this.organiceFiles();
             this.$nextTick(() => {
@@ -262,8 +291,10 @@ export default {
         },
         computationalChecked () {
             if (!this.checked) {
-                this.problem.computationalExperience = '';
-                this.problemCopy.computationalExperience = '';
+                this.problem.computationalExperience.content = '';
+                this.problem.computationalExperience.visible = false;
+                this.problemCopy.computationalExperience.content = '';
+                this.problemCopy.computationalExperience.visible = false;
                 const length = this.fileArrayComputational.length;
                 for (let i = 0; i < length; i++) {
                     this.deleteFile(0, this.fileArrayComputational, this.fileArrayComputational[0])
@@ -323,34 +354,16 @@ export default {
                 ids = files.map( file => file.fileId)
             }
             return ids            
+        },
+        prepareContent() {
+            this.problemCopy.description = { ...this.problem.description };
+            this.problemCopy.state = { ...this.problem.state };
+            this.problemCopy.instances = { ...this.problem.instances };
+            this.problemCopy.computationalExperience = { ...this.problem.computationalExperience };
+            this.problemCopy.reference = { ...this.problem.reference };
         }
     },
     watch: {
-        'problem.description': function (newValue){
-            if (this.initialized) {
-                this.problemCopy.description = newValue
-            }
-        },
-        'problem.state': function (newValue){
-            if (this.initialized) {
-                this.problemCopy.state = newValue
-            }            
-        },
-        'problem.instances': function (newValue){
-            if (this.initialized) {
-                this.problemCopy.instances = newValue
-            }            
-        },
-        'problem.computationalExperience': function (newValue){
-            if (this.initialized) {
-                this.problemCopy.computationalExperience = newValue
-            }            
-        },
-        'problem.reference': function (newValue){
-            if (this.initialized) {
-                this.problemCopy.reference = newValue
-            }            
-        },
         fileDescription() {
             this.fileDescription.forEach(file => {
                 const fileId = uuid()
@@ -358,7 +371,7 @@ export default {
                 file.section = 'description'
                 this.filesToUpload.push(file)
                 this.fileArrayDescription.push(file)
-                this.problem.description += `<p>Download <a href="https://localhost:3443/api/files/downloads/${file.fileId}">${file.name}</a></p>`
+                this.problem.description.content += `<p>Download <a href="https://localhost:3443/api/files/downloads/${file.fileId}">${file.name}</a></p>`
             })
         },
         fileState() {
@@ -368,7 +381,7 @@ export default {
                 file.section = 'state'
                 this.filesToUpload.push(file)
                 this.fileArrayState.push(file)
-                this.problem.state += `<p>Download <a href="https://localhost:3443/api/files/downloads/${file.fileId}">${file.name}</a></p>`
+                this.problem.state.content += `<p>Download <a href="https://localhost:3443/api/files/downloads/${file.fileId}">${file.name}</a></p>`
             })
         },
         fileInstances() {
@@ -378,7 +391,7 @@ export default {
                 file.section = 'instances'
                 this.filesToUpload.push(file)
                 this.fileArrayInstances.push(file)
-                this.problem.instances += `<p>Download <a href="https://localhost:3443/api/files/downloads/${file.fileId}">${file.name}</a></p>`
+                this.problem.instances.content += `<p>Download <a href="https://localhost:3443/api/files/downloads/${file.fileId}">${file.name}</a></p>`
             })
         },
         fileReferences() {
@@ -388,7 +401,7 @@ export default {
                 file.section = 'references'
                 this.filesToUpload.push(file)
                 this.fileArrayReferences.push(file)
-                this.problem.reference += `<p>Download <a href="https://localhost:3443/api/files/downloads/${file.fileId}">${file.name}</a></p>`
+                this.problem.reference.content += `<p>Download <a href="https://localhost:3443/api/files/downloads/${file.fileId}">${file.name}</a></p>`
             })
         },
         fileComputational() {
@@ -398,7 +411,7 @@ export default {
                 file.section = 'computational'
                 this.filesToUpload.push(file)
                 this.fileArrayComputational.push(file)
-                this.problem.computationalExperience += `<p>Download <a href="https://localhost:3443/api/files/downloads/${file.fileId}">${file.name}</a></p>`
+                this.problem.computationalExperience.content += `<p>Download <a href="https://localhost:3443/api/files/downloads/${file.fileId}">${file.name}</a></p>`
             })
         }
     },

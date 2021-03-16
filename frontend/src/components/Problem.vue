@@ -42,18 +42,31 @@
         </b-link>
       </div>
       
-      <h4>Problem Description</h4>
-      <div v-html="problem.description"></div>
-      <h4>State of the Art Methods</h4>
-      <div v-html="problem.state"></div>
-      <h4>Instances</h4>
-      <div v-html="problem.instances"></div>
-      <div v-if="problem.computationalExperience">
-        <h4>Computational Experience</h4>
-        <div v-html="problem.computationalExperience"></div>
+      <div v-if="problem.description.visible">
+        <h4>Problem Description</h4>
+        <div v-html="problem.description.content"></div>
       </div>
-      <h4>References</h4>
-      <div v-html="problem.reference"></div>
+      
+      <div v-if="problem.state.visible">
+        <h4>State of the Art Methods</h4>
+        <div v-html="problem.state.content"></div>
+      </div>
+
+      <div v-if="problem.instances.visible">
+        <h4>Instances</h4>
+        <div v-html="problem.instances.content"></div>
+      </div>
+      
+
+      <div v-if="problem.computationalExperience.visible">
+        <h4>Computational Experience</h4>
+        <div v-html="problem.computationalExperience.content"></div>
+      </div>
+
+      <div v-if="problem.reference.visible">
+        <h4>References</h4>
+        <div v-html="problem.reference.content"></div>
+      </div>
   </div>
 </template>
 
@@ -69,7 +82,12 @@ export default {
                 user:[],
                 publications: [],
                 usersNotRegistered: [],
-                attachments: []
+                attachments: [],
+                description: {},
+                state: {},
+                instances: {},
+                computationalExperience: {},
+                reference: {},
             },
             url: '',
             users: [],
