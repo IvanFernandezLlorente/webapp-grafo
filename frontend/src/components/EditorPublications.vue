@@ -45,8 +45,11 @@
             </div>
 
             <div class="body-edit">
-                <h3>Problem Description</h3>
-                <ckeditor :editor="editor" v-model="publication.description" :config="editorConfig"></ckeditor>
+                <div style="display: flex;">
+                    <h3>Publication Description</h3>
+                    <b-form-checkbox v-model="publication.description.visible" name="visible-button" switch style="align-self: center;margin-left: 30px;">Visible</b-form-checkbox>
+                </div>
+                <ckeditor :editor="editor" v-model="publication.description.content" :config="editorConfig"></ckeditor>
             </div>
 
             <div style="display: flex;align-items: baseline;">
@@ -62,8 +65,11 @@
             </div>
 
             <div class="body-edit">
-                <h3>State of the Art Methods</h3>
-                <ckeditor :editor="editor" v-model="publication.state" :config="editorConfig"></ckeditor>
+                <div style="display: flex;">
+                    <h3>State of the Art Methods</h3>
+                    <b-form-checkbox v-model="publication.state.visible" name="visible-button" switch style="align-self: center;margin-left: 30px;">Visible</b-form-checkbox>
+                </div>
+                <ckeditor :editor="editor" v-model="publication.state.content" :config="editorConfig"></ckeditor>
             </div>
 
             <div style="display: flex;align-items: baseline;">
@@ -79,8 +85,11 @@
             </div>
 
             <div class="body-edit">
-                <h3>Instances</h3>
-                <ckeditor :editor="editor" v-model="publication.instances" :config="editorConfig"></ckeditor>
+                <div style="display: flex;">
+                    <h3>Instances</h3>
+                    <b-form-checkbox v-model="publication.instances.visible" name="visible-button" switch style="align-self: center;margin-left: 30px;">Visible</b-form-checkbox>
+                </div>
+                <ckeditor :editor="editor" v-model="publication.instances.content" :config="editorConfig"></ckeditor>
             </div>
 
             <div style="display: flex;align-items: baseline;">
@@ -99,9 +108,10 @@
             <div class="body-edit">
                 <div style="display: flex;">
                     <h3 v-bind:class="{ cross: !checked}">Computational Experience</h3>
-                    <b-form-checkbox v-model="checked" name="check-button" switch style="align-self: center;margin-left: 16px;"></b-form-checkbox>
+                    <b-form-checkbox v-model="checked" name="check-button" switch style="align-self: center;margin-left: 16px;">Optional</b-form-checkbox>
+                    <b-form-checkbox v-if="checked" v-model="publication.computationalExperience.visible" name="visible-button" switch style="align-self: center;margin-left: 70px;">Visible</b-form-checkbox>
                 </div>
-                <ckeditor v-if="checked" :editor="editor" v-model="publication.computationalExperience" :config="editorConfig"></ckeditor>
+                <ckeditor v-if="checked" :editor="editor" v-model="publication.computationalExperience.content" :config="editorConfig"></ckeditor>
             </div>
 
             <div v-if="checked" style="display: flex;align-items: baseline;">
@@ -117,8 +127,11 @@
             </div>
 
             <div class="body-edit">
-                <h3>References</h3>
-                <ckeditor :editor="editor" v-model="publication.reference" :config="editorConfig"></ckeditor>
+                <div style="display: flex;">
+                    <h3>References</h3>
+                    <b-form-checkbox v-model="publication.reference.visible" name="visible-button" switch style="align-self: center;margin-left: 30px;">Visible</b-form-checkbox>
+                </div>
+                <ckeditor :editor="editor" v-model="publication.reference.content" :config="editorConfig"></ckeditor>
             </div>
 
             <div style="display: flex;align-items: baseline;">
@@ -157,11 +170,26 @@ export default {
         return {
             publication: {
                 title: '',
-                description: '<p>Here can be your description...</p>',
-                state: '<p>Here can be your State of the Art Methods...</p>',
-                instances: '<p>Here can be your instances...</p>',
-                computationalExperience: '<p>Here can be your computational experience...</p>',
-                reference: '<p>Here can be your references...</p>',
+                description: {
+                    content: '<p>Here can be your description...</p>',
+                    visible: true,
+                },
+                state: {
+                    content: '<p>Here can be your State of the Art Methods...</p>',
+                    visible: true,
+                },
+                instances: {
+                    content: '<p>Here can be your instances...</p>',
+                    visible: true,
+                },
+                computationalExperience: {
+                    content: '<p>Here can be your computational experience...</p>',
+                    visible: true,
+                },
+                reference: {
+                    content: '<p>Here can be your references...</p>',
+                    visible: true,
+                },
                 user: [],
                 usersNotRegistered: [],
                 relatedProblems: [],
@@ -214,6 +242,7 @@ export default {
             try {
                 this.prepareUsers();
                 this.prepareProblems();
+                this.prepareContent();
                 this.computationalChecked();
 
                 let files;
@@ -243,7 +272,7 @@ export default {
         async fetchData() {
             const res = await this.axios.get(`publications/${this.$route.params.publicationId}`);
             this.publication = res.data;
-            this.checked = res.data.computationalExperience ? true : false;
+            this.checked = res.data.computationalExperience.content ? true : false;
             this.pushToUsersChosen();
             this.pushToProblemsChosen();
             await this.organiceFiles();
@@ -310,8 +339,10 @@ export default {
         },
         computationalChecked () {
             if (!this.checked) {
-                this.publication.computationalExperience = '';
-                this.publicationCopy.computationalExperience = '';
+                this.publication.computationalExperience.content = '';
+                this.publication.computationalExperience.visible = false;
+                this.publicationCopy.computationalExperience.content = '';
+                this.publicationCopy.computationalExperience.visible = false;
                 const length = this.fileArrayComputational.length;
                 for (let i = 0; i < length; i++) {
                     this.deleteFile(0, this.fileArrayComputational, this.fileArrayComputational[0])
@@ -371,34 +402,16 @@ export default {
                 ids = files.map( file => file.fileId)
             }
             return ids            
+        },
+        prepareContent() {
+            this.publicationCopy.description = { ...this.publication.description };
+            this.publicationCopy.state = { ...this.publication.state };
+            this.publicationCopy.instances = { ...this.publication.instances };
+            this.publicationCopy.computationalExperience = { ...this.publication.computationalExperience };
+            this.publicationCopy.reference = { ...this.publication.reference };
         }
     },
     watch: {
-        'publication.description': function (newValue){
-            if (this.initialized) {
-                this.publicationCopy.description = newValue
-            }
-        },
-        'publication.state': function (newValue){
-            if (this.initialized) {
-                this.publicationCopy.state = newValue
-            }            
-        },
-        'publication.instances': function (newValue){
-            if (this.initialized) {
-                this.publicationCopy.instances = newValue
-            }            
-        },
-        'publication.computationalExperience': function (newValue){
-            if (this.initialized) {
-                this.publicationCopy.computationalExperience = newValue
-            }            
-        },
-        'publication.reference': function (newValue){
-            if (this.initialized) {
-                this.publicationCopy.reference = newValue
-            }            
-        },
         fileDescription() {
             this.fileDescription.forEach(file => {
                 const fileId = uuid()
@@ -406,7 +419,7 @@ export default {
                 file.section = 'description'
                 this.filesToUpload.push(file)
                 this.fileArrayDescription.push(file)
-                this.publication.description += `<p>Download <a href="https://localhost:3443/api/files/downloads/${file.fileId}">${file.name}</a></p>`
+                this.publication.description.content += `<p>Download <a href="https://localhost:3443/api/files/downloads/${file.fileId}">${file.name}</a></p>`
             })
         },
         fileState() {
@@ -416,7 +429,7 @@ export default {
                 file.section = 'state'
                 this.filesToUpload.push(file)
                 this.fileArrayState.push(file)
-                this.publication.state += `<p>Download <a href="https://localhost:3443/api/files/downloads/${file.fileId}">${file.name}</a></p>`
+                this.publication.state.content += `<p>Download <a href="https://localhost:3443/api/files/downloads/${file.fileId}">${file.name}</a></p>`
             })
         },
         fileInstances() {
@@ -426,7 +439,7 @@ export default {
                 file.section = 'instances'
                 this.filesToUpload.push(file)
                 this.fileArrayInstances.push(file)
-                this.publication.instances += `<p>Download <a href="https://localhost:3443/api/files/downloads/${file.fileId}">${file.name}</a></p>`
+                this.publication.instances.content += `<p>Download <a href="https://localhost:3443/api/files/downloads/${file.fileId}">${file.name}</a></p>`
             })
         },
         fileReferences() {
@@ -436,7 +449,7 @@ export default {
                 file.section = 'references'
                 this.filesToUpload.push(file)
                 this.fileArrayReferences.push(file)
-                this.publication.reference += `<p>Download <a href="https://localhost:3443/api/files/downloads/${file.fileId}">${file.name}</a></p>`
+                this.publication.reference.content += `<p>Download <a href="https://localhost:3443/api/files/downloads/${file.fileId}">${file.name}</a></p>`
             })
         },
         fileComputational() {
@@ -446,7 +459,7 @@ export default {
                 file.section = 'computational'
                 this.filesToUpload.push(file)
                 this.fileArrayComputational.push(file)
-                this.publication.computationalExperience += `<p>Download <a href="https://localhost:3443/api/files/downloads/${file.fileId}">${file.name}</a></p>`
+                this.publication.computationalExperience.content += `<p>Download <a href="https://localhost:3443/api/files/downloads/${file.fileId}">${file.name}</a></p>`
             })
         }
     },

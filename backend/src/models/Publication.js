@@ -11,11 +11,26 @@ const publicationSchema = new Schema(
         type: String,
         unique: true
     },
-    description: String,
-    state: String,
-    instances: String,
-    computationalExperience: String,
-    reference: String,
+    description: {
+        content: String,
+        visible: Boolean,
+    },
+    state: {
+        content: String,
+        visible: Boolean,
+    },
+    instances: {
+        content: String,
+        visible: Boolean,
+    },
+    computationalExperience: {
+        content: String,
+        visible: Boolean,
+    },
+    reference: {
+        content: String,
+        visible: Boolean,
+    },
     user: [{
         type: String
     }],
