@@ -6,7 +6,7 @@
                 <input id="title" v-model="publication.title" @change="updateCopy" class="form-control" type="text" placeholder="Title">
             </div>
 
-            <h4>Users</h4>
+            <h4>Authors</h4>
             <div class="form-group col-md-6 search" v-for="(theUser, index) in usersChosenToShow" :key="index" style="padding-left: 0px;display: flex;">
                 <vue-simple-suggest
                     v-model="usersChosenToShow[index]"

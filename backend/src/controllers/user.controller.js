@@ -218,6 +218,9 @@ export const signIn = async (req,res) => {
             return res.status(401).json({ message: "Invalid password"});
         }
 
+        if (user.banned) {
+            return res.status(401).json({ message: "Your account is blocked"});
+        }
         const token = jwt.sign({ id: user._id, userId: user.userId }, config.SECRET, {
             expiresIn: 86400
         });
@@ -240,6 +243,14 @@ export const signInSocial = async (req, res) => {
         if (req.user.message == 'Account not registered.') {
             responseHTML = responseHTML.replace('%value%', JSON.stringify({
                 message: "Account not registered.",
+                method: req.user.method
+            }));
+            return res.status(400).send(responseHTML);
+        }
+
+        if (req.user.message == 'Your account is blocked') {
+            responseHTML = responseHTML.replace('%value%', JSON.stringify({
+                message: "Your account is blocked",
                 method: req.user.method
             }));
             return res.status(400).send(responseHTML);

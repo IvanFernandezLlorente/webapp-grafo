@@ -7,6 +7,16 @@
                 Edit
             </button>
         </b-link>
+        <b-link v-if="canEdit() && !user.banned" class="edit" @click="banUser()"> 
+            <button class="btn btn-warning">
+                Ban
+            </button>
+        </b-link>
+        <b-link v-if="canEdit() && user.banned" class="edit" @click="allowUser()"> 
+            <button class="btn btn-warning">
+                Allow
+            </button>
+        </b-link>
         <b-link v-if="canEdit()" class="edit"  @click="deleteU()"> 
             <button class="btn btn-danger">
                 Delete
@@ -105,6 +115,31 @@ export default {
                 this.$router.push({path: '/login'})                
             } else {
                this.$router.push({path: '/'})
+            }
+        },
+        async banUser() {
+            try {
+                const res = await this.axios.put(`users/${this.$route.params.userId}`,{ banned: true }, {
+                    headers: { token: this.$store.state.token}
+                });
+                if (this.user._id === this.id) {
+                    this.$store.dispatch('logout');
+                    this.$router.push({path: '/login'})                
+                } else {
+                    this.$router.push({path: '/'})
+                }
+            } catch (error) {
+                console.log(error);
+            }      
+        },
+        async allowUser() {
+            try {
+                const res = await this.axios.put(`users/${this.$route.params.userId}`,{ banned: false }, {
+                    headers: { token: this.$store.state.token}
+                });
+                this.$router.push({path: '/'})
+            } catch (error) {
+                console.log(error);
             }
         },
         async fetchProblems() {

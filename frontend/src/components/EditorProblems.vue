@@ -11,7 +11,7 @@
                 <input id="alias" v-model="problem.alias" @change="updateCopy" class="form-control" type="text" placeholder="Alias">
             </div>
 
-        
+            <h4>Manager</h4>
             <div class="form-group col-md-6 search" v-for="(theUser, index) in usersChosenToShow" :key="index" style="padding-left: 0px;display: flex;">
                 <vue-simple-suggest
                     v-model="usersChosenToShow[index]"

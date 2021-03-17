@@ -50,7 +50,8 @@ export default {
                 const res = await this.axios.post("users/signin", info);
                 this.manageSignIn(res.data);
             } catch (error) {
-                console.log(error)
+                console.log(error.response.data)
+                this.error = error.response.data.message;
             }            
         },
         google(){

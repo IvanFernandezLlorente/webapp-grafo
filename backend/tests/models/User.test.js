@@ -16,6 +16,7 @@ describe('User Model', () => {
         urjcUrl: "el urjc 1",
         scholarUrl: "el scholar 1",
         imagenProfile: "la imagen",
+        banned: false,
         roles: ['user'],
         publications: ['una-publicacion'],
         problems: ['un-problema'],
@@ -101,5 +102,8 @@ describe('User Model', () => {
     });
     it('imagenProfile is defined in User model', () => {
         expect(user.imagenProfile).toBeDefined()
+    });
+    it('banned is defined in User model', () => {
+        expect(user.banned).toBeDefined()
     });
 });

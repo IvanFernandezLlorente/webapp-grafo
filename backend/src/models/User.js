@@ -36,6 +36,7 @@ const userSchema = new Schema(
     problems: [{
        type: String
     }],
+    banned: Boolean,
     google: {
         name: String,
         email: String,

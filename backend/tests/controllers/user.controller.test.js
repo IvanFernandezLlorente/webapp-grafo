@@ -38,7 +38,8 @@ describe('User controller', () => {
                 email: "el email 3",
                 password: "la pass 3",
                 userId: "no-copiar-id",
-                roles: ['user']
+                roles: ['user'],
+                banned: true
             }
         ],
         mockApplications = [
@@ -364,6 +365,14 @@ describe('User controller', () => {
             const res = await request(app).post('/api/users/signin');
             expect(res.statusCode).toEqual(401);
             expect(res.body).toEqual(expect.objectContaining({ message: "Invalid password" }));
+        });
+
+        it('User is banned', async () => {
+            User.findOne = jest.fn(() => mockUsers.filter( user => user.email == "el email 3")[0]);
+            User.comparePassword = jest.fn(() => 'la pass 3' == 'la pass 3');
+            const res = await request(app).post('/api/users/signin');
+            expect(res.statusCode).toEqual(401);
+            expect(res.body).toEqual(expect.objectContaining({ message: "Your account is blocked"}));
         });
 
         it('Sign in user', async () => {

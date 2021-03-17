@@ -14,6 +14,9 @@ passport.use('signinGoogle', new GoogleStrategy({
     try {
         const existingUser = await User.findOne({ 'google.methodId': profile.id, 'google.email': profile.emails[0].value });
         if (existingUser) {
+            if (existingUser.banned) {
+                return done(null, { message: "Your account is blocked", method: 'signinGoogle' });
+            }
             return done(null, { user: existingUser, method: 'signinGoogle' });
         }
 
@@ -31,6 +34,9 @@ passport.use('signinGitHub', new GitHubStrategy({
     try {
         const existingUser = await User.findOne({ 'github.methodId': profile.id, 'github.name': profile.username });
         if (existingUser) {
+            if (existingUser.banned) {
+                return done(null, { message: "Your account is blocked", method: 'signinGitHub' });
+            }
             return done(null, { user: existingUser, method: 'signinGitHub' });
         }
 
