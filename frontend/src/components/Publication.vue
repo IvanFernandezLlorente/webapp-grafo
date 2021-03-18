@@ -15,6 +15,7 @@
       
 
       <h3>{{publication.title}}</h3>
+      <p v-if="publication.pdf"><a :href="`https://localhost:3443/api/files/downloads/${publication.pdf}`">Get PDF</a></p>
       <h4 v-if="users.length || publication.usersNotRegistered.length">Users</h4>
       <div v-if="users.length">
         <b-link v-for="(user,index) in users"
@@ -84,6 +85,7 @@ export default {
                 instances: {},
                 computationalExperience: {},
                 reference: {},
+                pdf: ''
             },
             url: '',
             users: [],
@@ -120,6 +122,11 @@ export default {
                     headers: { token: this.$store.state.token}
                 }))
             })
+            if (this.publication.pdf) {
+                promises.push(this.axios.delete(`files/${this.publication.pdf}`,{
+                    headers: { token: this.$store.state.token}
+                }))
+            }
             await Promise.all(promises)
 
             const res = await this.axios.delete(`publications/${this.url}`,{

@@ -42,7 +42,8 @@ const publicationSchema = new Schema(
     }],
     attachments: [{
         type: String
-    }]
+    }],
+    pdf: String
   },
   {
     versionKey: false,

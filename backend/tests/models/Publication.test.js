@@ -13,7 +13,8 @@ describe('Publication Model', () => {
         user: ['el-userId-2'],
         relatedProblems: ['un-problem'],
         usersNotRegistered: ['pepe'],
-        attachments: ['file-attachment']
+        attachments: ['file-attachment'],
+        pdf: "606eaa24-9262-4146-a583-6faf75e64788"
     })    
  
     it('_id is defined in Publication model', () => {
@@ -51,5 +52,8 @@ describe('Publication Model', () => {
     });
     it('Attachments is defined in Publication model', () => {
         expect(publication.attachments).toBeDefined()
+    });
+    it('PDF is defined in Publication model', () => {
+        expect(publication.pdf).toBeDefined()
     });
 });

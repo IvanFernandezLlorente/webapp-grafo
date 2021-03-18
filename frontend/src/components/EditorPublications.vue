@@ -6,24 +6,47 @@
                 <input id="title" v-model="publication.title" @change="updateCopy" class="form-control" type="text" placeholder="Title">
             </div>
 
-            <h4>Authors</h4>
-            <div class="form-group col-md-6 search" v-for="(theUser, index) in usersChosenToShow" :key="index" style="padding-left: 0px;display: flex;">
-                <vue-simple-suggest
-                    v-model="usersChosenToShow[index]"
-                    :list="usersToChoose"
-                    :min-length="2"
-                    :filter-by-query="true">
-                </vue-simple-suggest>
-                <button type="button" class="btn" @click="deleteUser(index)">
-                    <b-icon-x-square></b-icon-x-square> 
-                </button>
-            </div>
-    
-            <div class="form-group">
-                <button @click="addUser" type="button" class="btn btn-secondary">
-                    Add User
-                </button>
-            </div>
+            <b-row>
+                <b-col cols="6" style="display: flex;flex-direction: column;">
+                    <h4>Authors</h4>
+                    <div class="form-group search" v-for="(theUser, index) in usersChosenToShow" :key="index" style="padding-left: 0px;display: flex;">
+                        <vue-simple-suggest
+                            v-model="usersChosenToShow[index]"
+                            :list="usersToChoose"
+                            :min-length="2"
+                            :filter-by-query="true">
+                        </vue-simple-suggest>
+                        <button type="button" class="btn" @click="deleteUser(index)">
+                            <b-icon-x-square></b-icon-x-square> 
+                        </button>
+                    </div>
+            
+                    <div class="form-group">
+                        <button @click="addUser" type="button" class="btn btn-secondary">
+                            Add User
+                        </button>
+                    </div>
+                </b-col>
+                
+                <b-col style="display: flex;justify-content: center;">
+                    <div style="display: flex;align-items: baseline;">
+                        <b-form-file v-model="filePDFPublication" class="inputfile mt-3" id="inputfilePDFPublication" ref="file-input" accept=".pdf" plain></b-form-file>
+                        <label class="btn btn-secondary" for="inputfilePDFPublication">Upload PDF</label>
+
+                        <ul>
+                            <li class="item-list" v-if="filePDFPublication">
+                                <span>{{ filePDFPublication.name }}</span>
+                                <button type="button" @click="deleteFilePDF()">x</button>
+                            </li> 
+                            <li class="item-list" v-else-if="filePDFPublicationPrevious">
+                                <span>{{ filePDFPublicationPrevious.name }}</span>
+                                <button type="button" @click="deleteFilePDFPrevious()">x</button>
+                            </li> 
+                        </ul>
+                    </div>
+                </b-col>
+            </b-row>
+            
 
             <h4>Related Problems</h4>
             <div class="form-group col-md-6 search" v-for="(theProblem, index) in problemsChosenToShow" :key="`${index} - p`" style="padding-left: 0px;display: flex;">
@@ -221,7 +244,9 @@ export default {
             fileReferences: null,
             fileArrayReferences: [],
             fileComputational: null,
-            fileArrayComputational: []
+            fileArrayComputational: [],
+            filePDFPublication: null,
+            filePDFPublicationPrevious: ''
         };
     },
     props: {
@@ -244,7 +269,7 @@ export default {
                 this.prepareProblems();
                 this.prepareContent();
                 this.computationalChecked();
-
+                const idPDF = await this.prepareFilePDF();
                 let files;
                 if (this.filesToUpload) {
                     files = await this.uploadFile();
@@ -255,11 +280,11 @@ export default {
                 const idsFiles = [...new Set([...files, ...this.prepareFiles()])]
 
                 if (this.isNew) {
-                    const res = await this.axios.post(`publications`,{...this.publication, "attachments": idsFiles},{
+                    const res = await this.axios.post(`publications`,{...this.publication, "attachments": idsFiles, "pdf": idPDF},{
                         headers: { token: this.$store.state.token}
                     });
                 } else {
-                    const res = await this.axios.put(`publications/${this.$route.params.publicationId}`,{...this.publicationCopy, "attachments": idsFiles},{
+                    const res = await this.axios.put(`publications/${this.$route.params.publicationId}`,{...this.publicationCopy, "attachments": idsFiles, "pdf": idPDF},{
                         headers: { token: this.$store.state.token}
                     });
                 }
@@ -387,6 +412,9 @@ export default {
         async organiceFiles() {
             const promises = [];
             this.publication.attachments.forEach( fileId => promises.push(this.axios.get(`files/${fileId}`)))
+            if (this.publication.pdf) {
+                promises.push(this.axios.get(`files/${this.publication.pdf}`))
+            }
             const res = await Promise.all(promises)
             const files = res.map( res => res.data);
             this.fileArrayDescription = files.filter( file => file.section == 'description')
@@ -394,6 +422,7 @@ export default {
             this.fileArrayInstances = files.filter( file => file.section == 'instances')
             this.fileArrayReferences = files.filter( file => file.section == 'references')
             this.fileArrayComputational = files.filter( file => file.section == 'computational')
+            this.filePDFPublicationPrevious = files.filter( file => file.section == 'pdfPublication')[0]
         },
         prepareFiles() {
             let ids = []
@@ -409,6 +438,29 @@ export default {
             this.publicationCopy.instances = { ...this.publication.instances };
             this.publicationCopy.computationalExperience = { ...this.publication.computationalExperience };
             this.publicationCopy.reference = { ...this.publication.reference };
+        },
+        deleteFilePDF(){
+            this.filePDFPublication = null
+        },
+        deleteFilePDFPrevious() {
+            this.filesToDelete.push(this.filePDFPublicationPrevious)
+            this.filePDFPublicationPrevious = ''
+        },
+        async prepareFilePDF(){
+            if (this.filePDFPublication) {
+                let fd = new FormData();
+                fd.append('fileId',this.filePDFPublication.fileId)
+                fd.append('section',this.filePDFPublication.section)
+                fd.append('file',this.filePDFPublication)
+                const res = await this.axios.post(`files`,fd,{
+                    headers: { token: this.$store.state.token, 'Content-Type': 'multipart/form-data'}
+                });
+                return res.data.fileId;
+            } else if (this.filePDFPublicationPrevious) {
+                return this.filePDFPublicationPrevious.fileId;
+            }
+            return '';
+            
         }
     },
     watch: {
@@ -461,6 +513,17 @@ export default {
                 this.fileArrayComputational.push(file)
                 this.publication.computationalExperience.content += `<p>Download <a href="https://localhost:3443/api/files/downloads/${file.fileId}">${file.name}</a></p>`
             })
+        },
+        filePDFPublication() {
+            const fileId = uuid()
+            if (this.filePDFPublication) {
+                this.filePDFPublication.fileId = fileId
+                this.filePDFPublication.section = 'pdfPublication'
+                if (this.filePDFPublicationPrevious) {
+                    this.filesToDelete.push(this.filePDFPublicationPrevious)
+                    this.filePDFPublicationPrevious = ''
+                }
+            }
         }
     },
     computed: {
