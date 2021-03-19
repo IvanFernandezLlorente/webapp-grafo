@@ -41,7 +41,7 @@ export const createPublication = async (req, res) => {
         await Promise.all(saveReferences(users, publicationSaved));
 
         
-        publicationSaved.relatedProblems.forEach( problemId => promises2.push(Problem.findOne({ problemId })));
+        publicationSaved.problems.forEach( problemId => promises2.push(Problem.findOne({ problemId })));
         const problems = await Promise.all(promises2);
         await Promise.all(saveReferences(problems, publicationSaved));
 
@@ -83,7 +83,7 @@ export const updatePublicationById = async (req, res) => {
                 await Promise.all(saveReferences(users2, updatedPublication));
 
 
-                updatedPublication.relatedProblems.forEach(problemId => promises2.push(Problem.findOne({ problemId })));
+                updatedPublication.problems.forEach(problemId => promises2.push(Problem.findOne({ problemId })));
                 const problems2 = await Promise.all(promises2);
                 await Promise.all(saveReferences(problems2, updatedPublication));
 

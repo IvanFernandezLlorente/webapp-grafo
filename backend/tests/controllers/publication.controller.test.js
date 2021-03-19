@@ -20,21 +20,21 @@ describe('Publications controller', () => {
                 title: "el publication 1",
                 publicationId: "el-publicationId-1",
                 user: ["el-userId-1"],
-                relatedProblems: ["el-problemId-1"]
+                problems: ["el-problemId-1"]
             },
             {
                 _id: 2,
                 title: "el publication 2",
                 publicationId: "el-publicationId-2",
                 user: ["el-userId-2"],
-                relatedProblems: ["el-problemId-2"]
+                problems: ["el-problemId-2"]
             },
             {
                 _id: 3,
                 title: "el publication 3",
                 publicationId: "el-publicationId-3",
                 user: ["el-userId-3"],
-                relatedProblems: ["el-problemId-3"]
+                problems: ["el-problemId-3"]
             }
         ]
         mockUsers = [
@@ -156,9 +156,9 @@ describe('Publications controller', () => {
                     title: "new publication",
                     publicationId: "new-publication",
                     user: ["el-userId-2"],
-                    relatedProblems: ["el-problemId-2"]
+                    problems: ["el-problemId-2"]
                 });
-                return { _id: 4, title: "new publication", publicationId: "new-publication", user: ["el-userId-2"], relatedProblems: ["el-problemId-2"]}
+                return { _id: 4, title: "new publication", publicationId: "new-publication", user: ["el-userId-2"], problems: ["el-problemId-2"]}
             });
 
             const saveReferencesMock = jest.fn()
@@ -190,12 +190,12 @@ describe('Publications controller', () => {
                 title: "new publication",
                 publicationId: "new-publication",
                 user: ["el-userId-2"],
-                relatedProblems: ["el-problemId-2"]
+                problems: ["el-problemId-2"]
             });
             expect(res.statusCode).toEqual(200);
-            expect(res.body).toEqual(expect.objectContaining({ _id: 4, title: "new publication", publicationId: "new-publication", user: ["el-userId-2"], relatedProblems: ["el-problemId-2"]}));
+            expect(res.body).toEqual(expect.objectContaining({ _id: 4, title: "new publication", publicationId: "new-publication", user: ["el-userId-2"], problems: ["el-problemId-2"]}));
             expect(mockPublications).toHaveLength(4);
-            expect(mockPublications).toEqual(expect.arrayContaining([{ _id: 4, title: "new publication", publicationId: "new-publication", user: ["el-userId-2"], relatedProblems: ["el-problemId-2"]}]));
+            expect(mockPublications).toEqual(expect.arrayContaining([{ _id: 4, title: "new publication", publicationId: "new-publication", user: ["el-userId-2"], problems: ["el-problemId-2"]}]));
             
             expect(mockUsers).toHaveLength(3);
             expect(mockUsers).toEqual(expect.arrayContaining([{
@@ -341,7 +341,7 @@ describe('Publications controller', () => {
                 title: "new title",
                 publicationId: "el-publicationId-2",
                 user: ["el-userId-2"],
-                relatedProblems: ["el-problemId-2"]
+                problems: ["el-problemId-2"]
             }));
 
             const res = await request(app).put('/api/publications/el-publicationId-2').send({
@@ -349,9 +349,9 @@ describe('Publications controller', () => {
             });
 
             expect(res.statusCode).toEqual(200);
-            expect(res.body).toEqual(expect.objectContaining({ _id: 2, title: "new title", publicationId: "el-publicationId-2", user: ["el-userId-2"], relatedProblems: ["el-problemId-2"] }));
+            expect(res.body).toEqual(expect.objectContaining({ _id: 2, title: "new title", publicationId: "el-publicationId-2", user: ["el-userId-2"], problems: ["el-problemId-2"] }));
             expect(mockPublications).toHaveLength(3);
-            expect(mockPublications).toEqual(expect.arrayContaining([{ _id: 2, title: "new title", publicationId: "el-publicationId-2", user: ["el-userId-2"], relatedProblems: ["el-problemId-2"]}]));
+            expect(mockPublications).toEqual(expect.arrayContaining([{ _id: 2, title: "new title", publicationId: "el-publicationId-2", user: ["el-userId-2"], problems: ["el-problemId-2"]}]));
             expect(mockUsers).toEqual(expect.arrayContaining([{
                 _id: 2,
                 name: "el nombre 2",
@@ -451,7 +451,7 @@ describe('Publications controller', () => {
                 title: "el publication 2",
                 publicationId: "el-publicationId-2",
                 user: ["el-userId-2"],
-                relatedProblems: []
+                problems: []
             }]));
 
             expect(mockUsers).toHaveLength(3);

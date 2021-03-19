@@ -215,14 +215,14 @@ export default {
                 },
                 user: [],
                 usersNotRegistered: [],
-                relatedProblems: [],
+                problems: [],
                 attachments: []
             },
             initialized: false,
             publicationCopy: {
                 user: [],
                 usersNotRegistered: [],
-                relatedProblems: []
+                problems: []
             },                
             editor: ClassicEditor,
             editorConfig: ClassicEditor.defaultConfig,
@@ -354,13 +354,13 @@ export default {
         prepareProblems() {
             this.problemsChosen.forEach( problem => {
                 if (this.problemsMap.has(problem)) {
-                    this.publication.relatedProblems.push(this.problemsMap.get(problem));
-                    this.publicationCopy.relatedProblems.push(this.problemsMap.get(problem));
+                    this.publication.problems.push(this.problemsMap.get(problem));
+                    this.publicationCopy.problems.push(this.problemsMap.get(problem));
                 }
             });
         },
         pushToProblemsChosen() {
-            this.problemsChosen = [...this.problemsMap.entries()].filter(({ 1: v }) => this.publication.relatedProblems.includes(v)).map(([k]) => k);
+            this.problemsChosen = [...this.problemsMap.entries()].filter(({ 1: v }) => this.publication.problems.includes(v)).map(([k]) => k);
         },
         computationalChecked () {
             if (!this.checked) {

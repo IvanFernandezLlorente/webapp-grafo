@@ -34,7 +34,7 @@ const publicationSchema = new Schema(
     user: [{
         type: String
     }],
-    relatedProblems: [{
+    problems: [{
         type: String
     }],
     usersNotRegistered: [{

@@ -78,7 +78,7 @@ export default {
             publication: {
                 user:[],
                 usersNotRegistered: [],
-                relatedProblems: [],
+                problems: [],
                 attachments: [],
                 description: {},
                 state: {},
@@ -108,7 +108,7 @@ export default {
 
             promises.splice(0,promises.length);
             
-            this.publication.relatedProblems.forEach( problemId => promises.push(this.axios.get(`problems/${problemId}`)));
+            this.publication.problems.forEach( problemId => promises.push(this.axios.get(`problems/${problemId}`)));
             const problems = await Promise.all(promises);
             this.problems = problems.map( problem => problem.data);
         },

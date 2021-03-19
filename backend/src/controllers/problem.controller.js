@@ -1,5 +1,6 @@
 import Problem from '../models/Problem';
 import User from '../models/User';
+import Publication from '../models/Publication';
 
 export const getProblems = async (req, res) => {
     const problems = await Problem.find();
@@ -99,6 +100,9 @@ export const deleteProblemById = async (req, res) => {
             if (req.isAdmin || (users.some( user => user._id == req.id))) {
                 await Promise.all(deleteReferences(users, problem));
                 
+                const publications = await Publication.find({ problems: problem.problemId });
+                await Promise.all(deleteReferences(publications, problem));
+
                 await Problem.findOneAndDelete({ problemId: problem.problemId });
                 
                 return res.status(200).json();
@@ -107,28 +111,29 @@ export const deleteProblemById = async (req, res) => {
         }
         return res.status(401).json({ message: "Problem not found" });
     } catch (error) {
+        console.log(error);
         return res.status(500).json({ message: "Error" });
     }
 }
 
-const saveReferences = (users, problemSaved) => {
+const saveReferences = (array, problemSaved) => {
     const promises = [];
 
-    users.forEach( user => {
-        user.problems.push(problemSaved.problemId);
-        promises.push(user.save());
+    array.forEach( item => {
+        item.problems.push(problemSaved.problemId);
+        promises.push(item.save());
     });
 
     return promises;
 }
 
-const deleteReferences = (users, problem) => {
+const deleteReferences = (array, problem) => {
     const promises = [];
     
-    users.forEach( user => {
-        const index = user.problems.indexOf(problem.problemId);
-        user.problems.splice(index, 1);
-        promises.push(user.save());
+    array.forEach( item => {
+        const index = item.problems.indexOf(problem.problemId);
+        item.problems.splice(index, 1);
+        promises.push(item.save());
     });
 
     return promises;

@@ -11,7 +11,7 @@ describe('Publication Model', () => {
         computationalExperience: "la experience",
         reference: "las referencias",
         user: ['el-userId-2'],
-        relatedProblems: ['un-problem'],
+        problems: ['un-problem'],
         usersNotRegistered: ['pepe'],
         attachments: ['file-attachment'],
         pdf: "606eaa24-9262-4146-a583-6faf75e64788"
@@ -44,8 +44,8 @@ describe('Publication Model', () => {
     it('User is defined in Publication model', () => {
         expect(publication.user).toBeDefined()
     });
-    it('Publications is defined in Publication model', () => {
-        expect(publication.relatedProblems).toBeDefined()
+    it('Problems is defined in Publication model', () => {
+        expect(publication.problems).toBeDefined()
     });
     it('Users Not Registered is defined in Publication model', () => {
         expect(publication.usersNotRegistered).toBeDefined()

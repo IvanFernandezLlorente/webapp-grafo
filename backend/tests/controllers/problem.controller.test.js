@@ -1,5 +1,6 @@
 import Problem from "../../src/models/Problem";
 import User from "../../src/models/User";
+import Publication from "../../src/models/Publication";
 const problemController = require('../../src/controllers/problem.controller');
 import request  from 'supertest';
 
@@ -10,6 +11,7 @@ import app from '../../src/app';
 
 let mockProblems;
 let mockUsers;
+let mockPublications;
 describe('Problem controller', () => {
     beforeEach(() => {
         mockProblems = [
@@ -60,6 +62,15 @@ describe('Problem controller', () => {
                 roles: ['5f94531373dbf256c8900501'],
                 problems: []
             }
+        ],
+        mockPublications = [
+            {
+                _id: 2,
+                title: "el publication 2",
+                publicationId: "el-publicationId-2",
+                user: ["el-userId-2"],
+                problems: ["el-problemId-2"]
+            },
         ]
     });
 
@@ -327,7 +338,8 @@ describe('Problem controller', () => {
                 next() 
             });
 
-            const deleteReferencesMock = jest.fn(() => {
+            const deleteReferencesMock = jest.fn()
+            .mockImplementationOnce(() => {
                 mockUsers[1] = {
                     _id: 2,
                     name: "el nombre 2",
@@ -338,12 +350,23 @@ describe('Problem controller', () => {
                     problems: []
                 }
                 return mockUsers
+            })
+            .mockImplementationOnce(() => {
+                mockPublications[0] = {
+                    _id: 2,
+                    title: "el publication 2",
+                    publicationId: "el-publicationId-2",
+                    user: ["el-userId-2"],
+                    problems: []
+                }
+                return mockPublications
             });
             problemController.__Rewire__('deleteReferences', deleteReferencesMock)
               
             Problem.findOne = jest.fn(() => mockProblems.filter( problem => problem.problemId == 'el-problemId-2'));
             User.find = jest.fn(() => mockUsers.filter(user => user.userId == 'el-userId-2'));
             Problem.findOneAndDelete = jest.fn(() => mockProblems.splice(1,1));
+            Publication.find = jest.fn(() => mockPublications.filter(publication => publication.problems.includes('el-problemId-2')));
 
             const res = await request(app).delete('/api/problems/el-problemId-2');
             expect(res.statusCode).toEqual(200);
@@ -361,6 +384,14 @@ describe('Problem controller', () => {
                 password: "la pass 2",
                 userId: "el-userId-2",
                 roles: ['5f94531373dbf256c8900501'],
+                problems: []
+            }]));
+            expect(mockPublications).toHaveLength(1);
+            expect(mockPublications).toEqual(expect.arrayContaining([{
+                _id: 2,
+                title: "el publication 2",
+                publicationId: "el-publicationId-2",
+                user: ["el-userId-2"],
                 problems: []
             }]));
         });
