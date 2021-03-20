@@ -28,6 +28,10 @@ describe('User Model', () => {
         github: {
             name: '',
             methodId: ''
+        },
+        orcid: {
+            name: '',
+            orcid: ''
         }
     })    
 
@@ -99,6 +103,9 @@ describe('User Model', () => {
     });
     it('GitHub is defined in User model', () => {
         expect(user.github).toBeDefined()
+    });
+    it('ORCID is defined in User model', () => {
+        expect(user.orcid).toBeDefined()
     });
     it('imagenProfile is defined in User model', () => {
         expect(user.imagenProfile).toBeDefined()

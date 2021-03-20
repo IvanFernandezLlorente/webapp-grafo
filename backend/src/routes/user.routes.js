@@ -34,6 +34,12 @@ router.get('/oauth/github/connect/:userId/:token', function (req, res, next) {
 router.get('/oauth/github/callback/connect', passport.authenticate('connectGithub', { session: false }), userController.connectSocial);
 
 
+router.get('/oauth/orcid/connect/:userId/:token', function (req, res, next) {
+    passport.authenticate('connectORCID', { state: (JSON.stringify({ userId: req.params.userId, token: req.params.token })) }, { session: false })(req, res, next)
+});
+
+router.get('/oauth/orcid/callback/connect', passport.authenticate('connectORCID', { session: false }), userController.connectSocial);
+
 
 router.get('/oauth/google/signin', passport.authenticate('signinGoogle', { scope: ['profile', 'email'] }, { session: false }));
 

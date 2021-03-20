@@ -61,7 +61,7 @@ export default {
             const res = await this.axios.get("applications",{
                 headers: { token: this.$store.state.token}
             });
-            this.applications = res.data;
+            this.applications = res.data.filter( application => !application.accepted);
         },
         select(index) {
             if (this.applications) {

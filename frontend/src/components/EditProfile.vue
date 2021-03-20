@@ -111,6 +111,14 @@
                     <button type="button" @click="disconnectGithub">Disconnect GitHub</button>
                 </div>
 
+                <p v-if="errorORCID">{{errorORCIDText}}</p>
+                <button v-if="!(user.orcid) || ((user.orcid) && !(user.orcid.orcid))" type="button" @click="orcid">Connect ORCID</button>
+                
+                <div v-else style="display: flex;">
+                    <p>https://sandbox.orcid.org/{{user.orcid.orcid}}</p>
+                    <button type="button" @click="disconnectORCID">Disconnect ORCID</button>
+                </div>
+
                 <div class="text-center">
                     <button type="submit" class="btn btn-info float-right">
                     Update Profile
@@ -158,6 +166,10 @@ export default {
           github: {
                 methodId: '',
                 name: ''
+          },
+          orcid: {
+                orcid: '',
+                name: ''
           }
         },
         userCopy: {},
@@ -171,6 +183,8 @@ export default {
         errorGoogleText: '',
         errorGithub: false,
         errorGithubText: '',
+        errorORCID: false,
+        errorORCIDText: '',
         show: false,
         imgDataUrl: '',
       }
@@ -244,7 +258,7 @@ export default {
             this.user = res.data;
         },
         github(){
-            window.open(`https://localhost:3443/users/oauth/github/connect/${this.$store.state.userId}/${this.$store.state.token}`,"windowProfile","location=1,status=1,scrollbars=1,width=800,height=800");          
+            window.open(`https://localhost:3443/api/users/oauth/github/connect/${this.$store.state.userId}/${this.$store.state.token}`,"windowProfile","location=1,status=1,scrollbars=1,width=800,height=800");          
             let listener = window.addEventListener('message', (message) => {
                 if ((message.data.method == 'connectGithub') && (message.data.message)) {
                     this.errorGithub = true; 
@@ -262,6 +276,27 @@ export default {
                 headers: { token: this.$store.state.token}
             });
             delete this.userCopy.github;
+            this.user = res.data;
+        },
+        orcid(){
+            window.open(`https://localhost:3443/api/users/oauth/orcid/connect/${this.$store.state.userId}/${this.$store.state.token}`,"windowProfile","location=1,status=1,scrollbars=1,width=800,height=800");          
+            let listener = window.addEventListener('message', (message) => {
+                if ((message.data.method == 'connectORCID') && (message.data.message)) {
+                    this.errorORCID = true; 
+                    this.errorORCIDText = message.data.message;
+                } else if ((message.data.user) && (message.data.user.method == 'connectORCID')) {
+                    this.user = message.data.user.user;
+                }
+            });
+            
+        },
+        async disconnectORCID() {
+            this.userCopy.roles = this.selected;
+            this.userCopy.orcid = { name: '', orcid: '' };
+            const res = await this.axios.put(`users/${this.$route.params.userId ? this.$route.params.userId : this.$store.state.userId}`,this.userCopy,{
+                headers: { token: this.$store.state.token}
+            });
+            delete this.userCopy.orcid;
             this.user = res.data;
         },
         toggleShow() {

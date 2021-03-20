@@ -4,6 +4,9 @@ import config from '../config';
 import User from '../models/User';
 const GoogleStrategy = require('passport-google-oauth20').Strategy;
 const GitHubStrategy = require('passport-github').Strategy;
+const OAuth2Strategy  = require('passport-oauth2').Strategy;
+import fetch from 'node-fetch';
+import { URLSearchParams } from 'url';
 
 
 passport.use('signinGoogle', new GoogleStrategy({
@@ -119,6 +122,63 @@ passport.use('connectGithub',new GitHubStrategy({
         }        
 
         return done(null, { message: "Unauthorized", method: 'connectGithub' });
+    } catch(error) {
+        return done(error, false, error.message);
+    }
+}));
+
+passport.use('connectORCID', new OAuth2Strategy({
+    authorizationURL: `https://sandbox.orcid.org/oauth/authorize?client_id=${config.OAUTH.ORCID.CLIENT_ID}&response_type=code&scope=/authenticate&redirect_uri=https://localhost:3443/api/users/oauth/orcid/callback/connect`,
+    tokenURL: `https://sandbox.orcid.org/oauth/authorize?client_id=${config.OAUTH.ORCID.CLIENT_ID}&response_type=token&scope=openid&redirect_uri=https://localhost:3443/api/users/oauth/orcid/callback/connect`,
+    scope: '/authenticate',
+    clientID: config.OAUTH.ORCID.CLIENT_ID,
+    clientSecret: config.OAUTH.ORCID.CLIENT_SECRET,
+    callbackURL: 'https://localhost:3443/api/users/oauth/orcid/callback/connect',
+    passReqToCallback: true,
+}, async (req,accessToken, refreshToken, profile, done) => {
+    try {
+        const res = JSON.parse(req.query.state);   
+        const { userId, token } = res;
+        const decoded = jwt.verify(token, config.SECRET);
+
+        if (decoded.userId == userId) {
+            const user = await User.findOne({ userId });
+            if (!user) {
+                return done(null, { message: "Invalid token", method: 'connectORCID' });
+            }
+
+            if ((user.orcid) && (user.orcid.hasOwnProperty('orcid')) && (user.orcid.orcid)) {
+                return done(null, { message: "Your account has already been connected.", method: 'connectORCID' });
+            }
+
+            const body = new URLSearchParams({
+                'client_id': config.OAUTH.ORCID.CLIENT_ID,
+                'client_secret': config.OAUTH.ORCID.CLIENT_SECRET,
+                'grant_type': 'authorization_code',
+                'code': req.query.code
+            });
+            const response = await fetch('https://sandbox.orcid.org/oauth/token', {
+                method: 'post',
+                body,
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                    'Accept': 'application/json' 
+                }
+            });
+            const data = await response.json();
+
+            const existingUser = await User.findOne({ 'orcid.orcid': data.orcid, 'orcid.name': data.name });
+            if (existingUser) {
+                return done(null, { message: "Account already used.", method: 'connectORCID' });
+            }         
+
+            user.orcid.orcid = data.orcid;
+            user.orcid.name = data.name;
+            const userSaved = await user.save();
+            return done(null, { user: userSaved, method: 'connectORCID' });
+        }        
+
+        return done(null, { message: "Unauthorized", method: 'connectORCID' });
     } catch(error) {
         return done(error, false, error.message);
     }
