@@ -34,11 +34,13 @@ router.get('/oauth/github/connect/:userId/:token', function (req, res, next) {
 router.get('/oauth/github/callback/connect', passport.authenticate('connectGithub', { session: false }), userController.connectSocial);
 
 
+
 router.get('/oauth/orcid/connect/:userId/:token', function (req, res, next) {
     passport.authenticate('connectORCID', { state: (JSON.stringify({ userId: req.params.userId, token: req.params.token })) }, { session: false })(req, res, next)
 });
 
 router.get('/oauth/orcid/callback/connect', passport.authenticate('connectORCID', { session: false }), userController.connectSocial);
+
 
 
 router.get('/oauth/google/signin', passport.authenticate('signinGoogle', { scope: ['profile', 'email'] }, { session: false }));
@@ -50,6 +52,12 @@ router.get('/oauth/google/callback/signin', passport.authenticate('signinGoogle'
 router.get('/oauth/github/signin', passport.authenticate('signinGitHub', { session: false }));
 
 router.get('/oauth/github/callback/signin', passport.authenticate('signinGitHub', { session: false }), userController.signInSocial);
+
+
+
+router.get('/oauth/orcid/signin', passport.authenticate('signinORCID', { session: false }));
+
+router.get('/oauth/orcid/callback/signin', passport.authenticate('signinORCID', { session: false }), userController.signInSocial);
 
 
 router.put('/:userId', [authJwt.verifyToken, verifySignUp.checkDuplicateNameOrEmail], userController.updateUserById);

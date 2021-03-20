@@ -24,6 +24,7 @@
          
         <button @click="google">Sign In Google</button>
         <button @click="github">Sign In Github</button>
+        <button @click="orcid">Sign In ORCID</button>
 
         <p v-if="error">{{error}}</p>
   </div>
@@ -70,6 +71,16 @@ export default {
                 if ((message.data.method == 'signinGitHub') && (message.data.message)) {
                     this.error = message.data.message;
                 } else if ((message.data.token) && (message.data.method == 'signinGitHub')) {
+                    this.manageSignIn(message.data);
+                }
+            });
+        },
+        orcid() {
+            window.open('https://localhost:3443/api/users/oauth/orcid/signin',"windowLoginORCID","location=1,status=1,scrollbars=1,width=800,height=800");
+            let listener = window.addEventListener('message', (message) => {
+                if ((message.data.method == 'signinORCID') && (message.data.message)) {
+                    this.error = message.data.message;
+                } else if ((message.data.token) && (message.data.method == 'signinORCID')) {
                     this.manageSignIn(message.data);
                 }
             });
