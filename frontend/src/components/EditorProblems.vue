@@ -30,6 +30,25 @@
                 </button>
             </div>
 
+            <h4>Related Publications</h4>
+            <div class="form-group col-md-6 search" v-for="(thePublication, index) in publicationsChosenToShow" :key="`${index} - p`" style="padding-left: 0px;display: flex;">
+                <vue-simple-suggest
+                    v-model="publicationsChosenToShow[index]"
+                    :list="publicationsToChoose"
+                    :min-length="2"
+                    :filter-by-query="true">
+                </vue-simple-suggest>
+                <button type="button" class="btn" @click="deletePublication(index)">
+                    <b-icon-x-square></b-icon-x-square> 
+                </button>
+            </div>
+
+            <div class="form-group">
+                <button @click="addPublication" type="button" class="btn btn-secondary">
+                    Add Publication
+                </button>
+            </div>
+
             <div class="body-edit">
                 <div style="display: flex;">
                     <h3>Problem Description</h3>
@@ -178,18 +197,23 @@ export default {
                 },
                 user: [],
                 usersNotRegistered: [],
-                attachments: []
+                attachments: [],
+                publications: []
             },
             initialized: false,
             problemCopy: {
                 user: [],
-                usersNotRegistered: []
+                usersNotRegistered: [],
+                publications: []
             },                
             editor: ClassicEditor,
             editorConfig: ClassicEditor.defaultConfig,
             usersToChoose: [],
             userMap: new Map(),
             usersChosen: [''],
+            publicationsToChoose: [],
+            publicationsMap: new Map(),
+            publicationsChosen: [''],
             checked: true,
             filesToUpload: [],
             filesToDelete: [],
@@ -213,6 +237,7 @@ export default {
     },
     async created () {
         await this.getUsers();
+        this.getPublications();
         if (!this.isNew) {
             this.fetchData();
         }
@@ -221,6 +246,7 @@ export default {
         async saveProblem () {
             try {
                 this.prepareUsers();
+                this.preparePublications();
                 this.prepareContent();
                 this.computationalChecked();
                 let files;
@@ -251,6 +277,7 @@ export default {
             this.problem = res.data;
             this.checked = res.data.computationalExperience.content ? true : false;
             this.pushToChosen();
+            this.pushToPublicationsChosen();
             await this.organiceFiles();
             this.$nextTick(() => {
                 this.initialized = true;
@@ -288,6 +315,30 @@ export default {
             if (this.problem.usersNotRegistered) {
                 this.problem.usersNotRegistered.forEach( user => this.usersChosen.push(user));
             }
+        },
+        async getPublications() {
+            const res = await this.axios.get(`publications`);
+            res.data.forEach( publication => {
+                this.publicationsMap.set(publication.title,publication.publicationId);
+                this.publicationsToChoose.push(publication.title);
+            });
+        },
+        addPublication() {
+            this.publicationsChosen.push('')
+        },
+        deletePublication(index) {
+            this.publicationsChosen.splice(index, 1);
+        },
+        preparePublications() {
+            this.publicationsChosen.forEach( publication => {
+                if (this.publicationsMap.has(publication)) {
+                    this.problem.publications.push(this.publicationsMap.get(publication));
+                    this.problemCopy.publications.push(this.publicationsMap.get(publication));
+                }
+            });
+        },
+        pushToPublicationsChosen() {
+            this.publicationsChosen = [...this.publicationsMap.entries()].filter(({ 1: v }) => this.problem.publications.includes(v)).map(([k]) => k);
         },
         computationalChecked () {
             if (!this.checked) {
@@ -418,6 +469,9 @@ export default {
     computed: {
         usersChosenToShow() {
             return this.usersChosen;
+        },
+        publicationsChosenToShow() {
+            return this.publicationsChosen;
         }
     }
 };

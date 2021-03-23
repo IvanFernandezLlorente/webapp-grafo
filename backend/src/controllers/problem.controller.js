@@ -34,12 +34,15 @@ export const createProblem = async (req, res) => {
         const problemSaved = await newProblem.save();
 
         const promises = [];
+        const promises2 = [];
 
         problemSaved.user.forEach( userId => promises.push(User.findOne({ userId }, { password: 0 })))
         const users = await Promise.all(promises);
-
-        
         await Promise.all(saveReferences(users, problemSaved));
+
+        problemSaved.publications.forEach( publicationId => promises2.push(Publication.findOne({ publicationId })));
+        const publications = await Promise.all(promises2);
+        await Promise.all(saveReferences(publications, problemSaved));
 
         return res.status(200).json(problemSaved);
     } catch (error) {
@@ -58,8 +61,14 @@ export const updateProblemById = async (req, res) => {
                     return res.status(400).json({ message: "The problem already exists" });
                 }
 
+                const promises = [];
+                const promises2 = [];
+
                 // Quitar las referencias del problema a todos los user
                 await Promise.all(deleteReferences(users, problem));
+
+                const publications = await Publication.find({ problems: problem.problemId });
+                await Promise.all(deleteReferences(publications, problem));
 
                 const updatedProblem = await Problem.findOneAndUpdate(
                     { problemId: req.params.problemId },
@@ -69,14 +78,16 @@ export const updateProblemById = async (req, res) => {
                     }
                 );
                 
-                const promises = [];
                 
                 // poner las referencias del problema a los nuevos users
                 updatedProblem.user.forEach( userId => promises.push(User.findOne({ userId }, { password: 0 })))
                 const users2 = await Promise.all(promises);
-                
                 await Promise.all(saveReferences(users2, updatedProblem));
-                
+
+                updatedProblem.publications.forEach(publicationId => promises2.push(Publication.findOne({ publicationId })));
+                const publications2 = await Promise.all(promises2);
+                await Promise.all(saveReferences(publications2, updatedProblem));
+
                 return res.status(200).json(updatedProblem);
             }
             return res.status(401).json({ message: "Unauthorized" });
