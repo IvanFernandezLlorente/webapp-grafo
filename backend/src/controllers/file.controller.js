@@ -1,4 +1,5 @@
 import File from "../models/File";
+import Publication from '../models/Publication';
 import fs from 'fs-extra';
 import path from 'path';
 
@@ -21,6 +22,22 @@ export const downloadFile = async (req, res) => {
             return res.status(200).download(path.join( __dirname, '..', '..',  file.path ))
         }
         return res.status(404).json({ message: "File not found" });
+    } catch (error) {
+        return res.status(500).json({message: "Error"});
+    }
+}
+
+export const downloadBibtex = async (req, res) => {
+    try {
+        const publication = await Publication.findOne({ publicationId: req.params.publicationId });
+        if (publication && publication.bibtex) {
+            const filePath = path.join(__dirname, "..", "..", "uploads", "citation.bib");
+            fs.writeFileSync(filePath, publication.bibtex, "UTF8");
+            res.status(200).download(filePath, "citation.bib", function (err) {
+                if (err) console.log(error);
+                fs.unlinkSync(filePath);
+            });
+        }
     } catch (error) {
         return res.status(500).json({message: "Error"});
     }
