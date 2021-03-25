@@ -16,6 +16,11 @@ const publicationSchema = new Schema(
     pages: String,
     year: String,
     publisher: String,
+    issn: String,
+    doi: String,
+    url: String,
+    keywords: String,
+    abstract: String,
     description: {
         content: String,
         visible: Boolean,
@@ -48,7 +53,8 @@ const publicationSchema = new Schema(
     attachments: [{
         type: String
     }],
-    pdf: String
+    pdf: String,
+    bibtex: String,
   },
   {
     versionKey: false,

@@ -20,6 +20,12 @@ describe('Publication Model', () => {
         pages: "500--512",
         year: "2017",
         publisher: "Elsevier",
+        issn: '0305-0548',
+        doi: 'https://doi.org/10.1016/j.cor.2020.105116',
+        url: 'https://www.sciencedirect.com/science/article/pii/S0305054820302331',
+        keywords: 'Cyclic cutwidth, Graph layout problem, Circular embedding',
+        abstract: 'The Cyclic Cutwidth Minimization Problem (CCMP) is a Graph Layout',
+        bibtex: 'the bibtex'
     })    
  
     it('_id is defined in Publication model', () => {
@@ -75,5 +81,23 @@ describe('Publication Model', () => {
     });
     it('Publisher is defined in Publication model', () => {
         expect(publication.publisher).toBeDefined()
+    });
+    it('issn is defined in Publication model', () => {
+        expect(publication.issn).toBeDefined()
+    });
+    it('doi is defined in Publication model', () => {
+        expect(publication.doi).toBeDefined()
+    });
+    it('url is defined in Publication model', () => {
+        expect(publication.url).toBeDefined()
+    });
+    it('keywords is defined in Publication model', () => {
+        expect(publication.keywords).toBeDefined()
+    });
+    it('abstract is defined in Publication model', () => {
+        expect(publication.abstract).toBeDefined()
+    });
+    it('bibtex is defined in Publication model', () => {
+        expect(publication.bibtex).toBeDefined()
     });
 });

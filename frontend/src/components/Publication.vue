@@ -15,11 +15,23 @@
       
 
       <h3>{{publication.title}}</h3>
+      <div v-if="publication.bibtex" class="form-group">
+        <a :href="`https://localhost:3443/api/files/bibtex/${publication.publicationId}`">
+            <button type="button" class="btn btn-secondary">
+                Download BibTeX
+            </button>
+        </a>
+      </div>
       <p><strong>Journal: </strong>{{publication.journal}}</p>
       <p><strong>Volume: </strong>{{publication.volume}}</p>
       <p><strong>Pages: </strong>{{publication.pages}}</p>
       <p><strong>Year: </strong>{{publication.year}}</p>
       <p><strong>Publisher: </strong>{{publication.publisher}}</p>
+      <p><strong>issn: </strong>{{publication.doi}}</p>
+      <p><strong>doi: </strong>{{publication.doi}}</p>
+      <p><strong>URL: </strong>{{publication.url}}</p>
+      <p><strong>Keywords: </strong>{{publication.keywords}}</p>
+      <p><strong>Abstract: </strong>{{publication.abstract}}</p>
       <p v-if="publication.pdf"><a :href="`https://localhost:3443/api/files/downloads/${publication.pdf}`">Get PDF</a></p>
       <h4 v-if="users.length || publication.usersNotRegistered.length">Users</h4>
       <div v-if="users.length">
@@ -90,7 +102,8 @@ export default {
                 instances: {},
                 computationalExperience: {},
                 reference: {},
-                pdf: ''
+                pdf: '',
+                bibtex: ''
             },
             url: '',
             users: [],

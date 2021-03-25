@@ -44,6 +44,52 @@
             </b-row>
 
             <b-row>
+                <b-col cols="4">
+                    <div class="form-group">
+                        <label for="issn" class="control-label">ISSN</label>
+                        <input id="issn" v-model="publication.issn" @change="updateCopy" class="form-control" type="text" placeholder="issn">
+                    </div>
+                </b-col>
+                <b-col cols="4">
+                    <div class="form-group">
+                        <label for="doi" class="control-label">DOI</label>
+                        <input id="doi" v-model="publication.doi" @change="updateCopy" class="form-control" type="text" placeholder="doi">
+                    </div>
+                </b-col>
+                <b-col cols="4">
+                    <div class="form-group">
+                        <label for="url" class="control-label">URL</label>
+                        <input id="url" v-model="publication.url" @change="updateCopy" class="form-control" type="text" placeholder="url">
+                    </div>
+                </b-col>
+            </b-row>
+
+            <b-row>
+                <b-col cols="12">
+                    <div class="form-group">
+                        <label for="keywords" class="control-label">Keywords</label>
+                        <input id="keywords" v-model="publication.keywords" @change="updateCopy" class="form-control" type="text" placeholder="Keywords">
+                    </div>
+                </b-col>
+            </b-row>
+
+            <b-row>
+                <b-col cols="12">
+                    <div class="form-group">
+                        <label for="abstract" class="control-label">Abstract</label>
+                        <textarea id="abstract" v-model="publication.abstract" @change="updateCopy" class="form-control"  style="height: 20px; min-height: 50px;" placeholder="Abstract"></textarea> 
+                    </div>
+                </b-col>
+            </b-row>
+
+            <b-button v-b-modal.modal-bibtex>Import BibTeX</b-button>
+            <b-modal id="modal-bibtex" title="BibTeX">
+                <label for="bibtex" class="control-label">BibTeX</label>
+                <textarea id="bibtex" v-model="publication.bibtex" @change="updateBibTeX" class="form-control" style="height: 200px; min-height: 200px;" placeholder="Insert BibTeX here:"></textarea>  
+            </b-modal>
+            <p v-if="bibtexError">{{bibtexError}}</p>
+
+            <b-row>
                 <b-col cols="6" style="display: flex;flex-direction: column;">
                     <h4>Authors</h4>
                     <div class="form-group search" v-for="(theUser, index) in usersChosenToShow" :key="index" style="padding-left: 0px;display: flex;">
@@ -218,8 +264,9 @@
 <script>
 import ClassicEditor from '../ckeditor';
 import { v4 as uuid } from 'uuid';
-import VueSimpleSuggest from 'vue-simple-suggest'
-import 'vue-simple-suggest/dist/styles.css'
+import VueSimpleSuggest from 'vue-simple-suggest';
+import 'vue-simple-suggest/dist/styles.css';
+import { parseBibFile, normalizeFieldValue } from "bibtex";
 
 export default {
     name: 'EditorPublications',
@@ -235,6 +282,11 @@ export default {
                 pages: '',
                 year: '',
                 publisher: '',
+                issn: '',
+                doi: '',
+                url: '',
+                keywords: '',
+                abstract: '',
                 description: {
                     content: '<p>Here can be your description...</p>',
                     visible: true,
@@ -258,13 +310,15 @@ export default {
                 user: [],
                 usersNotRegistered: [],
                 problems: [],
-                attachments: []
+                attachments: [],
+                bibtex: ''
             },
             initialized: false,
             publicationCopy: {
                 user: [],
                 usersNotRegistered: [],
-                problems: []
+                problems: [],
+                bibtex: ''
             },                
             editor: ClassicEditor,
             editorConfig: ClassicEditor.defaultConfig,
@@ -288,7 +342,8 @@ export default {
             fileComputational: null,
             fileArrayComputational: [],
             filePDFPublication: null,
-            filePDFPublicationPrevious: ''
+            filePDFPublicationPrevious: '',
+            bibtexError: ''
         };
     },
     props: {
@@ -311,6 +366,9 @@ export default {
                 this.prepareProblems();
                 this.prepareContent();
                 this.computationalChecked();
+                if (!this.publication.bibtex) {
+                    this.generateBibtex();
+                }
                 const idPDF = await this.prepareFilePDF();
                 let files;
                 if (this.filesToUpload) {
@@ -349,6 +407,7 @@ export default {
         },
         updateCopy (valor) {
             this.publicationCopy[valor.target.id] = valor.target.value;
+            this.generateBibtex();
         },
         async getUsers() {
             const res = await this.axios.get(`users`);
@@ -503,6 +562,116 @@ export default {
             }
             return '';
             
+        },
+        updateBibTeX() {
+            try {                
+                const bibFile = parseBibFile(this.publication.bibtex);
+                const id = this.publication.bibtex.substring(this.publication.bibtex.indexOf("{")+1, this.publication.bibtex.indexOf(","));
+                const entry = bibFile.getEntry(id);
+                if (entry) {
+                    this.setTitle(this.getValue(entry, "title"));
+                    this.setJournal(this.getValue(entry, "journal"));
+                    this.setVolume(this.getValue(entry, "volume"));
+                    this.setPages(this.getValue(entry, "pages"));
+                    this.setYear(this.getValue(entry, "year"));
+                    this.setPublisher(this.getValue(entry, "publisher"));
+                    this.setissnr(this.getValue(entry, "issn"));
+                    this.setdoi(this.getValue(entry, "doi"));
+                    this.seturl(this.getValue(entry, "url"));
+                    this.setKeywords(this.getValue(entry, "keywords"));
+                    this.setAbstract(this.getValue(entry, "abstract"));
+                    this.bibtexError = '';
+                    this.publicationCopy.bibtex = this.publication.bibtex;
+                } else {
+                    this.publication.bibtex = '';
+                    this.publicationCopy.bibtex = '';
+                    this.bibtexError = 'Wrong BibTeX'
+                    this.clearFields();
+                }
+            } catch (error) {
+                this.publication.bibtex = '';
+                this.publicationCopy.bibtex = '';
+                this.bibtexError = 'Wrong BibTeX'
+                this.clearFields();
+            }            
+        },
+        getValue(entry, value) {
+            const fieldValue = normalizeFieldValue(entry.getField(value));
+            return fieldValue ? fieldValue : '';
+        },
+        setTitle(fieldValue){
+            this.publication.title = fieldValue;
+            this.publicationCopy.title = fieldValue;
+            
+        },
+        setJournal(fieldValue){
+            this.publication.journal = fieldValue;
+            this.publicationCopy.journal = fieldValue;
+        },
+        setVolume(fieldValue){
+            this.publication.volume = fieldValue;
+            this.publicationCopy.volume = fieldValue;
+        },
+        setPages(fieldValue){
+            this.publication.pages = fieldValue;
+            this.publicationCopy.pages = fieldValue;
+        },
+        setYear(fieldValue){
+            this.publication.year = fieldValue;
+            this.publicationCopy.year = fieldValue;
+        },
+        setPublisher(fieldValue){
+            this.publication.publisher = fieldValue;
+            this.publicationCopy.publisher = fieldValue;
+        },
+        setissnr(fieldValue){
+            this.publication.issn = fieldValue;
+            this.publicationCopy.issn = fieldValue;
+        },
+        setdoi(fieldValue){
+            this.publication.doi = fieldValue;
+            this.publicationCopy.doi = fieldValue;
+        },
+        seturl(fieldValue){
+            this.publication.url = fieldValue;
+            this.publicationCopy.url = fieldValue;
+        },
+        setKeywords(fieldValue){
+            this.publication.keywords = fieldValue;
+            this.publicationCopy.keywords = fieldValue;
+        },
+        setAbstract(fieldValue){
+            this.publication.abstract = fieldValue;
+            this.publicationCopy.abstract = fieldValue;
+        },
+        clearFields() {
+            this.setTitle('');
+            this.setJournal('');
+            this.setVolume('');
+            this.setPages('');
+            this.setYear('');
+            this.setPublisher('');
+            this.setissnr('');
+            this.setdoi('');
+            this.seturl('');
+            this.setKeywords('');
+            this.setAbstract('');
+        },
+        generateBibtex() {
+            const bibtex= `@article{id,\n${this.publication.title ? `"title = {${this.publication.title}},"\n` : ''}` + 
+            `${this.publication.journal ? `"journal = {${this.publication.journal}},"\n` : ''}` +
+            `${this.publication.volume ? `"volume = {${this.publication.volume}},"\n` : ''}` +
+            `${this.publication.pages ? `"pages = {${this.publication.pages}},"\n` : ''}` +
+            `${this.publication.year ? `"year = {${this.publication.year}},"\n` : ''}` +
+            `${this.publication.publisher ? `"publisher = {${this.publication.publisher}},"\n` : ''}` +
+            `${this.publication.issn ? `"issn = {${this.publication.issn}},"\n` : ''}` +
+            `${this.publication.doi ? `"doi = {${this.publication.doi}},"\n` : ''}` +
+            `${this.publication.url ? `"url = {${this.publication.url}},"\n` : ''}` +
+            `${this.publication.author ? `"author = {${this.publication.author}},"\n` : ''}` +
+            `${this.publication.keywords ? `"keywords = {${this.publication.keywords}},"\n` : ''}` +
+            `${this.publication.abstract ? `"abstract = {${this.publication.abstract}},"\n` : ''}` + "}"
+            this.publication.bibtex = bibtex;
+            this.publicationCopy.bibtex = bibtex;
         }
     },
     watch: {
