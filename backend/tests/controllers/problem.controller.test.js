@@ -25,7 +25,8 @@ describe('Problem controller', () => {
                 _id: 2,
                 name: "el problem 2",
                 problemId: "el-problemId-2",
-                user: ["el-userId-2"]
+                user: ["el-userId-2"],
+                publications: ["el-publicationId-2"]
             },
             {
                 _id: 3,
@@ -130,18 +131,21 @@ describe('Problem controller', () => {
         it('Create a new problem', async () => {
             Problem.findOne = jest.fn(() => mockProblems.some(problem => problem.problemId == 'new-problem'));
             User.findOne = jest.fn(() => (mockUsers.filter(user => user.userId == 'el-userId-2')[0]));
+            Publication.findOne = jest.fn(() => mockPublications.filter( publication => publication.publicationId == 'el-publicationId-2')[0]);
             jest.spyOn(Problem.prototype, 'save')
             .mockImplementationOnce(() => {
                 mockProblems.push({
                     _id: 4,
                     name: "new problem",
                     problemId: "new-problem",
-                    user: ["el-userId-2"]
+                    user: ["el-userId-2"],
+                    publications: ['el-publicationId-2']
                 });
-                return { _id: 4, name: "new problem", problemId: "new-problem", user: ["el-userId-2"] }
+                return { _id: 4, name: "new problem", problemId: "new-problem", user: ["el-userId-2"], publications: ['el-publicationId-2'] }
             });
             
-            const saveReferencesMock = jest.fn(() => {
+            const saveReferencesMock = jest.fn()
+            .mockImplementationOnce(() => {
                 mockUsers[1] = {
                     _id: 2,
                     name: "el nombre 2",
@@ -152,18 +156,29 @@ describe('Problem controller', () => {
                     problems: ["el-problemId-2", "new-problem"]
                 }
                 return mockUsers
+            })
+            .mockImplementationOnce(() => {
+                mockPublications[0] = {
+                    _id: 2,
+                    title: "el publication 2",
+                    publicationId: "el-publicationId-2",
+                    user: ["el-userId-2"],
+                    problems: ["el-problemId-2", "new-problem"]
+                }
+                return mockPublications;
             });
             problemController.__Rewire__('saveReferences', saveReferencesMock)
             
             const res = await request(app).post('/api/problems').send({
                 name: "new problem",
                 problemId: "new-problem",
-                user: ["el-userId-2"]
+                user: ["el-userId-2"],
+                publications: ['el-publicationId-2']
             });
             expect(res.statusCode).toEqual(200);
-            expect(res.body).toEqual(expect.objectContaining({ _id: 4, name: "new problem", problemId: "new-problem", user: ["el-userId-2"] }));
+            expect(res.body).toEqual(expect.objectContaining({ _id: 4, name: "new problem", problemId: "new-problem", user: ["el-userId-2"], publications: ["el-publicationId-2"] }));
             expect(mockProblems).toHaveLength(4);
-            expect(mockProblems).toEqual(expect.arrayContaining([{ _id: 4, name: "new problem", problemId: "new-problem", user: ["el-userId-2"] }]));
+            expect(mockProblems).toEqual(expect.arrayContaining([{ _id: 4, name: "new problem", problemId: "new-problem", user: ["el-userId-2"], publications: ["el-publicationId-2"] }]));
             expect(mockUsers).toEqual(expect.arrayContaining([{
                 _id: 2,
                 name: "el nombre 2",
@@ -171,6 +186,14 @@ describe('Problem controller', () => {
                 password: "la pass 2",
                 userId: "el-userId-2",
                 roles: ['5f94531373dbf256c8900501'],
+                problems: ["el-problemId-2", "new-problem"]
+            }]));
+            expect(mockPublications).toHaveLength(1);
+            expect(mockPublications).toEqual(expect.arrayContaining([{
+                _id: 2,
+                title: "el publication 2",
+                publicationId: "el-publicationId-2",
+                user: ["el-userId-2"],
                 problems: ["el-problemId-2", "new-problem"]
             }]));
         });
@@ -239,8 +262,11 @@ describe('Problem controller', () => {
             Problem.findOne = jest.fn(() => mockProblems.filter( problem => problem.problemId == 'el-problemId-2'));
             User.find = jest.fn(() => mockUsers.filter(user => user.userId == 'el-userId-2'));
             User.findOne = jest.fn(() => (mockUsers.filter(user => user.userId == 'el-userId-2')[0]));
-
-            const deleteReferencesMock = jest.fn(() => {
+            Publication.find = jest.fn(() => mockPublications.filter(publication => publication.problems.includes('el-publicationId-2')));
+            Publication.findOne = jest.fn(() => mockPublications.filter(publication => publication.problems.includes('el-publicationId-2'))[0]);
+            
+            const deleteReferencesMock = jest.fn()
+            .mockImplementationOnce(() => {
                 mockUsers[1] = {
                     _id: 2,
                     name: "el nombre 2",
@@ -251,6 +277,16 @@ describe('Problem controller', () => {
                     problems: []
                 }
                 return mockUsers
+            })
+            .mockImplementationOnce(() => {
+                mockPublications[0] = {
+                    _id: 2,
+                    title: "el publication 2",
+                    publicationId: "el-publicationId-2",
+                    user: ["el-userId-2"],
+                    problems: []
+                }
+                return mockPublications
             });
             problemController.__Rewire__('deleteReferences', deleteReferencesMock)
 
@@ -258,10 +294,12 @@ describe('Problem controller', () => {
                 _id: 2,
                 name: "new name",
                 problemId: "el-problemId-2",
-                user: ["el-userId-2"]
+                user: ["el-userId-2"],
+                publications: ["el-publicationId-2"]
             }));
 
-            const saveReferencesMock = jest.fn(() => {
+            const saveReferencesMock = jest.fn()
+            .mockImplementationOnce(() => {
                 mockUsers[1] = {
                     _id: 2,
                     name: "el nombre 2",
@@ -272,6 +310,16 @@ describe('Problem controller', () => {
                     problems: ["el-problemId-2"]
                 }
                 return mockUsers
+            })
+            .mockImplementationOnce(() => {
+                mockPublications[0] = {
+                    _id: 2,
+                    title: "el publication 2",
+                    publicationId: "el-publicationId-2",
+                    user: ["el-userId-2"],
+                    problems: ["el-problemId-2"]
+                }
+                return mockPublications;
             });
             problemController.__Rewire__('saveReferences', saveReferencesMock)
 
@@ -280,9 +328,9 @@ describe('Problem controller', () => {
             });
 
             expect(res.statusCode).toEqual(200);
-            expect(res.body).toEqual(expect.objectContaining({ _id: 2, name: "new name", problemId: "el-problemId-2", user: ["el-userId-2"] }));
+            expect(res.body).toEqual(expect.objectContaining({ _id: 2, name: "new name", problemId: "el-problemId-2", user: ["el-userId-2"], publications: ["el-publicationId-2"] }));
             expect(mockProblems).toHaveLength(3);
-            expect(mockProblems).toEqual(expect.arrayContaining([{ _id: 2, name: "new name", problemId: "el-problemId-2", user: ["el-userId-2"] }]));
+            expect(mockProblems).toEqual(expect.arrayContaining([{ _id: 2, name: "new name", problemId: "el-problemId-2", user: ["el-userId-2"], publications: ["el-publicationId-2"] }]));
             expect(mockUsers).toEqual(expect.arrayContaining([{
                 _id: 2,
                 name: "el nombre 2",
@@ -290,6 +338,13 @@ describe('Problem controller', () => {
                 password: "la pass 2",
                 userId: "el-userId-2",
                 roles: ['5f94531373dbf256c8900501'],
+                problems: ["el-problemId-2"]
+            }]));
+            expect(mockPublications).toEqual(expect.arrayContaining([{
+                _id: 2,
+                title: "el publication 2",
+                publicationId: "el-publicationId-2",
+                user: ["el-userId-2"],
                 problems: ["el-problemId-2"]
             }]));
         });

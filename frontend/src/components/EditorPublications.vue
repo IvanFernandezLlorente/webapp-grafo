@@ -1,10 +1,47 @@
 <template>
     <div class="container">
         <form @submit.prevent="savePublication">
-            <div class="form-group">
-                <label for="title" class="control-label">Title</label>
-                <input id="title" v-model="publication.title" @change="updateCopy" class="form-control" type="text" placeholder="Title">
-            </div>
+            <b-row>
+                <b-col cols="6">
+                    <div class="form-group">
+                        <label for="title" class="control-label">Title</label>
+                        <input id="title" v-model="publication.title" @change="updateCopy" class="form-control" type="text" placeholder="Title">
+                    </div>
+                </b-col>
+                <b-col cols="6">
+                    <div class="form-group">
+                        <label for="journal" class="control-label">Journal</label>
+                        <input id="journal" v-model="publication.journal" @change="updateCopy" class="form-control" type="text" placeholder="Journal">
+                    </div>
+                </b-col>
+            </b-row>
+            
+             <b-row>
+                <b-col cols="3">
+                    <div class="form-group">
+                        <label for="volume" class="control-label">Volume</label>
+                        <input id="volume" v-model="publication.volume" @change="updateCopy" class="form-control" type="text" placeholder="Volume">
+                    </div>
+                </b-col>
+                <b-col cols="3">
+                    <div class="form-group">
+                        <label for="pages" class="control-label">Pages</label>
+                        <input id="pages" v-model="publication.pages" @change="updateCopy" class="form-control" type="text" placeholder="Pages">
+                    </div>
+                </b-col>
+                <b-col cols="3">
+                    <div class="form-group">
+                        <label for="year" class="control-label">Year</label>
+                        <input id="year" v-model="publication.year" @change="updateCopy" class="form-control" type="text" placeholder="Year">
+                    </div>
+                </b-col>
+                <b-col cols="3">
+                    <div class="form-group">
+                        <label for="publisher" class="control-label">Publisher</label>
+                        <input id="publisher" v-model="publication.publisher" @change="updateCopy" class="form-control" type="text" placeholder="Publisher">
+                    </div>
+                </b-col>
+            </b-row>
 
             <b-row>
                 <b-col cols="6" style="display: flex;flex-direction: column;">
@@ -193,6 +230,11 @@ export default {
         return {
             publication: {
                 title: '',
+                journal: '',
+                volume: '',
+                pages: '',
+                year: '',
+                publisher: '',
                 description: {
                     content: '<p>Here can be your description...</p>',
                     visible: true,

@@ -15,6 +15,11 @@
       
 
       <h3>{{publication.title}}</h3>
+      <p><strong>Journal: </strong>{{publication.journal}}</p>
+      <p><strong>Volume: </strong>{{publication.volume}}</p>
+      <p><strong>Pages: </strong>{{publication.pages}}</p>
+      <p><strong>Year: </strong>{{publication.year}}</p>
+      <p><strong>Publisher: </strong>{{publication.publisher}}</p>
       <p v-if="publication.pdf"><a :href="`https://localhost:3443/api/files/downloads/${publication.pdf}`">Get PDF</a></p>
       <h4 v-if="users.length || publication.usersNotRegistered.length">Users</h4>
       <div v-if="users.length">

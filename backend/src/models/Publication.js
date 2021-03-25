@@ -11,6 +11,11 @@ const publicationSchema = new Schema(
         type: String,
         unique: true
     },
+    journal: String,
+    volume: String,
+    pages: String,
+    year: String,
+    publisher: String,
     description: {
         content: String,
         visible: Boolean,

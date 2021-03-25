@@ -14,7 +14,12 @@ describe('Publication Model', () => {
         problems: ['un-problem'],
         usersNotRegistered: ['pepe'],
         attachments: ['file-attachment'],
-        pdf: "606eaa24-9262-4146-a583-6faf75e64788"
+        pdf: "606eaa24-9262-4146-a583-6faf75e64788",
+        journal: "Computers and Operations Research",
+        volume: "78",
+        pages: "500--512",
+        year: "2017",
+        publisher: "Elsevier",
     })    
  
     it('_id is defined in Publication model', () => {
@@ -55,5 +60,20 @@ describe('Publication Model', () => {
     });
     it('PDF is defined in Publication model', () => {
         expect(publication.pdf).toBeDefined()
+    });
+    it('Journal is defined in Publication model', () => {
+        expect(publication.journal).toBeDefined()
+    });
+    it('Volume is defined in Publication model', () => {
+        expect(publication.volume).toBeDefined()
+    });
+    it('Pages is defined in Publication model', () => {
+        expect(publication.pages).toBeDefined()
+    });
+    it('Year is defined in Publication model', () => {
+        expect(publication.year).toBeDefined()
+    });
+    it('Publisher is defined in Publication model', () => {
+        expect(publication.publisher).toBeDefined()
     });
 });
