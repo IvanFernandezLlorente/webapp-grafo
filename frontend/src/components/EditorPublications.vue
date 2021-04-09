@@ -1,5 +1,8 @@
 <template>
     <div class="container">
+        <div style="display: flex;">
+            <b-form-checkbox v-model="publication.visible" name="visible-button" switch style="align-self: center;margin-left: 30px;">Visible</b-form-checkbox>
+        </div>
         <form @submit.prevent="savePublication">
             <b-row>
                 <b-col cols="6">
@@ -311,7 +314,8 @@ export default {
                 usersNotRegistered: [],
                 problems: [],
                 attachments: [],
-                bibtex: ''
+                bibtex: '',
+                visible: true
             },
             initialized: false,
             publicationCopy: {
@@ -539,6 +543,7 @@ export default {
             this.publicationCopy.instances = { ...this.publication.instances };
             this.publicationCopy.computationalExperience = { ...this.publication.computationalExperience };
             this.publicationCopy.reference = { ...this.publication.reference };
+            this.publicationCopy.visible = this.publication.visible;
         },
         deleteFilePDF(){
             this.filePDFPublication = null

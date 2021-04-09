@@ -112,7 +112,7 @@ export default {
 
             this.problem.publications.forEach( publicationId => promises.push(this.axios.get(`publications/${publicationId}`)));
             const publications = await Promise.all(promises);
-            this.publications = publications.map( publication => publication.data);
+            this.publications = publications.map( publication => publication.data).filter(publication => publication.visible == true);
         },
         canEdit() {
             return (this.isAdmin) || (this.problem.user.some( user => user == this.id));

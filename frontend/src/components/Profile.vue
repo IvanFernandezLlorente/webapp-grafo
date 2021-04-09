@@ -59,14 +59,19 @@
                 </b-tab>
                 <b-tab title="Publications">
                     <b-list-group>
-                        <b-list-group-item  class="tabs-2-3" v-for="(publication,index) in publications"
-                            :key="index"
-                        >
-                            <b-link class="nav-link" :to="{path: `/publications/${publication.publicationId}`}">
-                                <p>{{publication.title}}</p> 
-                                <p>{{publication.userName}}</p>
-                            </b-link>
-                        </b-list-group-item>
+                        <div v-for="(publication,index) in publications" :key="index">
+                            <b-list-group-item  class="tabs-2-3"  v-if="publication.visible">
+                                <b-link class="nav-link" :to="{path: `/publications/${publication.publicationId}`}">
+                                    <p>{{publication.title}}</p> 
+                                </b-link>
+                            </b-list-group-item>
+                            <b-list-group-item  class="tabs-2-3"  v-else-if="!publication.visible && canEditVariable">
+                                <b-link class="nav-link" :to="{path: `/publications/${publication.publicationId}`}">
+                                    <p>{{publication.title}}</p> 
+                                    <b-icon-eye-slash-fill></b-icon-eye-slash-fill>
+                                </b-link>
+                            </b-list-group-item>
+                        </div>
                     </b-list-group>
                 </b-tab>
             </b-tabs>

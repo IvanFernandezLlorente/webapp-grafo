@@ -25,7 +25,8 @@ describe('Publication Model', () => {
         url: 'https://www.sciencedirect.com/science/article/pii/S0305054820302331',
         keywords: 'Cyclic cutwidth, Graph layout problem, Circular embedding',
         abstract: 'The Cyclic Cutwidth Minimization Problem (CCMP) is a Graph Layout',
-        bibtex: 'the bibtex'
+        bibtex: 'the bibtex',
+        visible: true,
     })    
  
     it('_id is defined in Publication model', () => {
@@ -99,5 +100,8 @@ describe('Publication Model', () => {
     });
     it('bibtex is defined in Publication model', () => {
         expect(publication.bibtex).toBeDefined()
+    });
+    it('Visible is defined in Publication model', () => {
+        expect(publication.visible).toBeDefined()
     });
 });

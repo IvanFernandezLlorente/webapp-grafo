@@ -4,10 +4,12 @@
     <b-col cols="9" class="publication" v-for="(publication,index) in publications"
         :key="index"
     >
-        <b-link class="nav-link" :to="{path: `/publications/${publication.publicationId}`}">
-            <p>{{publication.title}}</p> 
-            <p>{{publication.userName}}</p>
-        </b-link>
+        <div v-if="publication.visible">
+            <b-link class="nav-link" :to="{path: `/publications/${publication.publicationId}`}">
+                <p>{{publication.title}}</p> 
+                <p>{{publication.userName}}</p>
+            </b-link>
+        </div>        
     </b-col>
   </b-row>
 </template>
