@@ -22,7 +22,7 @@ export const getPublicationById = async (req, res) => {
 
 export const createPublication = async (req, res) => {
     try {
-        const publicationId = (req.body.title.toLowerCase().split(" ")).join('-');
+        const publicationId = (Date.now().toString(36) + Math.random().toString(36).substr(2, 6));
 
         const publication = await Publication.findOne({ publicationId });
         if (publication) {

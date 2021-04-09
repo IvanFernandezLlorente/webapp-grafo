@@ -22,7 +22,7 @@ export const getProblemById = async (req, res) => {
 
 export const createProblem = async (req, res) => {
     try {
-        const problemId = (req.body.name.toLowerCase().split(" ")).join('-');
+        const problemId = (Date.now().toString(36) + Math.random().toString(36).substr(2, 6));
 
         const problem = await Problem.findOne({ problemId });
         if (problem) {
