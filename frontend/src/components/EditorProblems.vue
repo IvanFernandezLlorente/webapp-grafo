@@ -1,5 +1,8 @@
 <template>
     <div class="container">
+        <div style="display: flex;">
+            <b-form-checkbox v-model="problem.visible" name="visible-button" switch style="align-self: center;margin-left: 30px;">Visible</b-form-checkbox>
+        </div>
         <form @submit.prevent="saveProblem">
             <div class="form-group">
                 <label for="name" class="control-label">Name</label>
@@ -198,7 +201,8 @@ export default {
                 user: [],
                 usersNotRegistered: [],
                 attachments: [],
-                publications: []
+                publications: [],
+                visible: true
             },
             initialized: false,
             problemCopy: {
@@ -412,6 +416,7 @@ export default {
             this.problemCopy.instances = { ...this.problem.instances };
             this.problemCopy.computationalExperience = { ...this.problem.computationalExperience };
             this.problemCopy.reference = { ...this.problem.reference };
+            this.problemCopy.visible = this.problem.visible;
         }
     },
     watch: {

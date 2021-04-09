@@ -2,22 +2,22 @@
   <div>
     <h3>{{user.name}}</h3>
     <div class="buttons">
-        <b-link v-if="canEdit()" class="edit" :to="{path: linkToEdit}"> 
+        <b-link v-if="canEditVariable" class="edit" :to="{path: linkToEdit}"> 
             <button class="btn btn-success">
                 Edit
             </button>
         </b-link>
-        <b-link v-if="canEdit() && !user.banned" class="edit" @click="banUser()"> 
+        <b-link v-if="canEditVariable && !user.banned" class="edit" @click="banUser()"> 
             <button class="btn btn-warning">
                 Ban
             </button>
         </b-link>
-        <b-link v-if="canEdit() && user.banned" class="edit" @click="allowUser()"> 
+        <b-link v-if="canEditVariable && user.banned" class="edit" @click="allowUser()"> 
             <button class="btn btn-warning">
                 Allow
             </button>
         </b-link>
-        <b-link v-if="canEdit()" class="edit"  @click="deleteU()"> 
+        <b-link v-if="canEditVariable" class="edit"  @click="deleteU()"> 
             <button class="btn btn-danger">
                 Delete
             </button>
@@ -42,13 +42,19 @@
                 </b-tab>
                 <b-tab title="Problems">
                     <b-list-group>
-                        <b-list-group-item  class="tabs-2-3" v-for="(problem,index) in problems"
-                            :key="index"
-                        >
-                            <b-link class="nav-link" :to="{path: `/problems/${problem.problemId}`}">
-                                <p>{{problem.name}}</p> 
-                            </b-link>
-                        </b-list-group-item>
+                        <div v-for="(problem,index) in problems" :key="index">
+                            <b-list-group-item  class="tabs-2-3"  v-if="problem.visible">
+                                <b-link class="nav-link" :to="{path: `/problems/${problem.problemId}`}">
+                                    <p>{{problem.name}}</p> 
+                                </b-link>
+                            </b-list-group-item>
+                            <b-list-group-item  class="tabs-2-3"  v-else-if="!problem.visible && canEditVariable">
+                                <b-link class="nav-link" :to="{path: `/problems/${problem.problemId}`}">
+                                    <p>{{problem.name}}</p> 
+                                    <b-icon-eye-slash-fill></b-icon-eye-slash-fill>
+                                </b-link>
+                            </b-list-group-item>
+                        </div>
                     </b-list-group>
                 </b-tab>
                 <b-tab title="Publications">
@@ -87,7 +93,8 @@ export default {
           problemsFetched: false,
           publications: [],
           publicationsFetched: false,
-          linkToEdit: ''
+          linkToEdit: '',
+          canEditVariable: false
         }
     },
     created () {
@@ -98,13 +105,14 @@ export default {
             try {
                 const res = await this.axios.get(`users/${this.$route.params.userId}`);
                 this.user = res.data;
+                this.canEdit()
             } catch (error) {
                 console.log(error)                
             }
         },
         canEdit() {
             this.linkToEdit = this.user._id === this.id ? '/settings' : `/admin/edit-profile/${this.user._id}`
-            return (this.isAdmin) || (this.user._id === this.id)
+            this.canEditVariable = (this.isAdmin) || (this.user._id === this.id)
         },
         async deleteU() {
             const res = await this.axios.delete(`users/${this.$route.params.userId}`,{

@@ -4,10 +4,13 @@
     <b-col cols="9" class="problem" v-for="(problem,index) in problems"
         :key="index"
     >
-        <b-link class="nav-link" :to="{path: `/problems/${problem.problemId}`}">
-            <p>{{problem.name}}</p> 
-            <p>{{problem.alias}}</p>
-        </b-link>
+        <div v-if="problem.visible">
+            <b-link class="nav-link" :to="{path: `/problems/${problem.problemId}`}">
+                <p>{{problem.name}}</p> 
+                <p>{{problem.alias}}</p>
+            </b-link>
+        </div>
+        
     </b-col>
   </b-row>
 </template>

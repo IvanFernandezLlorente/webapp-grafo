@@ -14,7 +14,8 @@ describe('Problem Model', () => {
         user: ['el-userId-2'],
         publications: ['una-publicacion'],
         usersNotRegistered: ['pepe'],
-        attachments: ['file-attachment']
+        attachments: ['file-attachment'],
+        visible: true,
     })    
  
     it('_id is defined in Problem model', () => {
@@ -55,5 +56,8 @@ describe('Problem Model', () => {
     });
     it('Attachments is defined in Problem model', () => {
         expect(problem.attachments).toBeDefined()
+    });
+    it('Visible is defined in Problem model', () => {
+        expect(problem.visible).toBeDefined()
     });
 });

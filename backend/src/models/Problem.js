@@ -43,7 +43,8 @@ const problemSchema = new Schema(
     }],
     attachments: [{
         type: String
-    }]
+    }],
+    visible: Boolean,
   },
   {
     versionKey: false,
