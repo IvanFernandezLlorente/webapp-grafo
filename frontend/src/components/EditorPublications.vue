@@ -663,18 +663,18 @@ export default {
             this.setAbstract('');
         },
         generateBibtex() {
-            const bibtex= `@article{id,\n${this.publication.title ? `"title = {${this.publication.title}},"\n` : ''}` + 
-            `${this.publication.journal ? `"journal = {${this.publication.journal}},"\n` : ''}` +
-            `${this.publication.volume ? `"volume = {${this.publication.volume}},"\n` : ''}` +
-            `${this.publication.pages ? `"pages = {${this.publication.pages}},"\n` : ''}` +
-            `${this.publication.year ? `"year = {${this.publication.year}},"\n` : ''}` +
-            `${this.publication.publisher ? `"publisher = {${this.publication.publisher}},"\n` : ''}` +
-            `${this.publication.issn ? `"issn = {${this.publication.issn}},"\n` : ''}` +
-            `${this.publication.doi ? `"doi = {${this.publication.doi}},"\n` : ''}` +
-            `${this.publication.url ? `"url = {${this.publication.url}},"\n` : ''}` +
-            `${this.publication.author ? `"author = {${this.publication.author}},"\n` : ''}` +
-            `${this.publication.keywords ? `"keywords = {${this.publication.keywords}},"\n` : ''}` +
-            `${this.publication.abstract ? `"abstract = {${this.publication.abstract}},"\n` : ''}` + "}"
+            const bibtex= `@article{id,\n${this.publication.title ? `title = {${this.publication.title}},\n` : ''}` + 
+            `${this.publication.journal ? `journal = {${this.publication.journal}},\n` : ''}` +
+            `${this.publication.volume ? `volume = {${this.publication.volume}},\n` : ''}` +
+            `${this.publication.pages ? `pages = {${this.publication.pages}},\n` : ''}` +
+            `${this.publication.year ? `year = {${this.publication.year}},\n` : ''}` +
+            `${this.publication.publisher ? `publisher = {${this.publication.publisher}},\n` : ''}` +
+            `${this.publication.issn ? `issn = {${this.publication.issn}},\n` : ''}` +
+            `${this.publication.doi ? `doi = {${this.publication.doi}},\n` : ''}` +
+            `${this.publication.url ? `url = {${this.publication.url}},\n` : ''}` +
+            `${this.publication.author ? `author = {${this.publication.author}},\n` : ''}` +
+            `${this.publication.keywords ? `keywords = {${this.publication.keywords}},\n` : ''}` +
+            `${this.publication.abstract ? `abstract = {${this.publication.abstract}},\n` : ''}` + "}"
             this.publication.bibtex = bibtex;
             this.publicationCopy.bibtex = bibtex;
         }
