@@ -24,7 +24,7 @@ export const createPublication = async (req, res) => {
     try {
         const publicationId = (Date.now().toString(36) + Math.random().toString(36).substr(2, 6));
 
-        const publication = await Publication.findOne({ publicationId });
+        const publication = await Publication.findOne({ title: req.body.title });
         if (publication) {
             return res.status(400).json({ message: "The publication already exists" });
         }

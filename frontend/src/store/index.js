@@ -8,23 +8,33 @@ export default new Vuex.Store({
         token: "",
         userId: "",
         id: "",
-        isAdmin: false
+        isAdmin: false,
+        orcid: "",
+        bibtex: "" 
     },
 
     mutations: {
         authUser(state, userData) {
-            const { token, id, userId, isAdmin } = userData
+            const { token, id, userId, isAdmin, orcid } = userData
             Vue.set(state, 'isAdmin', isAdmin);
             Vue.set(state, 'token', token);
             Vue.set(state, 'userId', userId);
-            Vue.set(state, 'id',id);
+            Vue.set(state, 'id', id);
+            Vue.set(state, 'orcid', orcid);
         },
         logoutUser(state) {
             Vue.set(state, 'isAdmin', '');
             Vue.set(state, 'token', '');
             Vue.set(state, 'userId', '');
-            Vue.set(state, 'id','');
+            Vue.set(state, 'id', '');
+            Vue.set(state, 'orcid', '');
         },
+        orcidUser(state, data) {
+            Vue.set(state, 'orcid', data);
+        },
+        updateBibtex(state, data) {
+            Vue.set(state, 'bibtex', data);
+        }
     },
 
     actions: {
@@ -42,6 +52,14 @@ export default new Vuex.Store({
 
         signup({ commit }, userData) {
             commit('authUser', userData);
+        },
+
+        updateOrcid({ commit }, data) {
+            commit('orcidUser', data);
+        },
+
+        bibtexFromOrcid({ commit }, data) {
+            commit('updateBibtex', data);
         },
     },
 

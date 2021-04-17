@@ -221,6 +221,9 @@ export const signIn = async (req,res) => {
         if (user.banned) {
             return res.status(401).json({ message: "Your account is blocked"});
         }
+
+        const orcid = ((user.orcid) && (user.orcid.hasOwnProperty('orcid')) && (user.orcid.orcid)) ? user.orcid.orcid : undefined;
+        
         const token = jwt.sign({ id: user._id, userId: user.userId }, config.SECRET, {
             expiresIn: 86400
         });
@@ -229,7 +232,8 @@ export const signIn = async (req,res) => {
             token,
             id: user._id,
             userId: user.userId,
-            roles: user.roles
+            roles: user.roles,
+            orcid
         });
     } catch (error) {
         return res.status(500).json({ message: "Error" });
@@ -265,7 +269,8 @@ export const signInSocial = async (req, res) => {
             id: req.user.user._id,
             userId: req.user.user.userId,
             roles: req.user.user.roles,
-            method: req.user.method
+            method: req.user.method,
+            orcid: req.user.method == "signinORCID" ? req.user.user.orcid.orcid : undefined
         }));
         return res.status(200).send(responseHTML);
     } catch (error) {

@@ -24,7 +24,7 @@ export const createProblem = async (req, res) => {
     try {
         const problemId = (Date.now().toString(36) + Math.random().toString(36).substr(2, 6));
 
-        const problem = await Problem.findOne({ problemId });
+        const problem = await Problem.findOne({ name: req.body.name });
         if (problem) {
             return res.status(400).json({ message: "The problem already exists" });
         }

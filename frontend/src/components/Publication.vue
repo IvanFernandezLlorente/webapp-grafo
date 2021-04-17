@@ -27,7 +27,7 @@
       <p><strong>Pages: </strong>{{publication.pages}}</p>
       <p><strong>Year: </strong>{{publication.year}}</p>
       <p><strong>Publisher: </strong>{{publication.publisher}}</p>
-      <p><strong>issn: </strong>{{publication.doi}}</p>
+      <p><strong>issn: </strong>{{publication.issn}}</p>
       <p><strong>doi: </strong>{{publication.doi}}</p>
       <p><strong>URL: </strong>{{publication.url}}</p>
       <p><strong>Keywords: </strong>{{publication.keywords}}</p>

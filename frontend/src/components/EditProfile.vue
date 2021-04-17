@@ -286,6 +286,7 @@ export default {
                     this.errorORCIDText = message.data.message;
                 } else if ((message.data.user) && (message.data.user.method == 'connectORCID')) {
                     this.user = message.data.user.user;
+                    this.$store.dispatch('updateOrcid', message.data.user.user.orcid.orcid);
                 }
             });
             
@@ -298,6 +299,7 @@ export default {
             });
             delete this.userCopy.orcid;
             this.user = res.data;
+            this.$store.dispatch('updateOrcid', undefined);
         },
         toggleShow() {
             this.show = !this.show;

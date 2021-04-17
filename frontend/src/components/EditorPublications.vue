@@ -92,6 +92,25 @@
             </b-modal>
             <p v-if="bibtexError">{{bibtexError}}</p>
 
+            <b-modal id="modal-confirm-authors" title="Authors" @ok="manageUsersModal" no-stacking>
+                <p>We found {{usersConfirm.length}} authors to confirm</p>
+                <p>Do you want to confirm them?</p>
+            </b-modal>
+
+            <div v-for="(user, index) in usersConfirm" :key="index">
+               <b-modal :id="`modal-confirm-authors-${index}`" :title="`${showUserModal(user)}`" @ok="addUsersModal" no-stacking >
+                    <p>We found {{`${showUserModal(user)}`}}</p>
+                    <p>Find that user in the search engine</p>
+                    <vue-simple-suggest
+                        v-model="userModal"
+                        :list="usersToChoose"
+                        :min-length="2"
+                        :filter-by-query="true">
+                    </vue-simple-suggest>
+                </b-modal> 
+            </div>
+            
+
             <b-row>
                 <b-col cols="6" style="display: flex;flex-direction: column;">
                     <h4>Authors</h4>
@@ -270,6 +289,7 @@ import { v4 as uuid } from 'uuid';
 import VueSimpleSuggest from 'vue-simple-suggest';
 import 'vue-simple-suggest/dist/styles.css';
 import { parseBibFile, normalizeFieldValue } from "bibtex";
+import { eventBus } from '../main';
 
 export default {
     name: 'EditorPublications',
@@ -347,7 +367,9 @@ export default {
             fileArrayComputational: [],
             filePDFPublication: null,
             filePDFPublicationPrevious: '',
-            bibtexError: ''
+            bibtexError: '',
+            usersConfirm: [],
+            userModal: ''
         };
     },
     props: {
@@ -362,6 +384,11 @@ export default {
         if (!this.isNew) {
             this.fetchData();
         }
+        if (this.$store.state.bibtex) {
+            this.publication.bibtex = this.$store.state.bibtex;
+            this.$store.dispatch('bibtexFromOrcid','');
+            this.updateBibTeX();
+        }
     },
     methods: {
         async savePublication () {
@@ -370,9 +397,8 @@ export default {
                 this.prepareProblems();
                 this.prepareContent();
                 this.computationalChecked();
-                if (!this.publication.bibtex) {
-                    this.generateBibtex();
-                }
+                this.generateBibtex();
+                
                 const idPDF = await this.prepareFilePDF();
                 let files;
                 if (this.filesToUpload) {
@@ -427,7 +453,8 @@ export default {
             this.usersChosen.splice(index, 1);
         },
         prepareUsers() {
-            this.usersChosen.forEach( user => {
+            const users = [...new Set([...(this.usersChosen.filter(user => user))])]
+            users.forEach( user => {
                 if (this.userMap.has(user)) {
                     this.publication.user.push(this.userMap.get(user));
                     this.publicationCopy.user.push(this.userMap.get(user));
@@ -572,7 +599,7 @@ export default {
             try {                
                 const bibFile = parseBibFile(this.publication.bibtex);
                 const id = this.publication.bibtex.substring(this.publication.bibtex.indexOf("{")+1, this.publication.bibtex.indexOf(","));
-                const entry = bibFile.getEntry(id);
+                const entry = bibFile.getEntry(id.trim());
                 if (entry) {
                     this.setTitle(this.getValue(entry, "title"));
                     this.setJournal(this.getValue(entry, "journal"));
@@ -587,6 +614,10 @@ export default {
                     this.setAbstract(this.getValue(entry, "abstract"));
                     this.bibtexError = '';
                     this.publicationCopy.bibtex = this.publication.bibtex;
+                    if (entry.fields.author && entry.fields.author["authors$"]) {
+                        this.usersConfirm = entry.fields.author["authors$"];
+                        this.$bvModal.show("modal-confirm-authors");
+                    }
                 } else {
                     this.publication.bibtex = '';
                     this.publicationCopy.bibtex = '';
@@ -600,6 +631,22 @@ export default {
                 this.clearFields();
             }            
         },
+        manageUsersModal(){
+            for (let i = 0; i < this.usersConfirm.length; i++) {
+                this.$bvModal.show(`modal-confirm-authors-${i}`);
+            }
+        },  
+        showUserModal(user){
+            const firstNames = user.firstNames.reduce((text, name) => text + ` ${name}`);
+            const lastNames = user.lastNames.reduce((text, name) => text + ` ${name}`);
+            return `${firstNames} ${lastNames}`;
+        },
+        addUsersModal(){
+            if (!this.usersChosen.includes(this.userModal)) {
+                this.usersChosen.push(this.userModal);
+            }
+            this.userModal = '';
+        },  
         getValue(entry, value) {
             const fieldValue = normalizeFieldValue(entry.getField(value));
             return fieldValue ? fieldValue : '';
@@ -672,11 +719,14 @@ export default {
             `${this.publication.issn ? `issn = {${this.publication.issn}},\n` : ''}` +
             `${this.publication.doi ? `doi = {${this.publication.doi}},\n` : ''}` +
             `${this.publication.url ? `url = {${this.publication.url}},\n` : ''}` +
-            `${this.publication.author ? `author = {${this.publication.author}},\n` : ''}` +
+            `${this.usersChosen ? `author = {${this.usersToBibtex()}},\n` : ''}` +
             `${this.publication.keywords ? `keywords = {${this.publication.keywords}},\n` : ''}` +
             `${this.publication.abstract ? `abstract = {${this.publication.abstract}},\n` : ''}` + "}"
             this.publication.bibtex = bibtex;
             this.publicationCopy.bibtex = bibtex;
+        },
+        usersToBibtex(){
+            return this.usersChosen.reduce((text, name, index) =>  index==0 ? text + `${name}` : text + ` and ${name}`);
         }
     },
     watch: {

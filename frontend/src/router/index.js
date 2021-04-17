@@ -19,6 +19,7 @@ import NewProblem from '../components/NewProblem';
 import Register from '../pages/Register';
 import RequestSignUp from '../pages/RequestSignUp';
 import Applications from '../components/Applications';
+import ImportOrcid from '../components/ImportOrcid';
 
 Vue.use(VueRouter)
 
@@ -141,6 +142,18 @@ const routes = [
         component: Applications,
         beforeEnter: (to, from, next) => {
             if (store.state.isAdmin) {
+                next();
+            } else {
+                next({path: '/'})
+            }
+        }
+     }, 
+     {
+        path: '/import-orcid',
+        name: 'Import-Orcid',
+        component: ImportOrcid,
+        beforeEnter: (to, from, next) => {
+            if (store.state.orcid) {
                 next();
             } else {
                 next({path: '/'})

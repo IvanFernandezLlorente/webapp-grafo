@@ -86,12 +86,13 @@ export default {
             });
         },
         manageSignIn(data) {
-            const { token, id, userId, roles } = data;
+            const { token, id, userId, roles, orcid } = data;
             const sended = {
                 token, 
                 id, 
                 userId, 
-                isAdmin: roles.includes('admin')
+                isAdmin: roles.includes('admin'),
+                orcid: orcid ? orcid : undefined
             }
             this.$store.dispatch('login',sended);
             this.$router.push({path: '/'}).catch(()=>{});

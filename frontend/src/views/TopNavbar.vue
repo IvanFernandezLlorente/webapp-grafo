@@ -46,6 +46,12 @@
               Applications
             </b-link>
           </li>
+
+          <li v-if="orcid" class="nav-item">
+            <b-link class="nav-link" :to="{path: '/import-orcid'}">
+              Import from ORCID
+            </b-link>
+          </li>
           
 
           <li class="nav-item">
@@ -82,7 +88,7 @@ export default {
             this.$router.push({path: '/login'})
         }
     },
-    computed: mapState(['token', 'isAdmin'])
+    computed: mapState(['token', 'isAdmin','orcid'])
 }
 
 </script>
