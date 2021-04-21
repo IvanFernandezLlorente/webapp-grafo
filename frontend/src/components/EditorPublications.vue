@@ -7,14 +7,14 @@
             <b-row>
                 <b-col cols="6">
                     <div class="form-group">
-                        <label for="title" class="control-label">Title</label>
-                        <input id="title" v-model="publication.title" @change="updateCopy" class="form-control" type="text" placeholder="Title">
+                        <label for="title" class="control-label">{{ $t('createPublication.titlePubli') }}</label>
+                        <input id="title" v-model="publication.title" @change="updateCopy" class="form-control" type="text" :placeholder="$t('createPublication.titlePubli')">
                     </div>
                 </b-col>
                 <b-col cols="6">
                     <div class="form-group">
-                        <label for="journal" class="control-label">Journal</label>
-                        <input id="journal" v-model="publication.journal" @change="updateCopy" class="form-control" type="text" placeholder="Journal">
+                        <label for="journal" class="control-label">{{ $t('createPublication.journal') }}</label>
+                        <input id="journal" v-model="publication.journal" @change="updateCopy" class="form-control" type="text" :placeholder="$t('createPublication.journal')">
                     </div>
                 </b-col>
             </b-row>
@@ -22,26 +22,26 @@
              <b-row>
                 <b-col cols="3">
                     <div class="form-group">
-                        <label for="volume" class="control-label">Volume</label>
-                        <input id="volume" v-model="publication.volume" @change="updateCopy" class="form-control" type="text" placeholder="Volume">
+                        <label for="volume" class="control-label">{{ $t('createPublication.volume') }}</label>
+                        <input id="volume" v-model="publication.volume" @change="updateCopy" class="form-control" type="text" :placeholder="$t('createPublication.volume')">
                     </div>
                 </b-col>
                 <b-col cols="3">
                     <div class="form-group">
-                        <label for="pages" class="control-label">Pages</label>
-                        <input id="pages" v-model="publication.pages" @change="updateCopy" class="form-control" type="text" placeholder="Pages">
+                        <label for="pages" class="control-label">{{ $t('createPublication.pages') }}</label>
+                        <input id="pages" v-model="publication.pages" @change="updateCopy" class="form-control" type="text" :placeholder="$t('createPublication.pages')">
                     </div>
                 </b-col>
                 <b-col cols="3">
                     <div class="form-group">
-                        <label for="year" class="control-label">Year</label>
-                        <input id="year" v-model="publication.year" @change="updateCopy" class="form-control" type="text" placeholder="Year">
+                        <label for="year" class="control-label">{{ $t('createPublication.year') }}</label>
+                        <input id="year" v-model="publication.year" @change="updateCopy" class="form-control" type="text" :placeholder="$t('createPublication.year')">
                     </div>
                 </b-col>
                 <b-col cols="3">
                     <div class="form-group">
-                        <label for="publisher" class="control-label">Publisher</label>
-                        <input id="publisher" v-model="publication.publisher" @change="updateCopy" class="form-control" type="text" placeholder="Publisher">
+                        <label for="publisher" class="control-label">{{ $t('createPublication.publisher') }}</label>
+                        <input id="publisher" v-model="publication.publisher" @change="updateCopy" class="form-control" type="text" :placeholder="$t('createPublication.publisher')">
                     </div>
                 </b-col>
             </b-row>
@@ -49,29 +49,20 @@
             <b-row>
                 <b-col cols="4">
                     <div class="form-group">
-                        <label for="issn" class="control-label">ISSN</label>
-                        <input id="issn" v-model="publication.issn" @change="updateCopy" class="form-control" type="text" placeholder="issn">
+                        <label for="issn" class="control-label">{{ $t('createPublication.issn') }}</label>
+                        <input id="issn" v-model="publication.issn" @change="updateCopy" class="form-control" type="text" :placeholder="$t('createPublication.issn')">
                     </div>
                 </b-col>
                 <b-col cols="4">
                     <div class="form-group">
-                        <label for="doi" class="control-label">DOI</label>
-                        <input id="doi" v-model="publication.doi" @change="updateCopy" class="form-control" type="text" placeholder="doi">
+                        <label for="doi" class="control-label">{{ $t('createPublication.doi') }}</label>
+                        <input id="doi" v-model="publication.doi" @change="updateCopy" class="form-control" type="text" :placeholder="$t('createPublication.doi')">
                     </div>
                 </b-col>
                 <b-col cols="4">
                     <div class="form-group">
-                        <label for="url" class="control-label">URL</label>
-                        <input id="url" v-model="publication.url" @change="updateCopy" class="form-control" type="text" placeholder="url">
-                    </div>
-                </b-col>
-            </b-row>
-
-            <b-row>
-                <b-col cols="12">
-                    <div class="form-group">
-                        <label for="keywords" class="control-label">Keywords</label>
-                        <input id="keywords" v-model="publication.keywords" @change="updateCopy" class="form-control" type="text" placeholder="Keywords">
+                        <label for="url" class="control-label">{{ $t('createPublication.url') }}</label>
+                        <input id="url" v-model="publication.url" @change="updateCopy" class="form-control" type="text" :placeholder="$t('createPublication.url')">
                     </div>
                 </b-col>
             </b-row>
@@ -79,16 +70,25 @@
             <b-row>
                 <b-col cols="12">
                     <div class="form-group">
-                        <label for="abstract" class="control-label">Abstract</label>
-                        <textarea id="abstract" v-model="publication.abstract" @change="updateCopy" class="form-control"  style="height: 20px; min-height: 50px;" placeholder="Abstract"></textarea> 
+                        <label for="keywords" class="control-label">{{ $t('createPublication.keywords') }}</label>
+                        <input id="keywords" v-model="publication.keywords" @change="updateCopy" class="form-control" type="text" :placeholder="$t('createPublication.keywords')">
                     </div>
                 </b-col>
             </b-row>
 
-            <b-button v-b-modal.modal-bibtex>Import BibTeX</b-button>
+            <b-row>
+                <b-col cols="12">
+                    <div class="form-group">
+                        <label for="abstract" class="control-label">{{ $t('createPublication.abstract') }}</label>
+                        <textarea id="abstract" v-model="publication.abstract" @change="updateCopy" class="form-control"  style="height: 20px; min-height: 50px;" :placeholder="$t('createPublication.abstract')"></textarea> 
+                    </div>
+                </b-col>
+            </b-row>
+
+            <b-button v-b-modal.modal-bibtex>{{ $t('createPublication.importBibtex') }}</b-button>
             <b-modal id="modal-bibtex" title="BibTeX">
                 <label for="bibtex" class="control-label">BibTeX</label>
-                <textarea id="bibtex" v-model="publication.bibtex" @change="updateBibTeX" class="form-control" style="height: 200px; min-height: 200px;" placeholder="Insert BibTeX here:"></textarea>  
+                <textarea id="bibtex" v-model="publication.bibtex" @change="updateBibTeX" class="form-control" style="height: 200px; min-height: 200px;" :placeholder="$t('createPublication.bibtexPHolder')"></textarea>  
             </b-modal>
             <p v-if="bibtexError">{{bibtexError}}</p>
 
@@ -113,7 +113,7 @@
 
             <b-row>
                 <b-col cols="6" style="display: flex;flex-direction: column;">
-                    <h4>Authors</h4>
+                    <h4>{{ $t('createPublication.authors') }}</h4>
                     <div class="form-group search" v-for="(theUser, index) in usersChosenToShow" :key="index" style="padding-left: 0px;display: flex;">
                         <vue-simple-suggest
                             v-model="usersChosenToShow[index]"
@@ -128,7 +128,7 @@
             
                     <div class="form-group">
                         <button @click="addUser" type="button" class="btn btn-secondary">
-                            Add User
+                            {{ $t('createPublication.addAuthor') }}
                         </button>
                     </div>
                 </b-col>
@@ -136,7 +136,7 @@
                 <b-col style="display: flex;justify-content: center;">
                     <div style="display: flex;align-items: baseline;">
                         <b-form-file v-model="filePDFPublication" class="inputfile mt-3" id="inputfilePDFPublication" ref="file-input" accept=".pdf" plain></b-form-file>
-                        <label class="btn btn-secondary" for="inputfilePDFPublication">Upload PDF</label>
+                        <label class="btn btn-secondary" for="inputfilePDFPublication">{{ $t('createPublication.uploadPDF') }}</label>
 
                         <ul>
                             <li class="item-list" v-if="filePDFPublication">
@@ -153,7 +153,7 @@
             </b-row>
             
 
-            <h4>Related Problems</h4>
+            <h4>{{ $t('createPublication.relatedProblems') }}</h4>
             <div class="form-group col-md-6 search" v-for="(theProblem, index) in problemsChosenToShow" :key="`${index} - p`" style="padding-left: 0px;display: flex;">
                 <vue-simple-suggest
                     v-model="problemsChosenToShow[index]"
@@ -168,13 +168,13 @@
     
             <div class="form-group">
                 <button @click="addProblem" type="button" class="btn btn-secondary">
-                    Add Problem
+                    {{ $t('createPublication.addProblem') }}
                 </button>
             </div>
 
             <div class="body-edit">
                 <div style="display: flex;">
-                    <h3>Publication Description</h3>
+                    <h3>{{ $t('createPublication.wizard2') }}</h3>
                     <b-form-checkbox v-model="publication.description.visible" name="visible-button" switch style="align-self: center;margin-left: 30px;">Visible</b-form-checkbox>
                 </div>
                 <ckeditor :editor="editor" v-model="publication.description.content" :config="editorConfig"></ckeditor>
@@ -182,7 +182,7 @@
 
             <div style="display: flex;align-items: baseline;">
                 <b-form-file v-model="fileDescription" class="inputfile mt-3" id="inputfileDescription" ref="file-input" multiple plain></b-form-file>
-                <label class="btn btn-secondary" for="inputfileDescription">Choose a file</label>
+                <label class="btn btn-secondary" for="inputfileDescription">{{ $t('createPublication.chooseFile') }}</label>
 
                 <ul>
                     <li class="item-list" v-for="(file, index) in fileArrayDescription" :key="index">
@@ -194,7 +194,7 @@
 
             <div class="body-edit">
                 <div style="display: flex;">
-                    <h3>State of the Art Methods</h3>
+                    <h3>{{ $t('createPublication.wizard3') }}</h3>
                     <b-form-checkbox v-model="publication.state.visible" name="visible-button" switch style="align-self: center;margin-left: 30px;">Visible</b-form-checkbox>
                 </div>
                 <ckeditor :editor="editor" v-model="publication.state.content" :config="editorConfig"></ckeditor>
@@ -202,7 +202,7 @@
 
             <div style="display: flex;align-items: baseline;">
                 <b-form-file v-model="fileState" class="inputfile mt-3" id="inputfileState" ref="file-input" multiple plain></b-form-file>
-                <label class="btn btn-secondary" for="inputfileState">Choose a file</label>
+                <label class="btn btn-secondary" for="inputfileState">{{ $t('createPublication.chooseFile') }}</label>
 
                 <ul>
                     <li class="item-list" v-for="(file, index) in fileArrayState" :key="index">
@@ -214,7 +214,7 @@
 
             <div class="body-edit">
                 <div style="display: flex;">
-                    <h3>Instances</h3>
+                    <h3>{{ $t('createPublication.wizard4') }}</h3>
                     <b-form-checkbox v-model="publication.instances.visible" name="visible-button" switch style="align-self: center;margin-left: 30px;">Visible</b-form-checkbox>
                 </div>
                 <ckeditor :editor="editor" v-model="publication.instances.content" :config="editorConfig"></ckeditor>
@@ -222,7 +222,7 @@
 
             <div style="display: flex;align-items: baseline;">
                 <b-form-file v-model="fileInstances" class="inputfile mt-3" id="inputfileInstances" ref="file-input" multiple plain></b-form-file>
-                <label class="btn btn-secondary" for="inputfileInstances">Choose a file</label>
+                <label class="btn btn-secondary" for="inputfileInstances">{{ $t('createPublication.chooseFile') }}</label>
 
                 <ul>
                     <li class="item-list" v-for="(file, index) in fileArrayInstances" :key="index">
@@ -235,7 +235,7 @@
 
             <div class="body-edit">
                 <div style="display: flex;">
-                    <h3 v-bind:class="{ cross: !checked}">Computational Experience</h3>
+                    <h3 v-bind:class="{ cross: !checked}">{{ $t('createPublication.wizard5') }}</h3>
                     <b-form-checkbox v-model="checked" name="check-button" switch style="align-self: center;margin-left: 16px;">Optional</b-form-checkbox>
                     <b-form-checkbox v-if="checked" v-model="publication.computationalExperience.visible" name="visible-button" switch style="align-self: center;margin-left: 70px;">Visible</b-form-checkbox>
                 </div>
@@ -244,7 +244,7 @@
 
             <div v-if="checked" style="display: flex;align-items: baseline;">
                 <b-form-file v-model="fileComputational" class="inputfile mt-3" id="inputfileComputational" ref="file-input" multiple plain></b-form-file>
-                <label class="btn btn-secondary" for="inputfileComputational">Choose a file</label>
+                <label class="btn btn-secondary" for="inputfileComputational">{{ $t('createPublication.chooseFile') }}</label>
 
                 <ul>
                     <li class="item-list" v-for="(file, index) in fileArrayComputational" :key="index">
@@ -256,7 +256,7 @@
 
             <div class="body-edit">
                 <div style="display: flex;">
-                    <h3>References</h3>
+                    <h3>{{ $t('createPublication.wizard6') }}</h3>
                     <b-form-checkbox v-model="publication.reference.visible" name="visible-button" switch style="align-self: center;margin-left: 30px;">Visible</b-form-checkbox>
                 </div>
                 <ckeditor :editor="editor" v-model="publication.reference.content" :config="editorConfig"></ckeditor>
@@ -264,7 +264,7 @@
 
             <div style="display: flex;align-items: baseline;">
                 <b-form-file v-model="fileReferences" class="inputfile mt-3" id="inputfileReferences" ref="file-input" multiple plain></b-form-file>
-                <label class="btn btn-secondary" for="inputfileReferences">Choose a file</label>
+                <label class="btn btn-secondary" for="inputfileReferences">{{ $t('createPublication.chooseFile') }}</label>
 
                 <ul>
                     <li class="item-list" v-for="(file, index) in fileArrayReferences" :key="index">
@@ -276,7 +276,7 @@
 
             <div class="text-center" style="margin-bottom: 63px;">
                 <button type="submit" class="btn btn-info float-right mb-50">
-                    Save Publication
+                    {{ $t('createPublication.save') }}
                 </button>
             </div>
         </form>
@@ -289,7 +289,6 @@ import { v4 as uuid } from 'uuid';
 import VueSimpleSuggest from 'vue-simple-suggest';
 import 'vue-simple-suggest/dist/styles.css';
 import { parseBibFile, normalizeFieldValue } from "bibtex";
-import { eventBus } from '../main';
 
 export default {
     name: 'EditorPublications',

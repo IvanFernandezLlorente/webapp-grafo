@@ -37,6 +37,7 @@
     "uuid": "^8.3.2",
     "vue": "^2.6.12",
     "vue-axios": "^3.2.4",
+    "vue-i18n": "^8.24.3",
     "vue-image-crop-upload": "^2.5.0",
     "vue-router": "^3.2.0",
     "vue-simple-suggest": "^1.10.3",

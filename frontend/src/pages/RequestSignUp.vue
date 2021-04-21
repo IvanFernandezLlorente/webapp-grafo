@@ -8,31 +8,31 @@
         <div class="form">
             <form @submit.prevent="request">
                 <div class="header">
-                    <h1>Request Sign Up to Grafo Research</h1>
+                    <h1>{{ $t('requestSignUp.title') }}</h1>
                 </div>
                 <div class="form-body">
                     <b-row>
                         <b-col cols="6">
-                            <label for="email" name="login">Email address</label>
-                            <input :disabled="submitedApplication" :class="{'disable-input': submitedApplication}" id="email" v-model="email" type="text" placeholder="Email address">
+                            <label for="email" name="login">{{ $t('requestSignUp.email') }}</label>
+                            <input :disabled="submitedApplication" :class="{'disable-input': submitedApplication}" id="email" v-model="email" type="text" :placeholder="$t('requestSignUp.emailPHolder')">
 
                         </b-col>
                         <b-col cols="6">
-                            <label for="name" name="name">Name</label>
-                            <input :disabled="submitedApplication" :class="{'disable-input': submitedApplication}" id="name" v-model="name" placeholder="Name" type="text">
+                            <label for="name" name="name">{{ $t('requestSignUp.name') }}</label>
+                            <input :disabled="submitedApplication" :class="{'disable-input': submitedApplication}" id="name" v-model="name" :placeholder="$t('requestSignUp.namePHolder')" type="text">
                         </b-col>
                     </b-row>
                     
 
-                    <label for="description" class="control-label">Description</label>
-                    <textarea :disabled="submitedApplication" id="description" v-model="description" class="form-control" rows="10" style="height: 20px; min-height: 140px;" placeholder="Here can be your description..."></textarea>    
+                    <label for="description" class="control-label">{{ $t('requestSignUp.description') }}</label>
+                    <textarea :disabled="submitedApplication" id="description" v-model="description" class="form-control" rows="10" style="height: 20px; min-height: 140px;" :placeholder="$t('requestSignUp.descriptionPHolder')"></textarea>    
                     
-                    <input type="submit" name="commit" :disabled="submitedApplication" :class="{'disable-input': submitedApplication}" value="Request Sign Up">
+                    <input type="submit" name="commit" :disabled="submitedApplication" :class="{'disable-input': submitedApplication}" :value="$t('requestSignUp.button')">
                 </div>
             </form>
         </div>
 
-        <p v-if="submitedApplication">The request has been sended</p>
+        <p v-if="submitedApplication">{{ $t('requestSignUp.successmsg') }}</p>
         <p v-if="error">{{errorMessage}}</p>
 
   </div>

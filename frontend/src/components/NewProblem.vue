@@ -1,6 +1,6 @@
 <template>
   <div>
-    <h1>New Problem</h1>
+    <h1>{{ $t('createProblem.new') }}</h1>
     <EditorProblems />    
   </div>
 </template>

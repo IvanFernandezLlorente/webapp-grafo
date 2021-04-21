@@ -8,23 +8,23 @@
         <div class="form">
             <form @submit.prevent="login">
                 <div class="header">
-                    <h1>Sign in to Grafo Research</h1>
+                    <h1>{{ $t('login.title') }}</h1>
                 </div>
                 <div class="form-body">
-                    <label for="email" name="login">Email address</label>
-                    <input id="email" v-model="email" type="text" placeholder="Email address">
+                    <label for="email" name="login">{{ $t('login.email') }}</label>
+                    <input id="email" v-model="email" type="text" :placeholder="$t('login.emailPHolder')">
 
-                    <label for="password">Password</label>
-                    <input id="password" v-model="password" name="password" placeholder="Password" type="password">
+                    <label for="password">{{ $t('login.pass') }}</label>
+                    <input id="password" v-model="password" name="password" :placeholder="$t('login.passPHolder')" type="password">
 
-                    <input type="submit" name="commit" value="Sign in">
+                    <input type="submit" name="commit" :value="$t('login.button')">
                 </div>
             </form>
         </div>
          
-        <button @click="google">Sign In Google</button>
-        <button @click="github">Sign In Github</button>
-        <button @click="orcid">Sign In ORCID</button>
+        <button @click="google">{{ $t('login.google') }}</button>
+        <button @click="github">{{ $t('login.github') }}</button>
+        <button @click="orcid">{{ $t('login.orcid') }}</button>
 
         <p v-if="error">{{error}}</p>
   </div>

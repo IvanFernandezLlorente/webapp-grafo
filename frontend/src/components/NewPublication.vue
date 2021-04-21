@@ -1,6 +1,6 @@
 <template>
   <div>
-    <h1>New Publication</h1>
+    <h1>{{ $t('createPublication.new') }}</h1>
     <EditorPublications />    
   </div>
 </template>

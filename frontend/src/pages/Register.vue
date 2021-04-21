@@ -8,19 +8,19 @@
         <div class="form">
             <form @submit.prevent="signup">
                 <div class="header">
-                    <h1>Sign Up to Grafo Research</h1>
+                    <h1>{{ $t('signUp.title') }}</h1>
                 </div>
                 <div class="form-body">
-                    <label for="name">Name</label>
-                    <input disabled style="background-color: #e9ecef;" id="name" v-model="application.name" type="text" placeholder="Your name">
+                    <label for="name">{{ $t('signUp.name') }}</label>
+                    <input disabled style="background-color: #e9ecef;" id="name" v-model="application.name" type="text">
 
-                    <label for="email" name="login">Email address</label>
-                    <input disabled style="background-color: #e9ecef;" id="email" v-model="application.email" type="text" placeholder="Email address">
+                    <label for="email" name="login">{{ $t('signUp.email') }}</label>
+                    <input disabled style="background-color: #e9ecef;" id="email" v-model="application.email" type="text">
 
-                    <label for="password">Password</label>
-                    <input id="password" v-model="password" name="password" placeholder="Password" type="password">
+                    <label for="password">{{ $t('signUp.pass') }}</label>
+                    <input id="password" v-model="password" name="password" :placeholder="$t('signUp.passPHolder')" type="password">
 
-                    <input type="submit" name="commit" value="Sign Up">
+                    <input type="submit" name="commit" :value="$t('signUp.button')">
                 </div>
             </form>
         </div>

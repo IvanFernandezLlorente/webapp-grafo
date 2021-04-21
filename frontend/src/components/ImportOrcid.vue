@@ -2,32 +2,32 @@
   <b-row style="justify-content: center;">
       <b-col class="card" cols="10">
         <div class="card-header">
-            <h4 class="card-title">ORCID Publications</h4>
+            <h4 class="card-title">{{ $t('importORCID.title') }}</h4>
         </div>
         <div v-if="publications" class="card-body">
             <b-row>
                 <b-col cols="4" class="publication-list">
                     <div class="publication-object" @click="select(index)" :class="indexSelected == index ? 'publication-selected' : 'publication-not-selected'" v-for="(publication,index) in publications" :key="index">
                         <div class="cut-text">
-                            <p><b>Title: </b>{{publication.title.title.value}}</p> 
-                            <p v-if="journalExist(publication)"><b>Journal: </b>{{publication["journal-title"]["value"]}}</p>
+                            <p><b>{{ $t('importORCID.titlePubli') }}: </b>{{publication.title.title.value}}</p> 
+                            <p v-if="journalExist(publication)"><b>{{ $t('importORCID.journal') }}: </b>{{publication["journal-title"]["value"]}}</p>
                         </div>
                     </div>
                 </b-col>
                 <b-col cols="8">
                     <div v-if="indexSelected!=-1" style="height: 100%;">
                         <div>
-                            <p><b>Title: </b>{{publicationSelected.title.title.value}}</p> 
-                            <p v-if="journalExist(publicationSelected)"><b>Journal: </b>{{publicationSelected["journal-title"]["value"]}}</p>
+                            <p><b>{{ $t('importORCID.titlePubli') }}: </b>{{publicationSelected.title.title.value}}</p> 
+                            <p v-if="journalExist(publicationSelected)"><b>{{ $t('importORCID.journal') }}: </b>{{publicationSelected["journal-title"]["value"]}}</p>
                             <p><b>Date: </b>{{publicationSelected["publication-date"].year.value}}</p>
                             <p v-if="doiExist(publicationSelected)"><b>DOI: </b>https://doi.org/{{manageDOI(publicationSelected)}}</p>
-                            <p v-if="publicationSelected.citation"><b>Citation: </b>{{publicationSelected.citation["citation-value"]}}</p>
+                            <p v-if="publicationSelected.citation"><b>{{ $t('importORCID.citation') }}: </b>{{publicationSelected.citation["citation-value"]}}</p>
                         </div>
                         <div class="publication-buttons">
                             <button v-if="publicationSelected.citation" @click="importPublication" class="btn btn-success">
-                                Import publication
+                                {{ $t('importORCID.import') }}
                             </button>
-                            <p v-else>You cannot import a publication without citation</p>
+                            <p v-else>{{ $t('importORCID.msg') }}</p>
                         </div>
                     </div>
                 </b-col>

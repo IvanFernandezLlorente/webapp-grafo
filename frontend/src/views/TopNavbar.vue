@@ -27,44 +27,55 @@
         <ul class="navbar-nav ml-auto">
           <li v-if="token" class="nav-item">
             <b-link class="nav-link" :to="{name: 'NewProblem'}">
-              New Problem
+                {{ $t('topNavBar.problem') }}
             </b-link>
           </li>
           <li v-if="token" class="nav-item">
             <b-link class="nav-link" :to="{name: 'NewPublication'}">
-              New Publication
+                {{ $t('topNavBar.publication') }}
             </b-link>
           </li>
           <li v-if="token" class="nav-item">
             <b-link class="nav-link" :to="{path: '/settings'}">
-              Account
+                {{ $t('topNavBar.settigns') }}
             </b-link>
           </li>
 
           <li v-if="isAdmin" class="nav-item">
             <b-link class="nav-link" :to="{path: '/applications'}">
-              Applications
+                {{ $t('topNavBar.requests') }}
             </b-link>
           </li>
 
           <li v-if="orcid" class="nav-item">
             <b-link class="nav-link" :to="{path: '/import-orcid'}">
-              Import from ORCID
+                {{ $t('topNavBar.importORCID') }}
             </b-link>
           </li>
           
+          <li class="nav-item">
+            <b-link class="nav-link" @click="changeLanguage('en')">
+              EN
+            </b-link>
+          </li>
+
+          <li class="nav-item">
+            <b-link class="nav-link" @click="changeLanguage('es')">
+              ES
+            </b-link>
+          </li>
 
           <li class="nav-item">
             <div v-if="!token" style="display: flex;">
                 <b-link  :to="{path: '/login'}" class="nav-link">
-                    Sign In 
+                    {{ $t('topNavBar.signIn') }}
                 </b-link>
                 <b-link  :to="{path: '/request-signUp'}" class="nav-link">
-                    Request Sign Up
+                    {{ $t('topNavBar.signUp') }}
                 </b-link>
             </div>
             <b-link @click="logOut" v-else class="nav-link">
-              Log Out
+                {{ $t('topNavBar.logout') }}
             </b-link>
           </li>
         </ul>
@@ -74,6 +85,7 @@
 </template>
 <script>
 import { mapState } from 'vuex';
+import i18n from '../i18n';
 
 export default {
     name: 'TopNavbar',
@@ -86,6 +98,9 @@ export default {
         logOut () {
             this.$store.dispatch('logout');
             this.$router.push({path: '/login'})
+        },
+        changeLanguage(lang) {
+            i18n.locale = lang;
         }
     },
     computed: mapState(['token', 'isAdmin','orcid'])

@@ -5,16 +5,16 @@
         </div>
         <form @submit.prevent="saveProblem">
             <div class="form-group">
-                <label for="name" class="control-label">Name</label>
-                <input id="name" v-model="problem.name" @change="updateCopy" class="form-control" type="text" placeholder="Name">
+                <label for="name" class="control-label">{{ $t('createProblem.titlePro') }}</label>
+                <input id="name" v-model="problem.name" @change="updateCopy" class="form-control" type="text" :placeholder="$t('createProblem.titlePro')">
             </div>
 
             <div class="form-group">
-                <label for="alias" class="control-label">Alias</label>
-                <input id="alias" v-model="problem.alias" @change="updateCopy" class="form-control" type="text" placeholder="Alias">
+                <label for="alias" class="control-label">{{ $t('createProblem.alias') }}</label>
+                <input id="alias" v-model="problem.alias" @change="updateCopy" class="form-control" type="text" :placeholder="$t('createProblem.alias')">
             </div>
 
-            <h4>Manager</h4>
+            <h4>{{ $t('createProblem.managers') }}</h4>
             <div class="form-group col-md-6 search" v-for="(theUser, index) in usersChosenToShow" :key="index" style="padding-left: 0px;display: flex;">
                 <vue-simple-suggest
                     v-model="usersChosenToShow[index]"
@@ -29,11 +29,11 @@
     
             <div class="form-group">
                 <button @click="addUser" type="button" class="btn btn-secondary">
-                    Add User
+                    {{ $t('createProblem.addUser') }}
                 </button>
             </div>
 
-            <h4>Related Publications</h4>
+            <h4>{{ $t('createProblem.relatedPublications') }}</h4>
             <div class="form-group col-md-6 search" v-for="(thePublication, index) in publicationsChosenToShow" :key="`${index} - p`" style="padding-left: 0px;display: flex;">
                 <vue-simple-suggest
                     v-model="publicationsChosenToShow[index]"
@@ -48,13 +48,13 @@
 
             <div class="form-group">
                 <button @click="addPublication" type="button" class="btn btn-secondary">
-                    Add Publication
+                    {{ $t('createProblem.addPublication') }}
                 </button>
             </div>
 
             <div class="body-edit">
                 <div style="display: flex;">
-                    <h3>Problem Description</h3>
+                    <h3>{{ $t('createProblem.wizard2') }}</h3>
                     <b-form-checkbox v-model="problem.description.visible" name="visible-button" switch style="align-self: center;margin-left: 30px;">Visible</b-form-checkbox>
                 </div>
                 <ckeditor :editor="editor" v-model="problem.description.content" :config="editorConfig"></ckeditor>
@@ -62,7 +62,7 @@
 
             <div style="display: flex;align-items: baseline;">
                 <b-form-file v-model="fileDescription" class="inputfile mt-3" id="inputfileDescription" ref="file-input" multiple plain></b-form-file>
-                <label class="btn btn-secondary" for="inputfileDescription">Choose a file</label>
+                <label class="btn btn-secondary" for="inputfileDescription">{{ $t('createProblem.chooseFile') }}</label>
 
                 <ul>
                     <li class="item-list" v-for="(file, index) in fileArrayDescription" :key="index">
@@ -74,7 +74,7 @@
 
             <div class="body-edit">
                 <div style="display: flex;">
-                    <h3>State of the Art Methods</h3>
+                    <h3>{{ $t('createProblem.wizard3') }}</h3>
                     <b-form-checkbox v-model="problem.state.visible" name="visible-button" switch style="align-self: center;margin-left: 30px;">Visible</b-form-checkbox>
                 </div>
                 <ckeditor :editor="editor" v-model="problem.state.content" :config="editorConfig"></ckeditor>
@@ -82,7 +82,7 @@
 
             <div style="display: flex;align-items: baseline;">
                 <b-form-file v-model="fileState" class="inputfile mt-3" id="inputfileState" ref="file-input" multiple plain></b-form-file>
-                <label class="btn btn-secondary" for="inputfileState">Choose a file</label>
+                <label class="btn btn-secondary" for="inputfileState">{{ $t('createProblem.chooseFile') }}</label>
 
                 <ul>
                     <li class="item-list" v-for="(file, index) in fileArrayState" :key="index">
@@ -94,7 +94,7 @@
 
             <div class="body-edit">
                 <div style="display: flex;">
-                    <h3>Instances</h3>
+                    <h3>{{ $t('createProblem.wizard4') }}</h3>
                     <b-form-checkbox v-model="problem.instances.visible" name="visible-button" switch style="align-self: center;margin-left: 30px;">Visible</b-form-checkbox>
                 </div>
                 <ckeditor :editor="editor" v-model="problem.instances.content" :config="editorConfig"></ckeditor>
@@ -102,7 +102,7 @@
 
             <div style="display: flex;align-items: baseline;">
                 <b-form-file v-model="fileInstances" class="inputfile mt-3" id="inputfileInstances" ref="file-input" multiple plain></b-form-file>
-                <label class="btn btn-secondary" for="inputfileInstances">Choose a file</label>
+                <label class="btn btn-secondary" for="inputfileInstances">{{ $t('createProblem.chooseFile') }}</label>
 
                 <ul>
                     <li class="item-list" v-for="(file, index) in fileArrayInstances" :key="index">
@@ -114,7 +114,7 @@
 
             <div class="body-edit">
                 <div style="display: flex;">
-                    <h3 v-bind:class="{ cross: !checked}">Computational Experience</h3>
+                    <h3 v-bind:class="{ cross: !checked}">{{ $t('createProblem.wizard5') }}</h3>
                     <b-form-checkbox v-model="checked" name="check-button" switch style="align-self: center;margin-left: 16px;">Optional</b-form-checkbox>
                     <b-form-checkbox v-if="checked" v-model="problem.computationalExperience.visible" name="visible-button" switch style="align-self: center;margin-left: 70px;">Visible</b-form-checkbox>
                 </div>
@@ -123,7 +123,7 @@
 
             <div v-if="checked" style="display: flex;align-items: baseline;">
                 <b-form-file v-model="fileComputational" class="inputfile mt-3" id="inputfileComputational" ref="file-input" multiple plain></b-form-file>
-                <label class="btn btn-secondary" for="inputfileComputational">Choose a file</label>
+                <label class="btn btn-secondary" for="inputfileComputational">{{ $t('createProblem.chooseFile') }}</label>
 
                 <ul>
                     <li class="item-list" v-for="(file, index) in fileArrayComputational" :key="index">
@@ -135,7 +135,7 @@
 
             <div class="body-edit">
                 <div style="display: flex;">
-                    <h3>References</h3>
+                    <h3>{{ $t('createProblem.wizard6') }}</h3>
                     <b-form-checkbox v-model="problem.reference.visible" name="visible-button" switch style="align-self: center;margin-left: 30px;">Visible</b-form-checkbox>
                 </div>
                 <ckeditor :editor="editor" v-model="problem.reference.content" :config="editorConfig"></ckeditor>
@@ -143,7 +143,7 @@
 
             <div style="display: flex;align-items: baseline;">
                 <b-form-file v-model="fileReferences" class="inputfile mt-3" id="inputfileReferences" ref="file-input" multiple plain></b-form-file>
-                <label class="btn btn-secondary" for="inputfileReferences">Choose a file</label>
+                <label class="btn btn-secondary" for="inputfileReferences">{{ $t('createProblem.chooseFile') }}</label>
 
                 <ul>
                     <li class="item-list" v-for="(file, index) in fileArrayReferences" :key="index">
@@ -155,7 +155,7 @@
 
             <div class="text-center" style="margin-bottom: 63px;">
                 <button type="submit" class="btn btn-info float-right mb-50">
-                    Save Problem
+                    {{ $t('createProblem.save') }}
                 </button>
             </div>
         </form>

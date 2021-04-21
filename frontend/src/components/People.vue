@@ -1,6 +1,6 @@
 <template>
 <b-row v-if="people">
-    <b-col tag="h4" cols="12">People</b-col> 
+    <b-col tag="h4" cols="12">{{ $t('people.title') }}</b-col> 
     <b-col cols="4" v-for="(person,index) in people"
     :key="index"
     >

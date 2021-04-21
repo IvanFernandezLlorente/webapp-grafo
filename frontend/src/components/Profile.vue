@@ -4,7 +4,7 @@
     <div class="buttons">
         <b-link v-if="canEditVariable" class="edit" :to="{path: linkToEdit}"> 
             <button class="btn btn-success">
-                Edit
+                {{ $t('profile.edit') }}
             </button>
         </b-link>
         <b-link v-if="canEditVariable && !user.banned" class="edit" @click="banUser()"> 
@@ -40,7 +40,7 @@
                         <b-list-group-item>{{user.urjcUrl}}</b-list-group-item>
                     </b-list-group>
                 </b-tab>
-                <b-tab title="Problems">
+                <b-tab :title="$t('profile.problems')">
                     <b-list-group>
                         <div v-for="(problem,index) in problems" :key="index">
                             <b-list-group-item  class="tabs-2-3"  v-if="problem.visible">
@@ -57,7 +57,7 @@
                         </div>
                     </b-list-group>
                 </b-tab>
-                <b-tab title="Publications">
+                <b-tab :title="$t('profile.publications')">
                     <b-list-group>
                         <div v-for="(publication,index) in publications" :key="index">
                             <b-list-group-item  class="tabs-2-3"  v-if="publication.visible">

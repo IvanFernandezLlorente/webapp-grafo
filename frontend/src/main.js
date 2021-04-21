@@ -8,6 +8,7 @@ import 'bootstrap-vue/dist/bootstrap-vue.css'
 import CKEditor from '@ckeditor/ckeditor5-vue2';
 import axios from 'axios'
 import VueAxios from 'vue-axios'
+import i18n from './i18n';
 
 Vue.config.productionTip = false
 
@@ -19,6 +20,7 @@ Vue.use(VueAxios, axios)
 axios.defaults.baseURL = 'https://localhost:3443/api';
 
 new Vue({
+  i18n,
   router,
   store,
   render: h => h(App)

@@ -2,7 +2,7 @@
   <b-row style="justify-content: center;">
       <b-col class="card" cols="8">
         <div class="card-header">
-            <h4 class="card-title">Edit Profile</h4>
+            <h4 class="card-title">{{ $t('settigns.title') }}</h4>
             <b-form-checkbox-group v-if="isAdmin" :disabled='!isAdmin' v-model="selected" :options="options"></b-form-checkbox-group>
         </div>
         <div class="card-body">
@@ -10,8 +10,8 @@
                 <b-row>
                     <b-col cols="3">
                         <div class="form-group">
-                            <label for="name" class="control-label">Name</label>
-                            <input id="name" v-model="user.name" @change="updateCopy"  class="form-control" type="text" placeholder="Name">
+                            <label for="name" class="control-label">{{ $t('settigns.name') }}</label>
+                            <input id="name" v-model="user.name" @change="updateCopy"  class="form-control" type="text" :placeholder="$t('settigns.namePHolder')">
                         </div>
                     </b-col>
                     <b-col cols="5">
@@ -22,8 +22,8 @@
                     </b-col>
                     <b-col cols="4">
                         <div class="form-group">
-                            <label for="email" class="control-label">Email</label>
-                            <input id="email" v-model="user.email"  @change="updateCopy" class="form-control" type="text" placeholder="Email">
+                            <label for="email" class="control-label">{{ $t('settigns.email') }}</label>
+                            <input id="email" v-model="user.email"  @change="updateCopy" class="form-control" type="text" :placeholder="$t('settigns.emailPHolder')">
                         </div>
                     </b-col>
                 </b-row>
@@ -31,20 +31,20 @@
                 <b-row>
                     <b-col cols="3">
                         <div class="form-group">
-                            <label for="newPassword" class="control-label">Change Password</label>
-                            <input id="newPassword" v-model="newPassword" class="form-control" type="password" placeholder="New Password">
+                            <label for="newPassword" class="control-label">{{ $t('settigns.newPassword') }}</label>
+                            <input id="newPassword" v-model="newPassword" class="form-control" type="password" :placeholder="$t('settigns.newPassword')">
                         </div>
                     </b-col>
                     <b-col cols="3">
                         <div class="form-group">
-                            <label for="confirmPassword" class="control-label">Confirm Password</label>
-                            <input id="confirmPassword" v-model="confirmPassword" class="form-control" type="password" placeholder="Confirm Password">
+                            <label for="confirmPassword" class="control-label">{{ $t('settigns.confirmPassword') }}</label>
+                            <input id="confirmPassword" v-model="confirmPassword" class="form-control" type="password" :placeholder="$t('settigns.confirmPassword')">
                         </div>
                     </b-col>
                     <b-col cols="6"> 
                         <div class="form-group">
                             <label for="userId" class="control-label">http://localhost:8080/users/</label>
-                            <input id="userId" v-model="user.userId" @change="updateCopy" class="form-control" type="text" placeholder="Your Url">
+                            <input id="userId" v-model="user.userId" @change="updateCopy" class="form-control" type="text" :placeholder="$t('settigns.idPHolder')">
                         </div>
                     </b-col>
                 </b-row>
@@ -52,8 +52,8 @@
                 <b-row>
                     <b-col cols="8">
                         <div class="form-group">
-                            <label for="organization" class="control-label">Organization</label>
-                            <input id="organization" v-model="user.organization" @change="updateCopy" class="form-control" type="text" placeholder="Your Organization">
+                            <label for="organization" class="control-label">{{ $t('settigns.organization') }}</label>
+                            <input id="organization" v-model="user.organization" @change="updateCopy" class="form-control" type="text" :placeholder="$t('settigns.organizationPHolder')">
                         </div>
                     </b-col>
                 </b-row>
@@ -61,8 +61,8 @@
                 <b-row>
                     <b-col cols="8">
                         <div class="form-group">
-                            <label for="department" class="control-label">Department</label>
-                            <input id="department" v-model="user.department" @change="updateCopy" class="form-control" type="text" placeholder="Your Department">
+                            <label for="department" class="control-label">{{ $t('settigns.department') }}</label>
+                            <input id="department" v-model="user.department" @change="updateCopy" class="form-control" type="text" :placeholder="$t('settigns.departmentPHolder')">
                         </div>
                     </b-col>
                 </b-row>
@@ -70,8 +70,8 @@
                 <b-row>
                     <b-col cols="8">
                         <div class="form-group">
-                            <label for="area" class="control-label">Area</label>
-                            <input id="area" v-model="user.area" @change="updateCopy" class="form-control" type="text" placeholder="Your Area">
+                            <label for="area" class="control-label">{{ $t('settigns.area') }}</label>
+                            <input id="area" v-model="user.area" @change="updateCopy" class="form-control" type="text" :placeholder="$t('settigns.areaPHolder')">
                         </div>
                     </b-col>
                 </b-row>
@@ -79,8 +79,8 @@
                 <b-row>
                     <b-col cols="8">
                         <div class="form-group">
-                            <label for="researchgroup" class="control-label">Research Group</label>
-                            <input id="researchgroup" v-model="user.researchgroup" @change="updateCopy" class="form-control" type="text" placeholder="Your Research Group">
+                            <label for="researchgroup" class="control-label">{{ $t('settigns.researchGroup') }}</label>
+                            <input id="researchgroup" v-model="user.researchgroup" @change="updateCopy" class="form-control" type="text" :placeholder="$t('settigns.researchGroupPHolder')">
                         </div>
                     </b-col>
                 </b-row>
@@ -88,40 +88,40 @@
                 <b-row>
                     <b-col cols="12">
                         <div class="form-group">
-                            <label for="description" class="control-label">Description</label>
-                            <textarea id="description" v-model="user.description" @change="updateCopy" class="form-control" rows="10" style="height: 20px; min-height: 50px;" placeholder="Here can be your description..."></textarea>    
+                            <label for="description" class="control-label">{{ $t('settigns.description') }}</label>
+                            <textarea id="description" v-model="user.description" @change="updateCopy" class="form-control" rows="10" style="height: 20px; min-height: 50px;" :placeholder="$t('settigns.descriptionPHolder')"></textarea>    
                         </div>
                     </b-col>
                 </b-row>
                 
                 <p v-if="errorGoogle">{{errorGoogleText}}</p>
-                <button v-if="!(user.google) || ((user.google) && !(user.google.methodId))" type="button" @click="google">Connect Google</button>
+                <button v-if="!(user.google) || ((user.google) && !(user.google.methodId))" type="button" @click="google">{{ $t('settigns.google') }}</button>
                 
                 <div v-else style="display: flex;">
                     <p>{{user.google.email}}</p>
-                    <button type="button" @click="disconnectGoogle">Disconnect Google</button>
+                    <button type="button" @click="disconnectGoogle">{{ $t('settigns.disconnect') }}</button>
                 </div>
 
 
                 <p v-if="errorGithub">{{errorGithubText}}</p>
-                <button v-if="!(user.github) || ((user.github) && !(user.github.methodId))" type="button" @click="github">Connect GitHub</button>
+                <button v-if="!(user.github) || ((user.github) && !(user.github.methodId))" type="button" @click="github">{{ $t('settigns.github') }}</button>
                 
                 <div v-else style="display: flex;">
                     <p>{{user.github.name}}</p>
-                    <button type="button" @click="disconnectGithub">Disconnect GitHub</button>
+                    <button type="button" @click="disconnectGithub">{{ $t('settigns.disconnect') }}</button>
                 </div>
 
                 <p v-if="errorORCID">{{errorORCIDText}}</p>
-                <button v-if="!(user.orcid) || ((user.orcid) && !(user.orcid.orcid))" type="button" @click="orcid">Connect ORCID</button>
+                <button v-if="!(user.orcid) || ((user.orcid) && !(user.orcid.orcid))" type="button" @click="orcid">{{ $t('settigns.orcid') }}</button>
                 
                 <div v-else style="display: flex;">
                     <p>https://sandbox.orcid.org/{{user.orcid.orcid}}</p>
-                    <button type="button" @click="disconnectORCID">Disconnect ORCID</button>
+                    <button type="button" @click="disconnectORCID">{{ $t('settigns.disconnect') }}</button>
                 </div>
 
                 <div class="text-center">
                     <button type="submit" class="btn btn-info float-right">
-                    Update Profile
+                        {{ $t('settigns.saveProfile') }}
                     </button>
                 </div>
             </form>
@@ -129,7 +129,7 @@
       </b-col>
       <div class="profile-image">
         <img :src="imgDataUrl">
-        <a class="btn btn-info" @click="toggleShow">Upload new photo</a>
+        <a class="btn btn-info" @click="toggleShow">{{ $t('settigns.uploadPhoto') }}</a>
         <my-upload 
             @crop-success="cropSuccess"
             v-model="show"

@@ -1,6 +1,6 @@
 <template>
   <b-row v-if="problems" style="justify-content: center;">
-    <b-col tag="h4" cols="12">Problems</b-col> 
+    <b-col tag="h4" cols="12">{{ $t('problems.title') }}</b-col> 
     <b-col cols="9" class="problem" v-for="(problem,index) in problems"
         :key="index"
     >

@@ -3,12 +3,12 @@
       <div class="buttons">
         <b-link v-if="canEdit()" class="edit" :to="{path: `/editpublications/${publication.publicationId}`}"> 
             <button class="btn btn-success">
-                Edit
+                {{ $t('publication.edit') }}
             </button>
         </b-link>
         <b-link v-if="canEdit()" class="edit"  @click="deleteP()"> 
             <button class="btn btn-danger">
-                Delete
+                {{ $t('publication.delete') }}
             </button>
         </b-link>
       </div>
@@ -18,7 +18,7 @@
       <div v-if="publication.bibtex" class="form-group">
         <a :href="`https://localhost:3443/api/files/bibtex/${publication.publicationId}`">
             <button type="button" class="btn btn-secondary">
-                Download BibTeX
+                {{ $t('publication.cite') }}
             </button>
         </a>
       </div>
@@ -32,7 +32,7 @@
       <p><strong>URL: </strong>{{publication.url}}</p>
       <p><strong>Keywords: </strong>{{publication.keywords}}</p>
       <p><strong>Abstract: </strong>{{publication.abstract}}</p>
-      <p v-if="publication.pdf"><a :href="`https://localhost:3443/api/files/downloads/${publication.pdf}`">Get PDF</a></p>
+      <p v-if="publication.pdf"><a :href="`https://localhost:3443/api/files/downloads/${publication.pdf}`">{{ $t('publication.pdf') }}</a></p>
       <h4 v-if="users.length || publication.usersNotRegistered.length">Users</h4>
       <div v-if="users.length">
         <b-link v-for="(user,index) in users"
@@ -49,7 +49,7 @@
       </div>
 
       <div v-if="problems.length">
-        <h4>Related Problems</h4>
+        <h4>{{ $t('publication.relatedProblems') }}</h4>
         <b-link v-for="(problem,index) in problems"
           :key="index"
           :to="{path: `/problems/${problem.problemId}`}"> 
@@ -58,27 +58,27 @@
       </div>
       
       <div v-if="publication.description.visible">
-        <h4>Publication Description</h4>
+        <h4>{{ $t('publication.description') }}</h4>
         <div v-html="publication.description.content"></div>
       </div>
 
       <div v-if="publication.state.visible">
-        <h4>State of the Art Methods</h4>
+        <h4>{{ $t('publication.state') }}</h4>
         <div v-html="publication.state.content"></div>
       </div>
       
       <div v-if="publication.instances.visible">
-        <h4>Instances</h4>
+        <h4>{{ $t('publication.instances') }}</h4>
         <div v-html="publication.instances.content"></div>
       </div>
             
       <div v-if="publication.computationalExperience.visible">
-            <h4>Computational Experience</h4>
+            <h4>{{ $t('publication.computationalExperience') }}</h4>
         <div v-html="publication.computationalExperience.content"></div>
       </div>
 
       <div v-if="publication.reference.visible">
-        <h4>References</h4>
+        <h4>{{ $t('publication.references') }}</h4>
         <div v-html="publication.reference.content"></div>
       </div>
   </div>

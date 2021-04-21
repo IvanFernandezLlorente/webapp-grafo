@@ -1,5 +1,5 @@
 <template>
-  <h1>Home</h1>
+  <h1>{{ $t('home.title') }}</h1>
 </template>
 
 <script>

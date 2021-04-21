@@ -2,10 +2,10 @@
   <b-row style="justify-content: center;">
       <b-col class="card" cols="10">
         <div class="card-header">
-            <h4 class="card-title">Applications</h4>
+            <h4 class="card-title">{{ $t('applications.title') }}</h4>
             <div>
-                <button @click="acceptAll">Accept All</button>
-                <button @click="rejectAll">Reject All</button>
+                <button @click="acceptAll">{{ $t('applications.acceptAll') }}</button>
+                <button @click="rejectAll">{{ $t('applications.rejectAll') }}</button>
             </div>
         </div>
         <div v-if="applications" class="card-body">
@@ -13,24 +13,24 @@
                 <b-col cols="3" class="application-list">
                     <div class="application-object" @click="select(index)" :class="indexSelected == index ? 'application-selected' : 'application-not-selected'" v-for="(application,index) in applications" :key="index">
                         <div>
-                            <p><b>Name: </b>{{application.name}}</p> 
-                            <p><b>Email: </b>{{application.email}}</p>
+                            <p><b>{{ $t('applications.name') }}: </b>{{application.name}}</p> 
+                            <p><b>{{ $t('applications.email') }}: </b>{{application.email}}</p>
                         </div>
                     </div>
                 </b-col>
                 <b-col cols="9">
                     <div v-if="indexSelected!=-1" style="height: 100%;">
                         <div>
-                            <p><b>Name: </b>{{applicationSelected.name}}</p> 
-                            <p><b>Email: </b>{{applicationSelected.email}}</p>
-                            <p><b>Description: </b>{{applicationSelected.description}}</p>
+                            <p><b>{{ $t('applications.name') }}: </b>{{applicationSelected.name}}</p> 
+                            <p><b>{{ $t('applications.email') }}: </b>{{applicationSelected.email}}</p>
+                            <p><b>{{ $t('applications.description') }}: </b>{{applicationSelected.description}}</p>
                         </div>
                         <div class="application-buttons">
                             <button @click="accept" class="btn btn-success">
-                                Accept application
+                                {{ $t('applications.acceptRequest') }}
                             </button>
                             <button @click="reject" type="submit" class="btn btn-danger">
-                                Reject application
+                                {{ $t('applications.rejectRequest') }}
                             </button>
                         </div>
                     </div>

@@ -3,12 +3,12 @@
       <div class="buttons">
         <b-link v-if="canEdit()" class="edit" :to="{path: `/editproblems/${problem.problemId}`}"> 
             <button class="btn btn-success">
-                Edit
+                {{ $t('problem.edit') }}
             </button>
         </b-link>
         <b-link v-if="canEdit()" class="edit"  @click="deleteP()"> 
             <button class="btn btn-danger">
-                Delete
+                {{ $t('problem.delete') }}
             </button>
         </b-link>
       </div>
@@ -34,7 +34,7 @@
       </div>
 
       <div v-if="publications.length">
-        <h4>Related Publications</h4>
+        <h4>{{ $t('problem.relatedPublications') }}</h4>
         <b-link v-for="(publication,index) in publications"
           :key="index"
           :to="{path: `/publications/${publication.publicationId}`}"> 
@@ -43,28 +43,28 @@
       </div>
       
       <div v-if="problem.description.visible">
-        <h4>Problem Description</h4>
+        <h4>{{ $t('problem.description') }}</h4>
         <div v-html="problem.description.content"></div>
       </div>
       
       <div v-if="problem.state.visible">
-        <h4>State of the Art Methods</h4>
+        <h4>{{ $t('problem.state') }}</h4>
         <div v-html="problem.state.content"></div>
       </div>
 
       <div v-if="problem.instances.visible">
-        <h4>Instances</h4>
+        <h4>{{ $t('problem.instances') }}</h4>
         <div v-html="problem.instances.content"></div>
       </div>
       
 
       <div v-if="problem.computationalExperience.visible">
-        <h4>Computational Experience</h4>
+        <h4>{{ $t('problem.computationalExperience') }}</h4>
         <div v-html="problem.computationalExperience.content"></div>
       </div>
 
       <div v-if="problem.reference.visible">
-        <h4>References</h4>
+        <h4>{{ $t('problem.references') }}</h4>
         <div v-html="problem.reference.content"></div>
       </div>
   </div>

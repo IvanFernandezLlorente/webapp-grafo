@@ -1,6 +1,6 @@
 <template>
   <div>
-    <h1>Edit Problem</h1>
+    <h1>{{ $t('createProblem.edit') }}</h1>
     <EditorProblems v-bind:isNew="false" />    
   </div>
 </template>

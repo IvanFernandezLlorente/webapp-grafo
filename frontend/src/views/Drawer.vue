@@ -9,15 +9,15 @@
         <b-navbar-nav class="list">
             <b-nav-item class="nav-link" to="/people">
                 <b-icon-file-person></b-icon-file-person>
-                <p>People</p>
+                <p>{{ $t('drawer.people') }}</p>
             </b-nav-item>
             <b-nav-item class="nav-link" to="/problems">
                 <b-icon-clipboard></b-icon-clipboard>
-                <p>Problems</p>
+                <p>{{ $t('drawer.problems') }}</p>
             </b-nav-item>
             <b-nav-item class="nav-link" to="/publications">
                 <b-icon-chat-dots-fill></b-icon-chat-dots-fill>
-                <p>Publications</p>
+                <p>{{ $t('drawer.publications') }}</p>
             </b-nav-item>
         </b-navbar-nav>
         </b-collapse>
