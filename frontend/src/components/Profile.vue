@@ -124,6 +124,7 @@ export default {
                 headers: { token: this.$store.state.token}
             });
             if (this.user._id === this.id) {
+                this.$store.dispatch('deleteStorage');
                 this.$store.dispatch('logout');
                 this.$router.push({path: '/login'})                
             } else {
@@ -136,6 +137,7 @@ export default {
                     headers: { token: this.$store.state.token}
                 });
                 if (this.user._id === this.id) {
+                    this.$store.dispatch('deleteStorage');
                     this.$store.dispatch('logout');
                     this.$router.push({path: '/login'})                
                 } else {

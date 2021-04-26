@@ -95,6 +95,7 @@ export default {
                 orcid: orcid ? orcid : undefined
             }
             this.$store.dispatch('login',sended);
+            this.$store.dispatch('setStorage');
             this.$router.push({path: '/'}).catch(()=>{});
         }
     }

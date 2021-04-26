@@ -227,6 +227,7 @@ export default {
                         isAdmin
                     }
                     this.$store.dispatch('updateUser',sended);
+                    this.$store.dispatch('setStorage');
                 }
                 this.$router.push({path: '/'})
             } catch (error) {
@@ -287,6 +288,7 @@ export default {
                 } else if ((message.data.user) && (message.data.user.method == 'connectORCID')) {
                     this.user = message.data.user.user;
                     this.$store.dispatch('updateOrcid', message.data.user.user.orcid.orcid);
+                    this.$store.dispatch('setStorage');
                 }
             });
             
@@ -300,6 +302,7 @@ export default {
             delete this.userCopy.orcid;
             this.user = res.data;
             this.$store.dispatch('updateOrcid', undefined);
+            this.$store.dispatch('setStorage');
         },
         toggleShow() {
             this.show = !this.show;

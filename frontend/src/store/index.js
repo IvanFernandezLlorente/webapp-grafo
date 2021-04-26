@@ -1,5 +1,6 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
+import crypto from 'crypto-js';
 
 Vue.use(Vuex)
 
@@ -61,6 +62,38 @@ export default new Vuex.Store({
         bibtexFromOrcid({ commit }, data) {
             commit('updateBibtex', data);
         },
+        initialiseStorage({ commit }) {
+            const itemStr = localStorage.getItem('userData');
+            if (itemStr) {
+                const bytes = crypto.AES.decrypt(itemStr, '123');
+                const originalText = bytes.toString(crypto.enc.Utf8);
+                const item = JSON.parse(originalText);
+                const now = new Date();
+                if (now.getTime() > item.expiry) {
+                    localStorage.removeItem('userData');
+                } else {
+                    commit('authUser', item.value);
+                }
+            }
+        },
+        setStorage({ commit }) {
+            const itemStr = localStorage.getItem('userData');
+            if (itemStr) {
+                localStorage.removeItem('userData');
+            }
+            const now = new Date();
+            const ttl = 86400000;
+            const item = {
+                value: this.state,
+                expiry: now.getTime() + ttl,
+            }
+            const itemString = JSON.stringify(item);
+            const textcrypto = crypto.AES.encrypt(itemString, '123');
+            localStorage.setItem('userData', textcrypto);
+        },
+        deleteStorage({ commit }) {
+            localStorage.removeItem('userData');
+        }
     },
 
     modules: {

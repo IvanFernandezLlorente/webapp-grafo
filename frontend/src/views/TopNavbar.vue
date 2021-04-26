@@ -96,6 +96,7 @@ export default {
     },
     methods: {
         logOut () {
+            this.$store.dispatch('deleteStorage');
             this.$store.dispatch('logout');
             this.$router.push({path: '/login'})
         },
