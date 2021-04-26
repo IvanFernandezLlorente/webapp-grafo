@@ -92,23 +92,6 @@
             </b-modal>
             <p v-if="bibtexError">{{bibtexError}}</p>
 
-            <b-modal id="modal-confirm-authors" title="Authors" @ok="manageUsersModal" no-stacking>
-                <p>We found {{usersConfirm.length}} authors to confirm</p>
-                <p>Do you want to confirm them?</p>
-            </b-modal>
-
-            <div v-for="(user, index) in usersConfirm" :key="index">
-               <b-modal :id="`modal-confirm-authors-${index}`" :title="`${showUserModal(user)}`" @ok="addUsersModal" no-stacking >
-                    <p>We found {{`${showUserModal(user)}`}}</p>
-                    <p>Find that user in the search engine</p>
-                    <vue-simple-suggest
-                        v-model="userModal"
-                        :list="usersToChoose"
-                        :min-length="2"
-                        :filter-by-query="true">
-                    </vue-simple-suggest>
-                </b-modal> 
-            </div>
             
 
             <b-row>
@@ -116,6 +99,9 @@
                     <h4>{{ $t('createPublication.authors') }}</h4>
                     <div class="form-group search" v-for="(theUser, index) in usersChosenToShow" :key="index" style="padding-left: 0px;display: flex;">
                         <vue-simple-suggest
+                            v-model="authors[index]">
+                        </vue-simple-suggest>
+                        <vue-simple-suggest style="margin-left: 15px;"
                             v-model="usersChosenToShow[index]"
                             :list="usersToChoose"
                             :min-length="2"
@@ -334,7 +320,8 @@ export default {
                 problems: [],
                 attachments: [],
                 bibtex: '',
-                visible: true
+                visible: true,
+                authors: ''
             },
             initialized: false,
             publicationCopy: {
@@ -368,7 +355,7 @@ export default {
             filePDFPublicationPrevious: '',
             bibtexError: '',
             usersConfirm: [],
-            userModal: ''
+            authors: ['']
         };
     },
     props: {
@@ -392,6 +379,7 @@ export default {
     methods: {
         async savePublication () {
             try {
+                this.linkAuthorsUsers();
                 this.prepareUsers();
                 this.prepareProblems();
                 this.prepareContent();
@@ -406,7 +394,7 @@ export default {
                 if (this.filesToDelete) {
                     await this.deleteFiles();
                 }
-                const idsFiles = [...new Set([...files, ...this.prepareFiles()])]
+                const idsFiles = [...new Set([...files, ...this.prepareFiles()])];
 
                 if (this.isNew) {
                     const res = await this.axios.post(`publications`,{...this.publication, "attachments": idsFiles, "pdf": idPDF},{
@@ -446,10 +434,20 @@ export default {
             });
         },
         addUser() {
-            this.usersChosen.push('')
+            this.usersChosen.push('');
+            this.authors.push('');
         },
         deleteUser(index) {
             this.usersChosen.splice(index, 1);
+            this.authors.splice(index, 1);
+        },
+        linkAuthorsUsers() {
+            const mapa = new Map();
+            for (let i = 0; i < this.usersChosen.length; i++) {
+                mapa.set(this.authors[i],this.usersChosen[i]);                
+            }
+            this.publication.authors = JSON.stringify(Array.from(mapa.entries()));
+            this.publicationCopy.authors = this.publication.authors;
         },
         prepareUsers() {
             const users = [...new Set([...(this.usersChosen.filter(user => user))])]
@@ -468,6 +466,13 @@ export default {
             if (this.publication.usersNotRegistered) {
                 this.publication.usersNotRegistered.forEach( user => this.usersChosen.push(user));
             }
+
+            const authorsArray = JSON.parse(this.publication.authors);
+            const authorsArrayAux = [];
+            this.usersChosen.forEach(user => authorsArrayAux.push(authorsArray.filter(({ 1: v}) => v==user).map(([k])=>k)[0]));
+
+            this.authors = authorsArrayAux;
+            
         },
         async getProblems() {
             const res = await this.axios.get(`problems`);
@@ -615,7 +620,7 @@ export default {
                     this.publicationCopy.bibtex = this.publication.bibtex;
                     if (entry.fields.author && entry.fields.author["authors$"]) {
                         this.usersConfirm = entry.fields.author["authors$"];
-                        this.$bvModal.show("modal-confirm-authors");
+                        this.manageUsersBibtex();
                     }
                 } else {
                     this.publication.bibtex = '';
@@ -630,22 +635,20 @@ export default {
                 this.clearFields();
             }            
         },
-        manageUsersModal(){
+        manageUsersBibtex(){
             for (let i = 0; i < this.usersConfirm.length; i++) {
-                this.$bvModal.show(`modal-confirm-authors-${i}`);
+                const name = this.getAuthorsNames(this.usersConfirm[i])
+                if (!this.authors.includes(name)) {
+                    this.authors.push(name);
+                    this.usersChosen.push('');
+                }
             }
-        },  
-        showUserModal(user){
+        }, 
+        getAuthorsNames(user){
             const firstNames = user.firstNames.reduce((text, name) => text + ` ${name}`);
             const lastNames = user.lastNames.reduce((text, name) => text + ` ${name}`);
             return `${firstNames} ${lastNames}`;
         },
-        addUsersModal(){
-            if (!this.usersChosen.includes(this.userModal)) {
-                this.usersChosen.push(this.userModal);
-            }
-            this.userModal = '';
-        },  
         getValue(entry, value) {
             const fieldValue = normalizeFieldValue(entry.getField(value));
             return fieldValue ? fieldValue : '';
@@ -718,14 +721,14 @@ export default {
             `${this.publication.issn ? `issn = {${this.publication.issn}},\n` : ''}` +
             `${this.publication.doi ? `doi = {${this.publication.doi}},\n` : ''}` +
             `${this.publication.url ? `url = {${this.publication.url}},\n` : ''}` +
-            `${this.usersChosen ? `author = {${this.usersToBibtex()}},\n` : ''}` +
+            `${this.authors ? `author = {${this.usersToBibtex()}},\n` : ''}` +
             `${this.publication.keywords ? `keywords = {${this.publication.keywords}},\n` : ''}` +
             `${this.publication.abstract ? `abstract = {${this.publication.abstract}},\n` : ''}` + "}"
             this.publication.bibtex = bibtex;
             this.publicationCopy.bibtex = bibtex;
         },
         usersToBibtex(){
-            return this.usersChosen.reduce((text, name, index) =>  index==0 ? text + `${name}` : text + ` and ${name}`);
+            return this.authors.reduce((text, name, index) =>  index==0 ? text + `${name}` : text + ` and ${name}`);
         }
     },
     watch: {

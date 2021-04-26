@@ -38,13 +38,13 @@
         <b-link v-for="(user,index) in users"
           :key="index"
           :to="{path: `/profile/${user.userId}`}"> 
-            <p>{{user.name}}</p>
+            <p>{{authorById(user.name)}}</p>
         </b-link>
       </div>
 
       <div v-if="publication.usersNotRegistered.length">
         <p v-for="(name,index) in publication.usersNotRegistered" :key="index"> 
-            {{name}}
+            {{authorById(name)}}
         </p>
       </div>
 
@@ -103,11 +103,12 @@ export default {
                 computationalExperience: {},
                 reference: {},
                 pdf: '',
-                bibtex: ''
+                bibtex: '',
             },
             url: '',
             users: [],
-            problems: []
+            problems: [],
+            authors: {}
         }
     },
     created () {
@@ -118,7 +119,7 @@ export default {
         async fetchData() {
             const res = await this.axios.get(`publications/${this.url}`);
             this.publication = res.data;
-
+            this.authors = JSON.parse(this.publication.authors);
             const promises = []
             this.publication.user.forEach( userId => promises.push(this.axios.get(`users/${userId}`)));
             const users = await Promise.all(promises);
@@ -151,6 +152,9 @@ export default {
                 headers: { token: this.$store.state.token}
             });
             this.$router.push({path: '/'})
+        },
+        authorById(userId) {
+            return this.authors.filter(({ 1: v}) => v==userId).map(([k])=>k)[0];
         }
     },
     computed: mapState(['isAdmin','id']),

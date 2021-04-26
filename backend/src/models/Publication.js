@@ -56,6 +56,7 @@ const publicationSchema = new Schema(
     pdf: String,
     bibtex: String,
     visible: Boolean,
+    authors: String
   },
   {
     versionKey: false,

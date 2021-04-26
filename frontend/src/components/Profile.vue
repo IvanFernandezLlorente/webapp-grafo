@@ -176,7 +176,7 @@ export default {
             if ((newIndex === 1) && !this.problemsFetched ) {
                 await this.fetchProblems();
             } else if ((newIndex === 2) && !this.publicationsFetched) {
-                this.fetchPublications();
+                await this.fetchPublications();
             }
         }
     }
