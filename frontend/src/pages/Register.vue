@@ -1,32 +1,46 @@
 <template>
   <div class="wrapper">
-        <b-link :to="{path: '/'}" class="nav-link">
+    <b-row style="margin: 2rem auto;width: 100%;">
+        <b-col cols="12">
             <div class="content-img">
-                <img src="../assets/logo_grafo.png" alt="logo-grafo">
+                <b-link :to="{path: '/'}"> 
+                    <img src="../assets/logo_grafo.png" alt="logo-grafo">
+                </b-link>
             </div>
-        </b-link>
-        <div class="form">
-            <form @submit.prevent="signup">
-                <div class="header">
-                    <h1>{{ $t('signUp.title') }}</h1>
-                </div>
-                <div class="form-body">
-                    <label for="name">{{ $t('signUp.name') }}</label>
-                    <input disabled style="background-color: #e9ecef;" id="name" v-model="application.name" type="text">
+            <b-row style="justify-content: center;">
+                <b-col cols="12" md="6" style="max-width: 713px;">
+                    <div class="content-box title">
+                        <h1>{{ $t('signUp.title') }}</h1>
+                        <div class="black-line"></div>
+                        <div class="red-line"></div>
+                    </div>
+                </b-col>
+            </b-row>
+                    
+            <b-row style="justify-content: center;">
+                <b-col cols="12" md="6" style="max-width: 713px;">
+                    <div class="content-box body">
+                        <div class="error-alert" v-if="error">{{error}}</div>
+                        <form @submit.prevent="signup">
+                            <div class="form-body">
+                                <label for="name">{{ $t('signUp.name') }}</label>
+                                <input disabled style="background-color: #9ca1a6;" id="name" v-model="application.name" type="text">
 
-                    <label for="email" name="login">{{ $t('signUp.email') }}</label>
-                    <input disabled style="background-color: #e9ecef;" id="email" v-model="application.email" type="text">
+                                <label for="email" name="login">{{ $t('signUp.email') }}</label>
+                                <input disabled style="background-color: #9ca1a6;" id="email" v-model="application.email" type="text">
 
-                    <label for="password">{{ $t('signUp.pass') }}</label>
-                    <input id="password" v-model="password" name="password" :placeholder="$t('signUp.passPHolder')" type="password">
+                                <label for="password">{{ $t('signUp.pass') }}</label>
+                                <input id="password" v-model="password" name="password" :placeholder="$t('signUp.passPHolder')" type="password">
+                                <p class="error-msg" v-if="noPass">{{ $t('signUp.passRequired') }}</p>
 
-                    <input type="submit" name="commit" :value="$t('signUp.button')">
-                </div>
-            </form>
-        </div>
-         
-
-        <p v-if="error">{{error}}</p>
+                                <input type="submit" name="commit" :value="$t('signUp.button')">
+                            </div>
+                        </form>
+                    </div>
+                </b-col>
+            </b-row>
+        </b-col>
+    </b-row>
   </div>
 </template>
 
@@ -38,7 +52,8 @@ export default {
         return {
             application: {},
             password: '',
-            error: ''
+            error: '',
+            noPass: false
         }
     },
     created () {
@@ -55,20 +70,23 @@ export default {
         },
         async signup () {
             try {
-                const info = {
-                    email: this.application.email,
-                    password: this.password,
-                    name: this.application.name,
-                    token: this.application.token
-                }
-                const res = await this.axios.post("users/signup", info);
-                this.manageSignUp(res.data);
+                this.noPass = this.password ? false : true;
+                if (this.password) {
+                    const info = {
+                        email: this.application.email,
+                        password: this.password,
+                        name: this.application.name,
+                        token: this.application.token
+                    }
+                    const res = await this.axios.post("users/signup", info);
+                    this.manageSignUp(res.data);
+                }                
             } catch (error) {
                 console.log(error)
+                this.error = this.manageError(error.response.data.message);
             }            
         },
         manageSignUp(data) {
-            console.log(data);
             if (data.token) {
                 const { token, id, userId, roles } = data;
                 const sended = {
@@ -80,98 +98,29 @@ export default {
                 this.$store.dispatch('signup',sended);
                 this.$router.push({path: '/'}).catch(()=>{});
             } else if (data.message) {
-                this.error = data.message
+                this.error = this.manageError(data.message);
             } else {
-                this.error = 'An error has ocurried'
+                this.error = this.$t('signUp.generalError');
             }
+        },
+        manageError(error) {
+            let errorToReturn;
+            switch (error) {
+                case 'The email already exists':
+                    errorToReturn = this.$t('signUp.emailError');
+                    break;
+                case 'The email is not accepted':
+                    errorToReturn = this.$t('signUp.wrongEmail');
+                    break;
+                default:
+                    errorToReturn = this.$t('signUp.generalError');
+            }
+            return errorToReturn;
         }
     }
 }
 </script>
 
-<style scoped>
-.wrapper {
-    position: relative;
-    top: 0;
-    height: 100vh;
-    overflow: auto;
-    max-height: 100%;
-    background: hsla(240,7%,81%,.15);
-    width: 100%;
-    min-height: 100%;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-}
-
-.content-img {
-    height: 48px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
-
-img {
-    width: 75px;
-    height: 27px;
-}
-
-.form {
-    width: 320px;
-    border: 1px solid rgb(222, 223, 224);
-    border-radius: 4px;
-    box-sizing: border-box;
-    position: relative;
-}
-
-.header {
-    margin-bottom: 15px;
-    text-align: center;
-    text-shadow: none;
-    background-color: initial;
-    border: 0;
-    border-radius: 6px 6px 0 0;
-    margin: 0;
-}
-
-.header>h1 {
-    font-size: 24px;
-    font-weight: 300;
-    letter-spacing: -.5px
-}
-
-.form-body {
-    border-top: 1px solid whitesmoke;
-    border-radius: 5px;
-    padding: 20px;
-    font-size: 14px;
-    background-color: whitesmoke;
-    border: 1px solid whitesmoke;
-}
-
-.form-body>label {
-    display: block;
-    margin-bottom: 7px;
-    text-align: left;
-    font-weight: 600;
-}
-
-.form-body>input {
-    margin-top: 5px;
-    margin-bottom: 15px;
-    display: block;
-    width: 100%;
-    padding: 5px 12px;
-    font-size: 14px;
-    line-height: 20px;
-    color: black;
-    background-color: white;
-    background-repeat: no-repeat;
-    background-position: right 8px center;
-    border: 1px solid gainsboro;
-    border-radius: 6px;
-    outline: none;
-    box-shadow: whitesmoke;
-}
+<style scoped src="@/assets/css/register.css">
 </style>
 

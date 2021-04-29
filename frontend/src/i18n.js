@@ -49,7 +49,11 @@ const messages = {
             name: 'Name',
             pass: 'Password',
             passPHolder: 'Password',
-            button: 'Sign Up'
+            button: 'Sign Up',
+            passRequired: 'Insert a password',
+            emailError: 'The email already exists',
+            wrongEmail: 'The email is not accepted',
+            generalError: 'An error has occurred',
         },
         topNavBar: {
             create: 'Create',
@@ -270,7 +274,11 @@ const messages = {
             name: 'Nombre',
             pass: 'Contraseña',
             passPHolder: 'contraseña',
-            button: 'Registrarse'
+            button: 'Registrarse',
+            passRequired: 'Inserte una contraseña',
+            emailError: 'El email ya está registrado',
+            wrongEmail: 'El email no es correcto',
+            generalError: 'Ha ocurrido un error',
         },
         topNavBar: {
             create: 'Crear',
