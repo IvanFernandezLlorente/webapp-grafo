@@ -42,7 +42,7 @@ export const createApplication = async (req, res) => {
         const emailRequested = await Application.findOne({ email });
             
         if (emailRequested){
-            return res.status(400).json({ message: "The email already send a request" });
+            return res.status(400).json({ message: "The email already sent a request" });
         } 
         
         const token = jwt.sign({ email }, config.SECRET);
