@@ -13,13 +13,18 @@ const messages = {
             email: 'Email',
             emailPHolder: 'example@gmail.com',
             pass: 'Password',
-            passPHolder: 'password',
+            passPHolder: 'Password',
             button: 'Sign In',
             titleNewPerson: 'New to Grafo Research?',
             linkNewPerson: 'Request Sign Up',
-            google: 'Sign In Google',
-            github: 'Sign In Github',
-            orcid: 'Sign In ORCID'
+            google: 'Sign In with Google',
+            github: 'Sign In with GitHub',
+            orcid: 'Sign In with ORCID',
+            emailError: 'Email not found',
+            passwordError: 'Invalid password',
+            blockedError: 'Your account is blocked',
+            registeredError: 'Account not registered',
+            generalError: 'An error has occurred',
         },
         requestSignUp: {
             title: 'Request Sign Up',
@@ -30,14 +35,20 @@ const messages = {
             description: 'Description',
             descriptionPHolder: 'Here can be your description...',
             button: 'Request Sign Up',
-            successmsg: 'The request has been sended'
+            successmsg: 'The request has been sended. We will send you a email with a decision.',
+            generalError: 'An error has occurred',
+            emailError: 'The email already exists',
+            emailRequested: 'The email already sent a request',
+            emailRequired: 'The email is required',
+            wrongEmail: 'Insert a valid email',
+            nameRequired: 'The name is required'
         },
         signUp: {
             title: 'Sign Up',
             email: 'Email',
             name: 'Name',
             pass: 'Password',
-            passPHolder: 'password',
+            passPHolder: 'Password',
             button: 'Sign Up'
         },
         topNavBar: {
@@ -228,8 +239,13 @@ const messages = {
             titleNewPerson: '¿Nuevo en Grafo Research?',
             linkNewPerson: 'Solicita el registro',
             google: 'Iniciar sesión con Google',
-            github: 'Iniciar sesión con Github',
-            orcid: 'Iniciar sesión con ORCID'
+            github: 'Iniciar sesión con GitHub',
+            orcid: 'Iniciar sesión con ORCID',
+            emailError: 'Email no encontrado',
+            passwordError: 'Contraseña erronea',
+            blockedError: 'La cuenta está bloqueada',
+            registeredError: 'Cuenta no registrada',
+            generalError: 'Ha ocurrido un error',
         },
         requestSignUp: {
             title: 'Solicitar Registro',
@@ -240,7 +256,13 @@ const messages = {
             description: 'Descripción',
             descriptionPHolder: 'Aquí puedes escribir la description...',
             button: 'Solicitar Registro',
-            successmsg: 'La solicitud ha sido enviada'
+            successmsg: 'La solicitud ha sido enviada. Te enviaremos un correo con la decisión.',
+            generalError: 'Ha ocurrido un error',
+            emailError: 'El correo ya existe',
+            emailRequested: 'Este email ya envió una solicitud',
+            emailRequired: 'El email es obligatorio',
+            wrongEmail: 'Introduzca un email válido',
+            nameRequired: 'El nombre es obligatorio'
         },
         signUp: {
             title: 'Registro',

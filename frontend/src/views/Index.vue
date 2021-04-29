@@ -34,7 +34,7 @@ export default {
     overflow: auto;
     max-height: 100%;
     height: 100%;
-    background: hsla(240,7%,81%,.15);
+    background: #EAEAEA;
     position: relative;
     float: right;
     width: calc(100% - 265px);

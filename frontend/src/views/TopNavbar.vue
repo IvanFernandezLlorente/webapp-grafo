@@ -117,8 +117,7 @@ export default {
     font-size: 16px;
     border-radius: 0;
     min-height: 50px;
-    background-color: hsla(0,0%,100%,.96);
-    border-bottom: 1px solid rgba(0,0,0,.1);
+    background-color: #EAEAEA;
     padding: 5px 15px;
 }
 </style>

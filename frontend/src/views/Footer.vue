@@ -16,7 +16,7 @@
 .main-panel > .footer {
     border-top: 1px solid #e7e7e7;
     height: 60px;
-    background-color: #fff;
+    background-color: #EAEAEA;
 }
 
 </style>

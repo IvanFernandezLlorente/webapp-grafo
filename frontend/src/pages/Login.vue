@@ -1,32 +1,58 @@
 <template>
   <div class="wrapper">
-        <b-link :to="{path: '/'}" class="nav-link">
+    <b-row style="margin: 2rem auto;">
+        <b-col cols="12">
             <div class="content-img">
-                <img src="../assets/logo_grafo.png" alt="logo-grafo">
+                <b-link :to="{path: '/'}"> 
+                    <img src="../assets/logo_grafo.png" alt="logo-grafo">
+                </b-link>
             </div>
-        </b-link>
-        <div class="form">
-            <form @submit.prevent="login">
-                <div class="header">
-                    <h1>{{ $t('login.title') }}</h1>
+            <div class="content-box title">
+                <h1>{{ $t('login.title') }}</h1>
+                <div class="black-line"></div>
+                <div class="red-line"></div>
+            </div>
+            <div class="content-box body">
+                <div class="error-alert" v-if="error">{{error}}</div>
+                <form @submit.prevent="login">
+                    <div class="form-body">
+                        <label for="email" name="login">{{ $t('login.email') }}</label>
+                        <input id="email" v-model="email" type="text" :placeholder="$t('login.emailPHolder')">
+
+                        <label for="password" style="margin-top: 15px;">{{ $t('login.pass') }}</label>
+                        <input id="password" v-model="password" name="password" :placeholder="$t('login.passPHolder')" type="password">
+
+                        <input type="submit" name="commit" :value="$t('login.button')">
+                    </div>
+                </form>
+            </div>
+
+            <div class="new">
+                <p style="margin: 1rem;">{{ $t('login.titleNewPerson') }} <b-link :to="{path: '/request-signUp'}">{{ $t('login.linkNewPerson') }}</b-link>.</p>
+            </div>
+
+            <div class="connect-btns">
+                <div class="google-btn" @click="google">
+                    <div class="google-icon-wrapper">
+                        <img class="google-icon" src="../assets/google.svg"/>
+                    </div>
+                    <p class="btn-text"><b>{{ $t('login.google') }}</b></p>
                 </div>
-                <div class="form-body">
-                    <label for="email" name="login">{{ $t('login.email') }}</label>
-                    <input id="email" v-model="email" type="text" :placeholder="$t('login.emailPHolder')">
-
-                    <label for="password">{{ $t('login.pass') }}</label>
-                    <input id="password" v-model="password" name="password" :placeholder="$t('login.passPHolder')" type="password">
-
-                    <input type="submit" name="commit" :value="$t('login.button')">
+                <div class="github-btn" @click="github">
+                    <div class="github-icon-wrapper">
+                        <img class="github-icon" src="../assets/github.svg"/>
+                    </div>
+                    <p class="btn-text"><b>{{ $t('login.github') }}</b></p>
                 </div>
-            </form>
-        </div>
-         
-        <button @click="google">{{ $t('login.google') }}</button>
-        <button @click="github">{{ $t('login.github') }}</button>
-        <button @click="orcid">{{ $t('login.orcid') }}</button>
-
-        <p v-if="error">{{error}}</p>
+                <div class="orcid-btn" @click="orcid">
+                    <div class="orcid-icon-wrapper">
+                        <img class="orcid-icon" src="../assets/orcid.svg"/>
+                    </div>
+                    <p class="btn-text"><b>{{ $t('login.orcid') }}</b></p>
+                </div>                
+            </div>
+        </b-col>
+    </b-row>        
   </div>
 </template>
 
@@ -52,14 +78,14 @@ export default {
                 this.manageSignIn(res.data);
             } catch (error) {
                 console.log(error.response.data)
-                this.error = error.response.data.message;
+                this.error = this.manageError(error.response.data.message);
             }            
         },
         google(){
             window.open('https://localhost:3443/api/users/oauth/google/signin',"windowLoginGoogle","location=1,status=1,scrollbars=1,width=800,height=800");
             let listener = window.addEventListener('message', (message) => {
                 if ((message.data.method == 'signinGoogle') && (message.data.message)) {
-                    this.error = message.data.message;
+                    this.error = this.manageError(message.data.message);
                 } else if ((message.data.token) && (message.data.method == 'signinGoogle')) {
                     this.manageSignIn(message.data);
                 }
@@ -69,7 +95,7 @@ export default {
             window.open('https://localhost:3443/api/users/oauth/github/signin',"windowLoginGithub","location=1,status=1,scrollbars=1,width=800,height=800");
             let listener = window.addEventListener('message', (message) => {
                 if ((message.data.method == 'signinGitHub') && (message.data.message)) {
-                    this.error = message.data.message;
+                    this.error = this.manageError(message.data.message);
                 } else if ((message.data.token) && (message.data.method == 'signinGitHub')) {
                     this.manageSignIn(message.data);
                 }
@@ -79,7 +105,7 @@ export default {
             window.open('https://localhost:3443/api/users/oauth/orcid/signin',"windowLoginORCID","location=1,status=1,scrollbars=1,width=800,height=800");
             let listener = window.addEventListener('message', (message) => {
                 if ((message.data.method == 'signinORCID') && (message.data.message)) {
-                    this.error = message.data.message;
+                    this.error = this.manageError(message.data.message);
                 } else if ((message.data.token) && (message.data.method == 'signinORCID')) {
                     this.manageSignIn(message.data);
                 }
@@ -97,94 +123,31 @@ export default {
             this.$store.dispatch('login',sended);
             this.$store.dispatch('setStorage');
             this.$router.push({path: '/'}).catch(()=>{});
+        },
+        manageError(error) {
+            let errorToReturn;
+            switch (error) {
+                case 'Email not found':
+                    errorToReturn = this.$t('login.emailError');
+                    break;
+                case 'Invalid password':
+                    errorToReturn = this.$t('login.passwordError');
+                    break;
+                case 'Your account is blocked':
+                    errorToReturn = this.$t('login.blockedError');
+                    break;
+                case 'Account not registered.':
+                    errorToReturn = this.$t('login.registeredError');
+                    break;
+                default:
+                    errorToReturn = this.$t('login.generalError');
+            }
+            return errorToReturn;
         }
     }
 }
 </script>
 
-<style scoped>
-.wrapper {
-    position: relative;
-    top: 0;
-    height: 100vh;
-    overflow: auto;
-    max-height: 100%;
-    background: hsla(240,7%,81%,.15);
-    width: 100%;
-    min-height: 100%;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-}
-
-.content-img {
-    height: 48px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
-
-img {
-    width: 75px;
-    height: 27px;
-}
-
-.form {
-    width: 320px;
-    border: 1px solid rgb(222, 223, 224);
-    border-radius: 4px;
-    box-sizing: border-box;
-    position: relative;
-}
-
-.header {
-    margin-bottom: 15px;
-    text-align: center;
-    text-shadow: none;
-    background-color: initial;
-    border: 0;
-    border-radius: 6px 6px 0 0;
-    margin: 0;
-}
-
-.header>h1 {
-    font-size: 24px;
-    font-weight: 300;
-    letter-spacing: -.5px
-}
-
-.form-body {
-    border-top: 1px solid whitesmoke;
-    border-radius: 5px;
-    padding: 20px;
-    font-size: 14px;
-    background-color: whitesmoke;
-    border: 1px solid whitesmoke;
-}
-
-.form-body>label {
-    display: block;
-    margin-bottom: 7px;
-    text-align: left;
-    font-weight: 600;
-}
-
-.form-body>input {
-    margin-top: 5px;
-    margin-bottom: 15px;
-    display: block;
-    width: 100%;
-    padding: 5px 12px;
-    font-size: 14px;
-    line-height: 20px;
-    color: black;
-    background-color: white;
-    background-repeat: no-repeat;
-    background-position: right 8px center;
-    border: 1px solid gainsboro;
-    border-radius: 6px;
-    outline: none;
-    box-shadow: whitesmoke;
-}
+<style scoped src="@/assets/css/login.css">
 </style>
 

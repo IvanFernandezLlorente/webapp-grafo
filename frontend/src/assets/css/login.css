@@ -1,0 +1,245 @@
+.wrapper {
+    position: relative;
+    top: 0;
+    height: 100vh;
+    overflow: auto;
+    max-height: 100%;
+    background: #EAEAEA;
+    width: 100%;
+    min-height: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.title {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    position: relative;
+    margin-top: 2rem;
+}
+
+.title > h1 {
+    padding: 2rem 4rem;
+    font-weight: bold;
+    font-size: 2rem;
+}
+
+.black-line {
+    border-top: 1px solid #707070;
+    width: 13rem;
+    position: absolute;
+    bottom: 1.5rem;
+}
+
+.red-line {
+    border-top: 4px solid #B81D24;
+    width: 3.5rem;
+    position: absolute;
+    bottom: 1.434rem;
+}
+.content-img {
+    height: 5rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+img {
+    width: 16rem;
+    height: 5rem;
+}
+
+.body {
+    margin-top: 2rem;
+    display: flex;
+    position: relative;
+}
+
+.body > form {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+}
+.form-body {
+    width: 75%;
+    margin-top: 2.5rem;
+}
+
+.form-body>label {
+    margin-bottom: 0px;
+    font-weight: bold;
+}
+
+.form-body>input {
+    margin-top: 5px;
+    margin-bottom: 1rem;
+    width: 100%;
+    background-color: #EFF2F5;
+    border: 0px;
+    border-radius: 16px;
+    height: 3rem;
+    padding: 12px 20px;
+}
+
+.form-body>input:focus{
+    outline: none;
+}
+
+input[type=submit] {
+    background-color: #E50914;
+    border-radius: 38px;
+    color: #FFF;
+    margin-top: 2rem;
+    margin-bottom: 2.5rem;
+}
+
+input[type=submit]:hover {
+    background-color: #B81D24;    
+    box-shadow: 0 0 4px #F01E28;
+}
+
+::placeholder {
+  color: #A6B0C3;
+}
+
+.connect-btns {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    
+}
+
+.connect-btns button {
+    margin-top: 1rem;
+    color: #FFF;
+}
+
+.new {
+    background-color: rgba(255, 255, 255,0.39);
+    box-shadow: 3px 3px 7px #000000B3;
+    border-radius: 17px;
+    display: flex;
+    justify-content: center;
+    margin-top: 2rem;
+    font-weight: bold;
+}
+
+.new a {
+    color: #E50914
+}
+
+.new a:hover{
+    text-decoration: none;
+    color: #B81D24;
+}
+
+.google-btn {
+    cursor: pointer;
+    height: 42px;
+    background-color: #4285f4;
+    border-radius: 25px;
+    box-shadow: 0 3px 4px 0 rgba(0,0,0,.25);
+    display: flex;
+    margin-top: 1rem;
+}
+.google-icon-wrapper {
+    margin-top: 1px;
+    margin-left: 1px;
+    width: 40px;
+    height: 40px;
+    border-radius: 500px;
+    background-color: #fff;
+}
+.google-icon {
+    position: absolute;
+    margin-top: 5px;
+    margin-left: 5px;
+    width: 30px;
+    height: 30px;
+}
+.google-btn:hover {
+    box-shadow: 0 0 6px #4285f4;
+    background: #1669F2;
+}
+.btn-text {
+    float: right;
+    margin: 11px 11px 0 0;
+    color: #fff;
+    font-size: 12px;
+    padding-left: 10px;
+}
+
+.github-btn {
+    cursor: pointer;
+    height: 42px;
+    background-color: #333333;
+    border-radius: 25px;
+    box-shadow: 0 3px 4px 0 rgba(0,0,0,.25);
+    display: flex;
+    margin-top: 1rem;
+}
+.github-icon-wrapper {
+    margin-top: 1px;
+    margin-left: 1px;
+    width: 40px;
+    height: 40px;
+    border-radius: 500px;
+    background-color: #fff;
+}
+.github-icon {
+    position: absolute;
+    margin-top: 5px;
+    margin-left: 5px;
+    width: 30px;
+    height: 30px;
+}
+.github-btn:hover {
+    box-shadow: 0 0 6px #020202;
+    background: #020202;
+}
+
+.orcid-btn {
+    cursor: pointer;
+    height: 42px;
+    background-color: #A1C837;
+    border-radius: 25px;
+    box-shadow: 0 3px 4px 0 rgba(0,0,0,.25);
+    display: flex;
+    margin-top: 1rem;
+    margin-bottom: 1rem;
+}
+.orcid-icon-wrapper {
+    margin-top: 1px;
+    margin-left: 1px;
+    width: 40px;
+    height: 40px;
+    border-radius: 500px;
+    background-color: #fff;
+}
+.orcid-icon {
+    position: absolute;
+    margin-top: 5px;
+    margin-left: 5px;
+    width: 30px;
+    height: 30px;
+}
+.orcid-btn:hover {
+    box-shadow: 0 0 6px #9BB74F;
+    background: #9BB74F;
+}
+
+.error-alert {
+    position: absolute;
+    background-color: rgb(242, 222, 222);
+    color: #b94a48;
+    border: 1px solid transparent;
+    border-radius: 0.25rem;
+    padding: 0.5rem 1.25rem;
+    font-size: 12px;
+    transform: translate(-50%,13%);
+    left: 50%;
+    display: ruby;
+}
