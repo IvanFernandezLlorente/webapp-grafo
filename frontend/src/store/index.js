@@ -1,6 +1,7 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
 import crypto from 'crypto-js';
+import secret from '../../cert/lsSecret.txt';
 
 Vue.use(Vuex)
 
@@ -65,7 +66,7 @@ export default new Vuex.Store({
         initialiseStorage({ commit }) {
             const itemStr = localStorage.getItem('userData');
             if (itemStr) {
-                const bytes = crypto.AES.decrypt(itemStr, '123');
+                const bytes = crypto.AES.decrypt(itemStr, secret);
                 const originalText = bytes.toString(crypto.enc.Utf8);
                 const item = JSON.parse(originalText);
                 const now = new Date();
@@ -88,7 +89,7 @@ export default new Vuex.Store({
                 expiry: now.getTime() + ttl,
             }
             const itemString = JSON.stringify(item);
-            const textcrypto = crypto.AES.encrypt(itemString, '123');
+            const textcrypto = crypto.AES.encrypt(itemString, secret);
             localStorage.setItem('userData', textcrypto);
         },
         deleteStorage({ commit }) {
