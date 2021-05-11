@@ -6,10 +6,8 @@ export default {
     MONGODB_URI: process.env.MONGODB_URI || "mongodb://localhost/grafodb",
     PORT: process.env.PORT || 4000,
     SECRET: process.env.SECRET || 'prueba',
-    CLIENT_ID: process.env.CLIENT_ID || '',
-    CLIENT_SECRET: process.env.CLIENT_SECRET || '',
-    REDIRECT_URI: process.env.REDIRECT_URI || '',
-    REFRESH_TOKEN: process.env.REFRESH_TOKEN || '',
+    GMAIL_USER: process.env.GMAIL_USER || '',
+    GMAIL_PASSWORD: process.env.GMAIL_PASSWORD || '',
     OAUTH: {
         GOOGLE: {
             CLIENT_ID: process.env.GOOGLE_CLIENT_ID || '',
