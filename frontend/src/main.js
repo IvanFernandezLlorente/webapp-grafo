@@ -12,10 +12,37 @@ import i18n from './i18n';
 
 Vue.config.productionTip = false
 
+
+const sidebarMenu = {
+  showSidebar: false,
+  displaySidebar(value) {
+    this.showSidebar = value;
+  }
+};
+
+const SidebarPlugin = {
+  install(Vue) {
+    Vue.mixin({
+      data() {
+        return {
+          sidebarStore: sidebarMenu
+        };
+      }
+    });
+
+    Object.defineProperty(Vue.prototype, "$sidebar", {
+      get() {
+        return this.$root.sidebarStore;
+      }
+    });
+  }
+};
+
 Vue.use(BootstrapVue)
 Vue.use(IconsPlugin)
 Vue.use(CKEditor)
 Vue.use(VueAxios, axios)
+Vue.use(SidebarPlugin)
 
 axios.defaults.baseURL = 'https://localhost:3443/api';
 

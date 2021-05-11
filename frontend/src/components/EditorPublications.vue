@@ -462,17 +462,17 @@ export default {
             });
         },
         pushToUsersChosen() {
-            this.usersChosen = [...this.userMap.entries()].filter(({ 1: v }) => this.publication.user.includes(v)).map(([k]) => k);
-            if (this.publication.usersNotRegistered) {
-                this.publication.usersNotRegistered.forEach( user => this.usersChosen.push(user));
-            }
-
             const authorsArray = JSON.parse(this.publication.authors);
             const authorsArrayAux = [];
-            this.usersChosen.forEach(user => authorsArrayAux.push(authorsArray.filter(({ 1: v}) => v==user).map(([k])=>k)[0]));
+            const usersChosenArrayAux = [];
+           
+            authorsArray.forEach(user => {
+                authorsArrayAux.push(user[0]);
+                usersChosenArrayAux.push(user[1]);
+            })
 
             this.authors = authorsArrayAux;
-            
+            this.usersChosen = usersChosenArrayAux;
         },
         async getProblems() {
             const res = await this.axios.get(`problems`);

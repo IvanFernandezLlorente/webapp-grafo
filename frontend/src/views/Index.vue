@@ -1,7 +1,7 @@
 <template>
   <div class="wrapper">
     <Drawer />
-    <div class="main-panel">
+    <div class="main-panel mobile" :class="{ toggled: $sidebar.showSidebar }">
         <TopNavbar />
         <Content />
         <Footer />
@@ -37,7 +37,20 @@ export default {
     background: #EAEAEA;
     position: relative;
     float: right;
-    width: calc(100% - 265px);
+    width: calc(100% - 345px);
     min-height: 100%;
+    transition: all .2s cubic-bezier(.4,0,.2,1);
+}
+
+.main-panel.toggled {
+    width: calc(100% - 100px);
+    transition: all .2s cubic-bezier(.4,0,.2,1);
+}
+
+@media (max-width: 991px){
+    .main-panel.mobile {
+        width: 100%;
+        transition: all .2s cubic-bezier(.4,0,.2,1);
+    }
 }
 </style>

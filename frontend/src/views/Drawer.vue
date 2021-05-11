@@ -1,94 +1,135 @@
 <template>
-  <div class="sidebar">
-    <b-navbar class="sidebar-wrapper" toggleable="lg" type="dark">
-        <b-navbar-brand href="#">NavBar</b-navbar-brand>
+    <div class="wrapper mobile" :class="{ toggled: $sidebar.showSidebar }">
+        <div class="sidebar-backdrop mobile" @click="closeSidebarPanel" v-if="$sidebar.showSidebar"></div>
+        <div class="sidebar mobile" :class="{ toggled: $sidebar.showSidebar }">
+            <div class="sidebar-wrapper">
+                <div class="logo-profile">
+                    <div>
+                        <img src="../assets/logo_grafo_menu.svg" class="image-menu">
+                    </div>
+                    <div class="title">
+                        <div style="font-size: 1.5rem;font-weight: bold; white-space: nowrap;">Grafo Research</div>
+                    </div>
+                </div>
+                <hr class="divider">
+            </div>
 
-        <b-navbar-toggle target="nav-collapse"></b-navbar-toggle>
-
-        <b-collapse id="nav-collapse" is-nav>
-        <b-navbar-nav class="list">
-            <b-nav-item class="nav-link" to="/people">
-                <b-icon-file-person></b-icon-file-person>
-                <p>{{ $t('drawer.people') }}</p>
-            </b-nav-item>
-            <b-nav-item class="nav-link" to="/problems">
-                <b-icon-clipboard></b-icon-clipboard>
-                <p>{{ $t('drawer.problems') }}</p>
-            </b-nav-item>
-            <b-nav-item class="nav-link" to="/publications">
-                <b-icon-chat-dots-fill></b-icon-chat-dots-fill>
-                <p>{{ $t('drawer.publications') }}</p>
-            </b-nav-item>
-        </b-navbar-nav>
-        </b-collapse>
-    </b-navbar>
- </div>
+            <div v-if="userName" class="sidebar-wrapper">
+                <router-link :to="`/profile/${id}`" class="logo-profile" @click.native="hideSidebar()">
+                    <div>
+                        <img v-if="image" :src="image" class="image-menu">
+                        <img v-else src="../assets/blank-person.jpg" class="image-menu">
+                    </div>
+                    <div class="title">
+                        <div style="white-space: nowrap;">{{ userName }}</div>
+                    </div>
+                </router-link>
+                <hr class="divider">
+            </div>
+            
+            <div class="sidebar-wrapper">
+                <router-link to="/" class="link" @click.native="hideSidebar(); active = 'home'" :class="{active: active === 'home'}">
+                    <div class="icon">
+                        <b-icon-file-person></b-icon-file-person>
+                    </div>
+                    <div class="title">
+                        <div>{{ $t('drawer.home') }}</div>
+                    </div>
+                </router-link>
+                <router-link to="/people" class="link" @click.native="hideSidebar(); active = 'people'" :class="{active: active === 'people'}">
+                    <div class="icon">
+                        <b-icon-file-person></b-icon-file-person>
+                    </div>
+                    <div class="title">
+                        <div>{{ $t('drawer.people') }}</div>
+                    </div>
+                </router-link>
+                <router-link to="/problems" class="link" @click.native="hideSidebar(); active = 'problems'" :class="{active: active === 'problems'}">
+                    <div class="icon">
+                        <b-icon-clipboard></b-icon-clipboard>
+                    </div>
+                    <div class="title">
+                        {{ $t('drawer.problems') }}
+                    </div>
+                </router-link>
+                <router-link to="/publications" class="link" @click.native="hideSidebar(); active = 'publications'"  :class="{active: active === 'publications'}">
+                    <div class="icon">
+                        <b-icon-chat-dots-fill></b-icon-chat-dots-fill>
+                    </div>
+                    <div class="title">
+                        {{ $t('drawer.publications') }}
+                    </div>
+                </router-link>
+            </div>
+        </div>
+    </div>
 </template>
 
 <script>
+import { mapState } from 'vuex';
 export default {
+    name: 'Drawer',
 
+    data: () => {
+        return {
+            id: '',
+            userName: '',
+            image: '',
+            active: null
+        }
+    },
+    created() {
+        this.watchState();
+        this.getActive();
+    },
+    methods: {
+        async watchState(){
+            try {
+                this.id = this.userId;
+                if (this.id) {
+                    const res = await this.axios.get(`users/${this.id}`);
+                    const { name, imagenProfile } = res.data;
+                    this.userName = name;
+                    this.image = imagenProfile;
+                }               
+            } catch (error) {
+                console.log(error)                
+            }
+        },
+        closeSidebarPanel() {
+            this.$sidebar.displaySidebar(false);
+        },
+        hideSidebar() {
+            console.log('hola');
+            if (window.innerWidth < 992) {
+                this.$sidebar.displaySidebar(false);
+            }
+        },
+        activeLink(value) {
+            this.active = value;
+        },
+        getActive() {
+            switch (this.$route.name) {
+                case 'Home':
+                    this.active = 'home';
+                    break;
+                case 'People':
+                    this.active = 'people';
+                    break;
+                case 'Problems':
+                    this.active = 'problems';
+                    break;
+                case 'Publications':
+                    this.active = 'publications';
+                    break;
+                default:
+                    this.active = null;
+            }
+        }
+    },
+    computed: mapState(['userId'])
 }
 </script>
 
-<style scoped>
-.sidebar{
-    position: absolute;
-    top: 0;
-    bottom: 0;
-    left: 0;
-    width: 265px;
-    display: block;
-    z-index: 1;
-    color: #fff;
-    font-weight: 200;
-    background-size: cover;
-    background-position: 50%;
-}
-
-.sidebar-wrapper{
-    position: relative;
-    max-height: calc(100vh - 75px);
-    min-height: 100%;
-    overflow: auto;
-    width: 265px;
-    z-index: 4;
-    padding-bottom: 100px;
-    display: block;
-    background: #000;
-    opacity: 0.7;
-}
-
-.list{
-    margin-top: 20px;
-    float: none;
-    display: block;
-    width: 100%;
-}
-
-li.nav-link{
-    padding: 0px !important;
-}
-
-a.nav-link{
-    color: #fff;
-    margin: 5px 15px;
-    opacity: .86;
-    border-radius: 4px;
-    display: block;
-    padding: 10px 15px !important;
-    text-transform: uppercase;
-    line-height: 30px;
-    font-size: 12px;
-    font-weight: 600;
-}
-
-svg {
-    font-size: 28px !important;
-    margin-right: 15px;
-    width: 30px;
-    text-align: center;
-    float: left;
-}
-
+<style scoped src="@/assets/css/drawer.css">
 </style>

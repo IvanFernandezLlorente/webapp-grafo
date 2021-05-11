@@ -298,7 +298,7 @@ const messages = {
             problems: 'Problemas',
         },
         settigns: {
-            title: 'Ajuste',
+            title: 'Ajustes',
             tabProfile: 'Perfil',
             tabPassword: 'Contraseña',
             tabAccounts: 'Cuentas',

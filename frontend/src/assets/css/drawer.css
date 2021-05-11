@@ -1,0 +1,152 @@
+.wrapper{
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    width: 345px;
+    display: block;
+    z-index: 1;
+    color: #EAEAEA;
+    font-weight: 200;
+    background-size: cover;
+    background-position: 50%;
+    transition: all .2s cubic-bezier(.4,0,.2,1);
+}
+
+.sidebar{
+    position: relative;
+    max-height: calc(100vh - 75px);
+    min-height: 100%;
+    overflow: hidden;
+    width: 345px;
+    z-index: 4;
+    padding-bottom: 100px;
+    display: block;
+    background: #3d3a3a;
+    transition: all .2s cubic-bezier(.4,0,.2,1); 
+}
+
+.sidebar-wrapper{
+    display: flex;
+    flex-direction: column;
+    margin: 8px 15px;
+}
+
+.logo-profile {
+    margin-bottom: 8px;
+    color: #fff;
+    border-radius: 4px;
+    padding: 0px 8px;
+    display: flex;
+    align-items: center;
+    text-decoration: none;  
+}
+
+.link {
+    margin-bottom: 8px;
+    color: #fff;
+    border-radius: 4px;
+    padding: 0px 8px;
+    display: flex;
+    align-items: center;
+    text-decoration: none;  
+}
+
+.link.active.router-link-exact-active {
+    background-color: #E50914;
+    border-radius: 38px;
+}
+
+.link:hover{
+    background-color: #B81D24;
+    border-radius: 38px;
+}
+
+.icon {
+    margin-right: 26px;
+    margin-left: 11px;
+    margin-top: 12px;
+    margin-bottom: 12px;
+    justify-content: center;
+    display: inline-flex;
+    min-width: 24px;
+    align-self: flex-start;
+    padding: 0;
+    text-align: center;
+    width: 46px;
+}
+
+svg {
+    font-size: 40px !important;
+    width: 46px;
+}
+
+
+.title {
+    width: 100%;
+    display: flex;
+    flex-wrap: wrap;
+    padding: 12px 0;
+    margin-left: 20px;
+    white-space: nowrap;
+}
+
+.divider {
+    background-color: #fff;
+    border-color: #fff;
+    width: 100%;
+}
+
+.image-menu {
+    border-radius: 50%;
+    width: 66px;
+    height: 66px;
+}
+
+.sidebar.toggled {
+    width: 100px;
+    transition: all .2s cubic-bezier(.4,0,.2,1);
+}
+
+.wrapper.toggled {
+    width: 100px;
+    transition: all .2s cubic-bezier(.4,0,.2,1);
+}
+
+.sidebar.toggled:hover {
+    width: 345px;
+    transition: all .2s cubic-bezier(.4,0,.2,1);
+}
+
+.wrapper.toggled:hover {
+    width: 345px;
+    transition: all .2s cubic-bezier(.4,0,.2,1);
+}
+
+
+@media (max-width: 991px){
+    .wrapper.mobile {
+        width: 0;
+    }
+    .sidebar.mobile {
+        width: 0;
+    }
+    .wrapper.mobile.toggled {
+        display: block;
+        width: 345px;
+        z-index: 100;
+    }
+    .sidebar.mobile.toggled {
+        display: block;
+        width: 345px;
+        z-index: 100;
+    }
+    .sidebar-backdrop.mobile {
+        background-color: rgba(0, 0, 0, 0.4);
+        width: 100vw;
+        height: 100vh;
+        position: fixed;
+        top: 0;
+        left: 0;
+    }
+}

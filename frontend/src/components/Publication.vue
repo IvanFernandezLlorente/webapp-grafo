@@ -33,19 +33,18 @@
       <p><strong>Keywords: </strong>{{publication.keywords}}</p>
       <p><strong>Abstract: </strong>{{publication.abstract}}</p>
       <p v-if="publication.pdf"><a :href="`https://localhost:3443/api/files/downloads/${publication.pdf}`">{{ $t('publication.pdf') }}</a></p>
-      <h4 v-if="users.length || publication.usersNotRegistered.length">Users</h4>
-      <div v-if="users.length">
-        <b-link v-for="(user,index) in users"
-          :key="index"
-          :to="{path: `/profile/${user.userId}`}"> 
-            <p>{{authorById(user.name)}}</p>
-        </b-link>
-      </div>
-
-      <div v-if="publication.usersNotRegistered.length">
-        <p v-for="(name,index) in publication.usersNotRegistered" :key="index"> 
-            {{authorById(name)}}
-        </p>
+      
+      <h4 v-if="authors">Authors</h4>
+      <div v-if="authors">
+        <div v-for="(user,index) in authors" :key="index">
+            <div v-if="authorIsRegistered(user[1])">
+                <b-link :to="{path: `/profile/${getUserId(user[1])}`}"> 
+                    <p>{{ user[0] }}</p>
+                </b-link>
+            </div>
+            
+            <p v-else>{{ user[0] }}</p>
+        </div>
       </div>
 
       <div v-if="problems.length">
@@ -153,8 +152,14 @@ export default {
             });
             this.$router.push({path: '/'})
         },
-        authorById(userId) {
-            return this.authors.filter(({ 1: v}) => v==userId).map(([k])=>k)[0];
+        authorIsRegistered(value) {
+            if (value) {
+                return this.users.filter(user => user.name == value)[0];
+            }
+            return false;
+        },
+        getUserId(value) {
+            return this.users.filter(user => user.name == value)[0].userId;
         }
     },
     computed: mapState(['isAdmin','id']),

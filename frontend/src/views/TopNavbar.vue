@@ -1,87 +1,70 @@
 <template>
-  <nav class="navbar navbar-expand-lg">
-    <div class="container-fluid">
-      <b-link class="nav-link" :to="{path: '/'}">
-        Home
-      </b-link>
-      <button type="button">
-        <span class="navbar-toggler-bar burger-lines"></span>
-        <span class="navbar-toggler-bar burger-lines"></span>
-        <span class="navbar-toggler-bar burger-lines"></span>
-      </button>
-      <div class="collapse navbar-collapse justify-content-end">
-        <ul class="nav navbar-nav mr-auto">
-          <li class="nav-item">
-            <a class="nav-link" href="#" data-toggle="dropdown">
-              <i class="nc-icon nc-palette"></i>
-            </a>
-          </li>
-
-          <li class="nav-item">
-            <a href="#" class="nav-link">
-              <i class="nc-icon nc-zoom-split"></i>
-              <span class="d-lg-block">&nbsp;Search</span>
-            </a>
-          </li>
-        </ul>
-        <ul class="navbar-nav ml-auto">
-          <li v-if="token" class="nav-item">
-            <b-link class="nav-link" :to="{name: 'NewProblem'}">
-                {{ $t('topNavBar.problem') }}
-            </b-link>
-          </li>
-          <li v-if="token" class="nav-item">
-            <b-link class="nav-link" :to="{name: 'NewPublication'}">
-                {{ $t('topNavBar.publication') }}
-            </b-link>
-          </li>
-          <li v-if="token" class="nav-item">
-            <b-link class="nav-link" :to="{path: '/settings'}">
-                {{ $t('topNavBar.settigns') }}
-            </b-link>
-          </li>
-
-          <li v-if="isAdmin" class="nav-item">
-            <b-link class="nav-link" :to="{path: '/applications'}">
-                {{ $t('topNavBar.requests') }}
-            </b-link>
-          </li>
-
-          <li v-if="orcid" class="nav-item">
-            <b-link class="nav-link" :to="{path: '/import-orcid'}">
-                {{ $t('topNavBar.importORCID') }}
-            </b-link>
-          </li>
-          
-          <li class="nav-item">
-            <b-link class="nav-link" @click="changeLanguage('en')">
-              EN
-            </b-link>
-          </li>
-
-          <li class="nav-item">
-            <b-link class="nav-link" @click="changeLanguage('es')">
-              ES
-            </b-link>
-          </li>
-
-          <li class="nav-item">
-            <div v-if="!token" style="display: flex;">
-                <b-link  :to="{path: '/login'}" class="nav-link">
-                    {{ $t('topNavBar.signIn') }}
-                </b-link>
-                <b-link  :to="{path: '/request-signUp'}" class="nav-link">
-                    {{ $t('topNavBar.signUp') }}
-                </b-link>
+    <nav class="navbar">
+        <div class="wrapper">
+            <div class="circle" @click="toggleSidebar" style="cursor: pointer;">
+                <img v-if="$sidebar.showSidebar" src="../assets/menu.svg">
+                <img v-else src="../assets/collapse.svg">
             </div>
-            <b-link @click="logOut" v-else class="nav-link">
-                {{ $t('topNavBar.logout') }}
-            </b-link>
-          </li>
-        </ul>
-      </div>
-    </div>
-  </nav>
+            <div class="circle dropdown-lang" @mouseover="languageList = true" @mouseleave="languageList = false">
+                <img src="../assets/translate.svg">
+                <transition name="fade">
+                    <div class="dropdown-content-lang" v-show="languageList" @click="languageList = false">
+                        <div class="lang-icons">
+                            <img src="../assets/en.svg" class="lang-icon" @click="changeLanguage('en')">                        
+                            <img src="../assets/es.svg" class="lang-icon" @click="changeLanguage('es')">
+                        </div>
+                    </div>
+                </transition>
+            </div>
+            <div class="spacer"></div>
+
+            <div v-if="token" class="dropdown nav-item" @mouseover="createList = true" @mouseleave="createList = false">
+                <div class="nav-link hide-element">{{ $t('topNavBar.create') }}<img src="../assets/create-icon.svg" style="margin-left: 6px;"></div>
+                <transition name="fade">
+                    <div class="dropdown-content" v-show="createList" @click="createList = false">
+                        <router-link to="/newpublication">{{ $t('topNavBar.publication') }}</router-link>
+                        <router-link to="/newproblem">{{ $t('topNavBar.problem') }}</router-link>
+                        <router-link v-if="orcid" to="/import-orcid">{{ $t('topNavBar.importORCID') }}</router-link>
+                    </div>
+                </transition>
+            </div>
+
+            <div v-if="isAdmin" class="nav-item">
+                <router-link class="nav-link hide-element" to="/applications">
+                    {{ $t('topNavBar.requests') }}
+                    <img src="../assets/requests.svg">
+                </router-link>
+            </div>
+
+            <div v-if="token" class="nav-item">
+                <router-link class="nav-link hide-element" to="/settings">
+                    {{ $t('topNavBar.settigns') }}
+                    <img src="../assets/settings.svg">
+                </router-link>
+            </div>
+
+            <div v-if="!token" class="buttons-login">
+                <router-link to="/login" class="link-signIn">    
+                    <button class="btn login">
+                        {{ $t('topNavBar.signIn') }}
+                    </button>
+                </router-link>
+                
+                <router-link to="/request-signUp" class="link-signUp">    
+                    <button class="btn signUp">
+                        {{ $t('topNavBar.signUp') }}
+                    </button>
+                </router-link>
+            </div>
+
+            <div v-else class="nav-item logOut">
+                <div @click="logOut" class="nav-link hide-element">
+                    {{ $t('topNavBar.logout') }}
+                    <img src="../assets/logout.svg">
+                </div>
+            </div>
+        </div>
+    </nav>
 </template>
 <script>
 import { mapState } from 'vuex';
@@ -92,6 +75,8 @@ export default {
 
     data: () => {
         return {
+            createList: false,
+            languageList: false
         }
     },
     methods: {
@@ -102,22 +87,14 @@ export default {
         },
         changeLanguage(lang) {
             i18n.locale = lang;
+        },
+        toggleSidebar() {
+            this.$sidebar.displaySidebar(!this.$sidebar.showSidebar);
         }
     },
     computed: mapState(['token', 'isAdmin','orcid'])
 }
 
 </script>
-<style scoped>
-.navbar {
-    border: 0;
-    border-bottom-color: currentcolor;
-    border-bottom-style: none;
-    border-bottom-width: 0px;
-    font-size: 16px;
-    border-radius: 0;
-    min-height: 50px;
-    background-color: #EAEAEA;
-    padding: 5px 15px;
-}
+<style scoped src="@/assets/css/topNavbar.css">
 </style>
