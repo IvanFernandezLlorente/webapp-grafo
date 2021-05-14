@@ -739,7 +739,7 @@ export default {
                 file.section = 'description'
                 this.filesToUpload.push(file)
                 this.fileArrayDescription.push(file)
-                this.publication.description.content += `<p>Download <a href="https://localhost:3443/api/files/downloads/${file.fileId}">${file.name}</a></p>`
+                this.publication.description.content += `<p>Download <a href="https://${this.$hostname}:3443/api/files/downloads/${file.fileId}">${file.name}</a></p>`
             })
         },
         fileState() {
@@ -749,7 +749,7 @@ export default {
                 file.section = 'state'
                 this.filesToUpload.push(file)
                 this.fileArrayState.push(file)
-                this.publication.state.content += `<p>Download <a href="https://localhost:3443/api/files/downloads/${file.fileId}">${file.name}</a></p>`
+                this.publication.state.content += `<p>Download <a href="https://${this.$hostname}:3443/api/files/downloads/${file.fileId}">${file.name}</a></p>`
             })
         },
         fileInstances() {
@@ -759,7 +759,7 @@ export default {
                 file.section = 'instances'
                 this.filesToUpload.push(file)
                 this.fileArrayInstances.push(file)
-                this.publication.instances.content += `<p>Download <a href="https://localhost:3443/api/files/downloads/${file.fileId}">${file.name}</a></p>`
+                this.publication.instances.content += `<p>Download <a href="https://${this.$hostname}:3443/api/files/downloads/${file.fileId}">${file.name}</a></p>`
             })
         },
         fileReferences() {
@@ -769,7 +769,7 @@ export default {
                 file.section = 'references'
                 this.filesToUpload.push(file)
                 this.fileArrayReferences.push(file)
-                this.publication.reference.content += `<p>Download <a href="https://localhost:3443/api/files/downloads/${file.fileId}">${file.name}</a></p>`
+                this.publication.reference.content += `<p>Download <a href="https://${this.$hostname}:3443/api/files/downloads/${file.fileId}">${file.name}</a></p>`
             })
         },
         fileComputational() {
@@ -779,7 +779,7 @@ export default {
                 file.section = 'computational'
                 this.filesToUpload.push(file)
                 this.fileArrayComputational.push(file)
-                this.publication.computationalExperience.content += `<p>Download <a href="https://localhost:3443/api/files/downloads/${file.fileId}">${file.name}</a></p>`
+                this.publication.computationalExperience.content += `<p>Download <a href="https://${this.$hostname}:3443/api/files/downloads/${file.fileId}">${file.name}</a></p>`
             })
         },
         filePDFPublication() {

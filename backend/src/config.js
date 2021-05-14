@@ -5,6 +5,7 @@ config();
 export default {
     MONGODB_URI: process.env.MONGODB_URI || "mongodb://localhost:27017/grafodb",
     PORT: process.env.PORT || 4000,
+    HOSTNAME: process.env.HOSTNAME || 'localhost',
     SECRET: process.env.SECRET || 'prueba',
     GMAIL_USER: process.env.GMAIL_USER || '',
     GMAIL_PASSWORD: process.env.GMAIL_PASSWORD || '',

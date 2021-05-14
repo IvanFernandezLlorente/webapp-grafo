@@ -238,7 +238,7 @@ export default {
             this.userCopy[valor.target.id] = valor.target.value
         },
         google(){
-            window.open(`https://localhost:3443/api/users/oauth/google/connect/${this.$store.state.userId}/${this.$store.state.token}`,"windowProfile","location=1,status=1,scrollbars=1,width=800,height=800");          
+            window.open(`https://${this.$hostname}:3443/api/users/oauth/google/connect/${this.$store.state.userId}/${this.$store.state.token}`,"windowProfile","location=1,status=1,scrollbars=1,width=800,height=800");          
             let listener = window.addEventListener('message', (message) => {
                 if ((message.data.method == 'connectGoogle') && (message.data.message)) {
                     this.errorGoogle = true; 
@@ -259,7 +259,7 @@ export default {
             this.user = res.data;
         },
         github(){
-            window.open(`https://localhost:3443/api/users/oauth/github/connect/${this.$store.state.userId}/${this.$store.state.token}`,"windowProfile","location=1,status=1,scrollbars=1,width=800,height=800");          
+            window.open(`https://${this.$hostname}:3443/api/users/oauth/github/connect/${this.$store.state.userId}/${this.$store.state.token}`,"windowProfile","location=1,status=1,scrollbars=1,width=800,height=800");          
             let listener = window.addEventListener('message', (message) => {
                 if ((message.data.method == 'connectGithub') && (message.data.message)) {
                     this.errorGithub = true; 
@@ -280,7 +280,7 @@ export default {
             this.user = res.data;
         },
         orcid(){
-            window.open(`https://localhost:3443/api/users/oauth/orcid/connect/${this.$store.state.userId}/${this.$store.state.token}`,"windowProfile","location=1,status=1,scrollbars=1,width=800,height=800");          
+            window.open(`https://${this.$hostname}:3443/api/users/oauth/orcid/connect/${this.$store.state.userId}/${this.$store.state.token}`,"windowProfile","location=1,status=1,scrollbars=1,width=800,height=800");          
             let listener = window.addEventListener('message', (message) => {
                 if ((message.data.method == 'connectORCID') && (message.data.message)) {
                     this.errorORCID = true; 

@@ -16,7 +16,7 @@
 
       <h3>{{publication.title}}</h3>
       <div v-if="publication.bibtex" class="form-group">
-        <a :href="`https://localhost:3443/api/files/bibtex/${publication.publicationId}`">
+        <a :href="`https://${this.$hostname}:3443/api/files/bibtex/${publication.publicationId}`">
             <button type="button" class="btn btn-secondary">
                 {{ $t('publication.cite') }}
             </button>
@@ -32,7 +32,7 @@
       <p><strong>URL: </strong>{{publication.url}}</p>
       <p><strong>Keywords: </strong>{{publication.keywords}}</p>
       <p><strong>Abstract: </strong>{{publication.abstract}}</p>
-      <p v-if="publication.pdf"><a :href="`https://localhost:3443/api/files/downloads/${publication.pdf}`">{{ $t('publication.pdf') }}</a></p>
+      <p v-if="publication.pdf"><a :href="`https://${this.$hostname}:3443/api/files/downloads/${publication.pdf}`">{{ $t('publication.pdf') }}</a></p>
       
       <h4 v-if="authors">Authors</h4>
       <div v-if="authors">

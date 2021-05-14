@@ -48,7 +48,8 @@ Vue.use(CKEditor)
 Vue.use(VueAxios, axios)
 Vue.use(SidebarPlugin)
 
-axios.defaults.baseURL = 'https://localhost:3443/api';
+Vue.prototype.$hostname = '192.168.10.144'
+axios.defaults.baseURL = 'https://192.168.10.144:3443/api';
 
 new Vue({
   i18n,

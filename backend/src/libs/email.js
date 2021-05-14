@@ -35,7 +35,7 @@ export const emailWelcome = async (user) => {
 export const emailAccepted = async (application) => {
     const subject = "Grafo Research | Your request has been accepted"
     const text = `Hello ${application.name},\nYour request has been accepted.` // TODO: change it to dev start  https://localhost:8080
-    const html =`<p>Hello ${application.name}</p><p>Your request has been accepted</p><a href="http://localhost:80/register/${application._id}/${application.token}">Click here</a>`
+    const html =`<p>Hello ${application.name}</p><p>Your request has been accepted</p><a href="http://${config.HOSTNAME}:80/register/${application._id}/${application.token}">Click here</a>`
     await sendEmail(application.email, subject, text, html);
 }
 

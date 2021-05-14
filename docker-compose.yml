@@ -18,6 +18,7 @@ services:
     env_file: ./backend/.env
     environment:
       - MONGODB_URI=${MONGODB_URI}
+      - HOSTNAME=${HOSTNAME}
       - PORT=${PORT}
       - SECRET=${SECRET}
       - GMAIL_USER=${GMAIL_USER}
