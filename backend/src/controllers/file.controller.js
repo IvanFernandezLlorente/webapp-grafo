@@ -19,7 +19,8 @@ export const downloadFile = async (req, res) => {
     try {
         const file = await File.findOne({ fileId: req.params.fileId });
         if (file) {
-            return res.status(200).download(path.join( __dirname, '..', '..',  file.path ))
+            return res.status(200).download(path.join(file.path),file.name)
+            //return res.status(200).download(path.join( __dirname, '..', '..',  file.path )) // TODO: change it to dev start 
         }
         return res.status(404).json({ message: "File not found" });
     } catch (error) {
@@ -31,7 +32,8 @@ export const downloadBibtex = async (req, res) => {
     try {
         const publication = await Publication.findOne({ publicationId: req.params.publicationId });
         if (publication && publication.bibtex) {
-            const filePath = path.join(__dirname, "..", "..", "uploads", "citation.bib");
+            const filePath = path.join("uploads", "citation.bib");
+            // const filePath = path.join(__dirname, "..", "..", "uploads", "citation.bib"); // TODO: change it to dev start 
             fs.writeFileSync(filePath, publication.bibtex, "UTF8");
             res.status(200).download(filePath, "citation.bib", function (err) {
                 if (err) console.log(error);

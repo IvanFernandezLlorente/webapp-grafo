@@ -38,6 +38,10 @@ const SidebarPlugin = {
   }
 };
 
+Vue.config.devtools = false;
+Vue.config.debug = false;
+Vue.config.silent = true;
+
 Vue.use(BootstrapVue)
 Vue.use(IconsPlugin)
 Vue.use(CKEditor)

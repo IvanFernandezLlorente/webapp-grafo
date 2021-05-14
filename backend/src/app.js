@@ -4,14 +4,17 @@ import router from './router';
 import path from 'path';
 import cors from 'cors';
 import config from './config';
+import { createUser } from './libs/init';
 
 const app = express();
+createUser(); // TODO: change it to dev start 
 
 app.set("port",config.PORT || 4000);
 
 app.disable('etag');
 app.disable('x-powered-by')
-app.use(cors({ origin: 'https://localhost:8080' }));
+//app.use(cors({ origin: 'https://localhost:8080' })); // TODO: change it to dev start 
+app.use(cors());
 app.use(morgan('dev'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));

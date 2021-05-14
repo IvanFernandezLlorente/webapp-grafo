@@ -1,0 +1,51 @@
+version: "3"
+services:
+  vue-app:
+    image: vue-app
+    container_name: vue-app
+    build: ./frontend/
+    restart: unless-stopped
+    stdin_open: true
+    ports:
+      - "80:80"
+    networks:
+      - mevn-app
+  node-api:
+    image: node-api
+    container_name: node-api
+    build: ./backend/
+    restart: unless-stopped
+    env_file: ./backend/.env
+    environment:
+      - MONGODB_URI=${MONGODB_URI}
+      - PORT=${PORT}
+      - SECRET=${SECRET}
+      - GMAIL_USER=${GMAIL_USER}
+      - GMAIL_PASSWORD=${GMAIL_PASSWORD}
+      - GOOGLE_CLIENT_ID=${GOOGLE_CLIENT_ID}
+      - GOOGLE_CLIENT_SECRET=${GOOGLE_CLIENT_SECRET}
+      - GITHUB_CLIENT_ID=${GITHUB_CLIENT_ID}
+      - GITHUB_CLIENT_SECRET=${GITHUB_CLIENT_SECRET}
+      - ORCID_CLIENT_ID=${ORCID_CLIENT_ID}
+      - ORCID_CLIENT_SECRET=${ORCID_CLIENT_SECRET}
+    ports:
+      - "3443:3443"
+    networks:
+      - mevn-app
+    depends_on:
+      - mongo
+  mongo:
+    image: mongo
+    container_name: mongo
+    ports:
+      - "27017:27017"
+    networks:
+      - mevn-app
+    volumes:
+      - mongo-data:/data/db
+networks:
+  mevn-app:
+    driver: bridge
+volumes:
+  mongo-data:
+    driver: local

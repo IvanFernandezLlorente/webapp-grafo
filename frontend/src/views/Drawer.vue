@@ -100,7 +100,6 @@ export default {
             this.$sidebar.displaySidebar(false);
         },
         hideSidebar() {
-            console.log('hola');
             if (window.innerWidth < 992) {
                 this.$sidebar.displaySidebar(false);
             }

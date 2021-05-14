@@ -7,13 +7,14 @@ module.exports = {
 
     devServer: {
         host: 'localhost',
-        port: 8080,
+        port: 80, // TODO: change it to dev start 8080
         https: {
             key: fs.readFileSync('./cert/key.pem'),
             cert: fs.readFileSync('./cert/cert.pem'),
         },
         hotOnly: true
     },
+    parallel: false,
     // The source of CKEditor is encapsulated in ES6 modules. By default, the code
     // from the node_modules directory is not transpiled, so you must explicitly tell
     // the CLI tools to transpile JavaScript files in all ckeditor5-* modules.

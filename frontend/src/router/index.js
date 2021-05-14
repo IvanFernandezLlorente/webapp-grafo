@@ -176,7 +176,8 @@ const routes = [
     path: '/request-signUp',
     name: 'RequestSignUp',
     component: RequestSignUp,
-  }
+},
+  { path: '*', redirect: '/login' }
 ]
 
 const canEditPublication = async (publicationId) => {
