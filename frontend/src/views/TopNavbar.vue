@@ -1,17 +1,18 @@
 <template>
     <nav class="navbar">
         <div class="wrapper">
-            <div class="circle" @click="toggleSidebar" style="cursor: pointer;">
+            <div class="circle" @click="toggleSidebar">
                 <img v-if="$sidebar.showSidebar" src="../assets/menu.svg">
                 <img v-else src="../assets/collapse.svg">
             </div>
-            <div class="circle dropdown-lang" @mouseover="languageList = true" @mouseleave="languageList = false">
-                <img src="../assets/translate.svg">
+            <div class="circle dropdown-lang" @click="languageList = !languageList">
+                <img v-if="getLanguage() == 'en'" src="../assets/en.svg" class="lang-icon" style="opacity: 1 !important;">                        
+                <img v-else src="../assets/es.svg" class="lang-icon" style="opacity: 1 !important;">
                 <transition name="fade">
-                    <div class="dropdown-content-lang" v-show="languageList" @click="languageList = false">
+                    <div class="dropdown-content-lang" v-show="languageList">
                         <div class="lang-icons">
-                            <img src="../assets/en.svg" class="lang-icon" @click="changeLanguage('en')">                        
-                            <img src="../assets/es.svg" class="lang-icon" @click="changeLanguage('es')">
+                            <img v-if="getLanguage() == 'es'" src="../assets/en.svg" class="lang-icon" @click="changeLanguage('en')">                        
+                            <img v-else src="../assets/es.svg" class="lang-icon" @click="changeLanguage('es')">
                         </div>
                     </div>
                 </transition>
@@ -87,6 +88,9 @@ export default {
         },
         changeLanguage(lang) {
             i18n.locale = lang;
+        },
+        getLanguage() {
+            return i18n.locale;
         },
         toggleSidebar() {
             this.$sidebar.displaySidebar(!this.$sidebar.showSidebar);

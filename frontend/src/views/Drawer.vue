@@ -30,7 +30,7 @@
             <div class="sidebar-wrapper">
                 <router-link to="/" class="link" @click.native="hideSidebar(); active = 'home'" :class="{active: active === 'home'}">
                     <div class="icon">
-                        <b-icon-file-person></b-icon-file-person>
+                        <b-icon-house-fill></b-icon-house-fill>
                     </div>
                     <div class="title">
                         <div>{{ $t('drawer.home') }}</div>

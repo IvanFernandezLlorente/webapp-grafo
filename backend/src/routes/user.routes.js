@@ -62,6 +62,8 @@ router.get('/oauth/orcid/callback/signin', passport.authenticate('signinORCID', 
 
 router.put('/:userId', [authJwt.verifyToken, verifySignUp.checkDuplicateNameOrEmail], userController.updateUserById);
 
+router.put('/password/:userId', [authJwt.verifyToken], userController.changePassword);
+
 router.delete('/:userId', [authJwt.verifyToken], userController.deleteUserById);
 
 export default router;

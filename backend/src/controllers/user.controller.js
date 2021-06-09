@@ -57,7 +57,8 @@ export const getToken = async (req, res) => {
                 token,
                 id: user._id,
                 userId: user.userId,
-                roles: user.roles
+                roles: user.roles,
+                orcid: user.orcid
             });
         }
         return res.status(404).json({ message: "User not found" });
@@ -105,6 +106,36 @@ export const updateUserById = async (req, res) => {
 const userIdUnique = async (userId) => {
     const user = await User.findOne({ userId });
     return user;
+}
+
+export const changePassword = async (req, res) => {
+    try {
+        const user = await User.findOne({ userId: req.params.userId });
+        if (!user) {
+            return res.status(404).json({ message: "User not found" });
+        }
+
+        if (req.isAdmin || req.userId == req.params.userId) {
+            const checkPassword = await User.comparePassword(req.body.currentPassword,user.password);
+            if (!checkPassword) {
+                return res.status(401).json({ message: "The current password is not the same"});
+            }
+
+            const encryptedPassword = await User.encryptPassword(req.body.newPassword);
+
+            const updatedUser = await User.findOneAndUpdate(
+                { userId: req.params.userId },
+                { password: encryptedPassword },
+                {
+                    new: true
+                }
+            )
+            return res.status(200).json(updatedUser);
+        }
+        return res.status(401).json({ message: "Unauthorized" });
+    } catch (error) {
+        return res.status(500).json({ message: "Error" });
+    }
 }
 
 export const deleteUserById = async (req, res) => {

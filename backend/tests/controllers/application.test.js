@@ -134,7 +134,7 @@ describe('Application controller', () => {
                 email: 'new email 4'
             });;
             expect(res.statusCode).toEqual(400);
-            expect(res.body).toEqual(expect.objectContaining({ message: "The email already send a request" }));
+            expect(res.body).toEqual(expect.objectContaining({ message: "The email already sent a request" }));
         });
 
         it('Create Applications error', async () => {

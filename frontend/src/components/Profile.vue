@@ -7,21 +7,7 @@
                 {{ $t('profile.edit') }}
             </button>
         </b-link>
-        <b-link v-if="canEditVariable && !user.banned" class="edit" @click="banUser()"> 
-            <button class="btn btn-warning">
-                Ban
-            </button>
-        </b-link>
-        <b-link v-if="canEditVariable && user.banned" class="edit" @click="allowUser()"> 
-            <button class="btn btn-warning">
-                Allow
-            </button>
-        </b-link>
-        <b-link v-if="canEditVariable" class="edit"  @click="deleteU()"> 
-            <button class="btn btn-danger">
-                Delete
-            </button>
-        </b-link>
+       
     </div>
     <b-row style="justify-content: center;">
         <b-col cols="9">
@@ -116,46 +102,8 @@ export default {
             }
         },
         canEdit() {
-            this.linkToEdit = this.user._id === this.id ? '/settings' : `/admin/edit-profile/${this.user._id}`
+            this.linkToEdit = this.user._id === this.id ? '/settings' : `/admin/edit-profile/${this.user.userId}`
             this.canEditVariable = (this.isAdmin) || (this.user._id === this.id)
-        },
-        async deleteU() {
-            const res = await this.axios.delete(`users/${this.$route.params.userId}`,{
-                headers: { token: this.$store.state.token}
-            });
-            if (this.user._id === this.id) {
-                this.$store.dispatch('deleteStorage');
-                this.$store.dispatch('logout');
-                this.$router.push({path: '/login'})                
-            } else {
-               this.$router.push({path: '/'})
-            }
-        },
-        async banUser() {
-            try {
-                const res = await this.axios.put(`users/${this.$route.params.userId}`,{ banned: true }, {
-                    headers: { token: this.$store.state.token}
-                });
-                if (this.user._id === this.id) {
-                    this.$store.dispatch('deleteStorage');
-                    this.$store.dispatch('logout');
-                    this.$router.push({path: '/login'})                
-                } else {
-                    this.$router.push({path: '/'})
-                }
-            } catch (error) {
-                console.log(error);
-            }      
-        },
-        async allowUser() {
-            try {
-                const res = await this.axios.put(`users/${this.$route.params.userId}`,{ banned: false }, {
-                    headers: { token: this.$store.state.token}
-                });
-                this.$router.push({path: '/'})
-            } catch (error) {
-                console.log(error);
-            }
         },
         async fetchProblems() {
             const promises = [];
@@ -191,9 +139,6 @@ export default {
     display: flex;
 }
 
-.edit {
-    margin-right: 15px;
-}
 
 .buttons {
     display: flex;

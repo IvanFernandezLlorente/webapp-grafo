@@ -1,140 +1,225 @@
 <template>
   <b-row style="justify-content: center;">
-      <b-col class="card" cols="8">
-        <div class="card-header">
-            <h4 class="card-title">{{ $t('settigns.title') }}</h4>
-            <b-form-checkbox-group v-if="isAdmin" :disabled='!isAdmin' v-model="selected" :options="options"></b-form-checkbox-group>
-        </div>
-        <div class="card-body">
-            <form @submit.prevent="updateProfile"> 
-                <b-row>
-                    <b-col cols="3">
-                        <div class="form-group">
-                            <label for="name" class="control-label">{{ $t('settigns.name') }}</label>
-                            <input id="name" v-model="user.name" @change="updateCopy"  class="form-control" type="text" :placeholder="$t('settigns.namePHolder')">
-                        </div>
-                    </b-col>
-                    <b-col cols="5">
-                        <div class="form-group">
-                            <label for="lastname" class="control-label">Last Name</label>
-                            <input id="lastname" class="form-control" type="text" placeholder="Last Name">
-                        </div>
-                    </b-col>
-                    <b-col cols="4">
-                        <div class="form-group">
-                            <label for="email" class="control-label">{{ $t('settigns.email') }}</label>
-                            <input id="email" v-model="user.email"  @change="updateCopy" class="form-control" type="text" :placeholder="$t('settigns.emailPHolder')">
-                        </div>
-                    </b-col>
-                </b-row>
+        <b-col cols="12" class="padding-box">
+            <div class="content-box title" style="margin-top: 0px;">
+                <h1>{{ $t('settigns.title') }}</h1>
+                <div class="black-line"></div>
+                <div class="red-line"></div>
+            </div>
+        </b-col>
+        <b-col cols="12" class="padding-box">
+            <div class="content-box" style="margin-top: 20px;">
+                <div class="body">
+                    <div class="choices">
+                        <div @click="setChoice(1)" :class="[choice == 1 ? activeClass : '']">{{ $t('settigns.tabProfile') }}</div>
+                        <div @click="setChoice(2)" :class="[choice == 2 ? activeClass : '']">{{ $t('settigns.tabPassword') }}</div>
+                        <div @click="setChoice(3)" :class="[choice == 3 ? activeClass : '']">{{ $t('settigns.tabAccounts') }}</div>
+                        <div @click="setChoice(4)" :class="[choice == 4 ? activeClass : '']">{{ $t('settigns.tabDanger') }}</div>
+                        
+                    </div>
 
-                <b-row>
-                    <b-col cols="3">
-                        <div class="form-group">
-                            <label for="newPassword" class="control-label">{{ $t('settigns.newPassword') }}</label>
-                            <input id="newPassword" v-model="newPassword" class="form-control" type="password" :placeholder="$t('settigns.newPassword')">
-                        </div>
-                    </b-col>
-                    <b-col cols="3">
-                        <div class="form-group">
-                            <label for="confirmPassword" class="control-label">{{ $t('settigns.confirmPassword') }}</label>
-                            <input id="confirmPassword" v-model="confirmPassword" class="form-control" type="password" :placeholder="$t('settigns.confirmPassword')">
-                        </div>
-                    </b-col>
-                    <b-col cols="6"> 
-                        <div class="form-group">
-                            <label for="userId" class="control-label">http://localhost:8080/users/</label>
-                            <input id="userId" v-model="user.userId" @change="updateCopy" class="form-control" type="text" :placeholder="$t('settigns.idPHolder')">
-                        </div>
-                    </b-col>
-                </b-row>
+                    <div v-if="choice == 1">
+                        <form @submit.prevent="updateProfile" class="form-data">
+                                <b-row>
+                                    <b-col cols="12" xl="9" class="data-box">
+                                        <b-row>
+                                            <b-col cols="12" md="4">
+                                                <div class="form-group">
+                                                    <label for="name" class="control-label required">{{ $t('settigns.name') }}</label>
+                                                    <input id="name" @keydown.enter.prevent='' v-model="user.name" @change="updateCopy"  type="text" :placeholder="$t('settigns.namePHolder')">
+                                                </div>
+                                            </b-col>
+                                            <b-col cols="12" md="4">
+                                                <div class="form-group">
+                                                    <label for="email" class="control-label required">{{ $t('settigns.email') }}</label>
+                                                    <input id="email" @keydown.enter.prevent='' v-model="user.email"  @change="updateCopy" type="text" :placeholder="$t('settigns.emailPHolder')">
+                                                </div>
+                                            </b-col>
+                                            <b-col cols="12" md="4"> 
+                                                <div class="form-group">
+                                                    <label for="userId" class="control-label required">ID</label>
+                                                    <input id="userId" @keydown.enter.prevent='' v-model="user.userId" @change="updateCopy" type="text" :placeholder="$t('settigns.idPHolder')">
+                                                </div>
+                                            </b-col>
+                                        </b-row>
 
-                <b-row>
-                    <b-col cols="8">
-                        <div class="form-group">
-                            <label for="organization" class="control-label">{{ $t('settigns.organization') }}</label>
-                            <input id="organization" v-model="user.organization" @change="updateCopy" class="form-control" type="text" :placeholder="$t('settigns.organizationPHolder')">
-                        </div>
-                    </b-col>
-                </b-row>
+                                        <b-row>
+                                            <b-col cols="12" md="6">
+                                                <div class="form-group">
+                                                    <label for="linkedin" class="control-label">LinkedIn</label>
+                                                    <input id="linkedin" @keydown.enter.prevent='' v-model="user.linkedinUrl" @change="updateCopy"  type="text" :placeholder="$t('settigns.linkedinPHolder')">
+                                                </div>
+                                            </b-col>
+                                            <b-col cols="12" md="6">
+                                                <div class="form-group">
+                                                    <label for="scholar" class="control-label">Scholar</label>
+                                                    <input id="scholar" @keydown.enter.prevent='' v-model="user.scholarUrl"  @change="updateCopy" type="text" :placeholder="$t('settigns.scholarPHolder')">
+                                                </div>
+                                            </b-col>
+                                        </b-row>
 
-                <b-row>
-                    <b-col cols="8">
-                        <div class="form-group">
-                            <label for="department" class="control-label">{{ $t('settigns.department') }}</label>
-                            <input id="department" v-model="user.department" @change="updateCopy" class="form-control" type="text" :placeholder="$t('settigns.departmentPHolder')">
-                        </div>
-                    </b-col>
-                </b-row>
+                                        <b-row>
+                                            <b-col cols="12" md="6">
+                                                <div class="form-group">
+                                                    <label for="organization" class="control-label">{{ $t('settigns.organization') }}</label>
+                                                    <input id="organization" @keydown.enter.prevent='' v-model="user.organization" @change="updateCopy" type="text" :placeholder="$t('settigns.organizationPHolder')">
+                                                </div>
+                                            </b-col>
+                                            <b-col cols="12" md="6">
+                                                <div class="form-group">
+                                                    <label for="department" class="control-label">{{ $t('settigns.department') }}</label>
+                                                    <input id="department" @keydown.enter.prevent='' v-model="user.department" @change="updateCopy" type="text" :placeholder="$t('settigns.departmentPHolder')">
+                                                </div>
+                                            </b-col>
+                                        </b-row>
 
-                <b-row>
-                    <b-col cols="8">
-                        <div class="form-group">
-                            <label for="area" class="control-label">{{ $t('settigns.area') }}</label>
-                            <input id="area" v-model="user.area" @change="updateCopy" class="form-control" type="text" :placeholder="$t('settigns.areaPHolder')">
-                        </div>
-                    </b-col>
-                </b-row>
+                                        
+                                        <b-row>
+                                             <b-col cols="12" md="6">
+                                                <div class="form-group">
+                                                    <label for="researchgroup" class="control-label">{{ $t('settigns.researchGroup') }}</label>
+                                                    <input id="researchgroup" @keydown.enter.prevent='' v-model="user.researchgroup" @change="updateCopy" type="text" :placeholder="$t('settigns.researchGroupPHolder')">
+                                                </div>
+                                            </b-col>
+                                            <b-col cols="12" md="6">
+                                                <div class="form-group">
+                                                    <label for="area" class="control-label">{{ $t('settigns.area') }}</label>
+                                                    <input id="area" @keydown.enter.prevent='' v-model="user.area" @change="updateCopy" type="text" :placeholder="$t('settigns.areaPHolder')">
+                                                </div>
+                                            </b-col>
+                                        </b-row>
 
-                <b-row>
-                    <b-col cols="8">
-                        <div class="form-group">
-                            <label for="researchgroup" class="control-label">{{ $t('settigns.researchGroup') }}</label>
-                            <input id="researchgroup" v-model="user.researchgroup" @change="updateCopy" class="form-control" type="text" :placeholder="$t('settigns.researchGroupPHolder')">
-                        </div>
-                    </b-col>
-                </b-row>
+                                        <b-row>
+                                            <b-col cols="12">
+                                                <div class="form-group">
+                                                    <label for="description" class="control-label">{{ $t('settigns.description') }}</label>
+                                                    <textarea id="description" v-model="user.description" @change="updateCopy" rows="10" style="height: 20px; min-height: 50px;" :placeholder="$t('settigns.descriptionPHolder')"></textarea>    
+                                                </div>
+                                            </b-col>
+                                        </b-row>
+                                    </b-col>
+                                    <b-col cols="12" xl="3" class="image-box">
+                                        <b-form-checkbox-group v-if="isAdmin" :disabled='!isAdmin' v-model="selected" :options="options" class="admin-selection" style="position: unset;"></b-form-checkbox-group>
+                                        <div class="profile-image">
+                                            <img v-if="imgDataUrl" :src="imgDataUrl">
+                                            <a class="btn btn-image" @click="toggleShow" style="width: 200px;">{{ $t('settigns.uploadPhoto') }}</a>
+                                            <my-upload 
+                                                @crop-success="cropSuccess"
+                                                v-model="show"
+                                                lang-type="en"></my-upload>
+                                        </div>
+                                    </b-col>
+                                </b-row>  
 
-                <b-row>
-                    <b-col cols="12">
-                        <div class="form-group">
-                            <label for="description" class="control-label">{{ $t('settigns.description') }}</label>
-                            <textarea id="description" v-model="user.description" @change="updateCopy" class="form-control" rows="10" style="height: 20px; min-height: 50px;" :placeholder="$t('settigns.descriptionPHolder')"></textarea>    
+                                <p v-if="errorProfile" class="msgResponse-error msgResponse col-md-6 col-xl-4 col-12" style="margin-left: 0;">{{errorProfile}}</p>  
+                                <p v-if="updatedProfile" class="msgResponse-success msgResponse col-md-6 col-xl-4 col-12" style="margin-left: 0;">{{updatedProfile}}</p>
+                            <input type="submit" name="commit" :value="$t('settigns.saveProfile')">
+                        </form>
+                    </div>
+
+                    <div v-if="choice == 2">
+                        <b-row style="flex-direction: column;margin-top: 3rem;">
+                            <form @submit.prevent="updatePassword">
+                                <b-col cols="12" md="6" xl="4">
+                                    <div class="form-group">
+                                        <label for="currentPassword" class="control-label required">{{ $t('settigns.currentPassword') }}</label>
+                                        <input id="currentPassword" @keydown.enter.prevent='' v-model="currentPassword" class="form-control" type="password" :placeholder="$t('settigns.currentPassword')">
+                                    </div>
+                                </b-col>
+                                <b-col cols="12" md="6" xl="4">
+                                    <div class="form-group">
+                                        <label for="newPassword" class="control-label required">{{ $t('settigns.newPassword') }}</label>
+                                        <input id="newPassword" @keydown.enter.prevent='' v-model="newPassword" class="form-control" type="password" :placeholder="$t('settigns.newPassword')">
+                                    </div>
+                                </b-col>
+                                <b-col cols="12" md="6" xl="4">
+                                    <div class="form-group">
+                                        <label for="confirmPassword" class="control-label required">{{ $t('settigns.confirmPassword') }}</label>
+                                        <input id="confirmPassword" @keydown.enter.prevent='' v-model="confirmPassword" class="form-control" type="password" :placeholder="$t('settigns.confirmPassword')">
+                                    </div>
+                                </b-col>
+                                <p v-if="errorPassword" class="msgResponse-error msgResponse col-md-6 col-xl-4 col-12">{{errorPassword}}</p>  
+                                <p v-if="changedPassword" class="msgResponse-success msgResponse col-md-6 col-xl-4 col-12">{{changedPassword}}</p>
+                                <input type="submit" name="commit" :value="$t('settigns.savePassword')" style="margin-left: 15px;margin-top: 4rem;">
+                            </form>
+                        </b-row>
+                    </div>
+                    <div v-if="choice == 3">
+                        <div class="connect-btns">
+                            <div class="account-box">
+                                <div class="google-wrapper">
+                                    <div class="google-icon-wrapper">
+                                        <img class="google-icon" src="../assets/google.svg"/>
+                                    </div>
+                                </div>
+
+                                <button v-if="!(user.google) || ((user.google) && !(user.google.methodId))" class="google-btn" type="button" @click="google">{{ $t('settigns.google') }}</button>                                                       
+                                <div v-else style="display: flex; flex-wrap: wrap;">
+                                    <p class="social-text">{{user.google.email}}</p>
+                                    <button type="button" class="google-remove-btn" @click="disconnectGoogle">{{ $t('settigns.disconnect') }}</button>
+                                </div>  
+
+                                <p v-if="errorGoogle" class="social-text social-text-error">{{errorGoogleText}}</p>    
+                            </div>
+
+                            <div class="account-box">
+                                <div class="github-icon-wrapper">
+                                    <img class="github-icon" src="../assets/github.svg"/>
+                                </div>
+
+                                <button v-if="!(user.github) || ((user.github) && !(user.github.methodId))" class="github-btn" type="button" @click="github">{{ $t('settigns.github') }}</button>
+                                <div v-else style="display: flex; flex-wrap: wrap;">
+                                    <p class="social-text">{{user.github.name}}</p>
+                                    <button type="button" class="github-remove-btn" @click="disconnectGithub">{{ $t('settigns.disconnect') }}</button>
+                                </div>
+
+                                <p v-if="errorGithub" class="social-text social-text-error">{{errorGithubText}}</p>
+                            </div>
+
+                            <div class="account-box">
+                                <div class="orcid-icon-wrapper">
+                                    <img class="orcid-icon" src="../assets/orcid.svg"/>
+                                </div>
+        
+                                <button v-if="!(user.orcid) || ((user.orcid) && !(user.orcid.orcid))" class="orcid-btn" type="button" @click="orcid">{{ $t('settigns.orcid') }}</button>
+                                <div v-else style="display: flex; flex-wrap: wrap;">
+                                    <p class="social-text">https://sandbox.orcid.org/{{user.orcid.orcid}}</p>
+                                    <button type="button" class="orcid-remove-btn" @click="disconnectORCID">{{ $t('settigns.disconnect') }}</button>
+                                </div>
+
+                                <p v-if="errorORCID" class="social-text social-text-error">{{errorORCIDText}}</p>
+                            </div>
                         </div>
-                    </b-col>
-                </b-row>
-                
-                <p v-if="errorGoogle">{{errorGoogleText}}</p>
-                <button v-if="!(user.google) || ((user.google) && !(user.google.methodId))" type="button" @click="google">{{ $t('settigns.google') }}</button>
-                
-                <div v-else style="display: flex;">
-                    <p>{{user.google.email}}</p>
-                    <button type="button" @click="disconnectGoogle">{{ $t('settigns.disconnect') }}</button>
+                    </div>
+
+                    <div v-if="choice == 4" class="danger-btns">
+                        <b-button v-b-modal.modal-1 class="delete-btn" > 
+                            {{ $t('settigns.delete') }}
+                        </b-button>
+                        <b-modal id="modal-1" centered @ok="deleteU()">
+                            <p class="my-4">{{ $t('settigns.confirmDelete') }}</p>
+                        </b-modal>
+
+
+                        <b-button v-if="isAdmin && !user.banned" v-b-modal.modal-2 class="ban-btn"> 
+                                {{ $t('settigns.ban') }}
+                        </b-button>
+                        <b-modal id="modal-2" centered @ok="banUser()">
+                            <p class="my-4">{{ $t('settigns.confirmBan') }}</p>
+                        </b-modal>
+
+
+                        <div v-if="isAdmin && user.banned" @click="allowUser()"> 
+                            <button class="btn ban-btn">
+                                {{ $t('settigns.allow') }}
+                            </button>
+                        </div>
+                    </div>
+                    
                 </div>
-
-
-                <p v-if="errorGithub">{{errorGithubText}}</p>
-                <button v-if="!(user.github) || ((user.github) && !(user.github.methodId))" type="button" @click="github">{{ $t('settigns.github') }}</button>
                 
-                <div v-else style="display: flex;">
-                    <p>{{user.github.name}}</p>
-                    <button type="button" @click="disconnectGithub">{{ $t('settigns.disconnect') }}</button>
-                </div>
-
-                <p v-if="errorORCID">{{errorORCIDText}}</p>
-                <button v-if="!(user.orcid) || ((user.orcid) && !(user.orcid.orcid))" type="button" @click="orcid">{{ $t('settigns.orcid') }}</button>
-                
-                <div v-else style="display: flex;">
-                    <p>https://sandbox.orcid.org/{{user.orcid.orcid}}</p>
-                    <button type="button" @click="disconnectORCID">{{ $t('settigns.disconnect') }}</button>
-                </div>
-
-                <div class="text-center">
-                    <button type="submit" class="btn btn-info float-right">
-                        {{ $t('settigns.saveProfile') }}
-                    </button>
-                </div>
-            </form>
-        </div>
-      </b-col>
-      <div class="profile-image">
-        <img :src="imgDataUrl">
-        <a class="btn btn-info" @click="toggleShow">{{ $t('settigns.uploadPhoto') }}</a>
-        <my-upload 
-            @crop-success="cropSuccess"
-            v-model="show"
-            lang-type="en"></my-upload>
-      </div>
+            </div>
+        </b-col>
   </b-row>
 </template>
 
@@ -170,11 +255,17 @@ export default {
           orcid: {
                 orcid: '',
                 name: ''
-          }
+          },
+          banned: false
         },
         userCopy: {},
+        currentPassword: '',
         newPassword: '',
         confirmPassword: '',
+        errorPassword: '',
+        changedPassword: '',
+        errorProfile: '',
+        updatedProfile: '',
         selected: [],
         options: [
             { text: 'Admin', value: 'admin' }
@@ -187,6 +278,8 @@ export default {
         errorORCIDText: '',
         show: false,
         imgDataUrl: '',
+        choice: 1,
+        activeClass: 'active',
       }
     },
     components: {
@@ -196,6 +289,9 @@ export default {
         this.fetchData();
     },
     methods: {
+        setChoice(value) {
+            this.choice = value;
+        },
         async fetchData() {
             try {
                 const res = await this.axios.get(`users/${this.$route.params.userId ? this.$route.params.userId : this.$store.state.userId}`);
@@ -208,9 +304,6 @@ export default {
         },
         async updateProfile () {
             try {
-                if (this.newPassword && this.newPassword===this.confirmPassword) {
-                    this.userCopy.password = this.newPassword;
-                }
                 this.userCopy.roles = this.selected;
                 const res = await this.axios.put(`users/${this.$route.params.userId ? this.$route.params.userId : this.$store.state.userId}`,this.userCopy,{
                     headers: { token: this.$store.state.token}
@@ -219,19 +312,26 @@ export default {
                     const res = await this.axios.get(`users/token`, {
                         headers: { token: this.$store.state.token}
                     });
-                    const { token, id, userId, isAdmin } = res.data;
+                    const { token, id, userId, roles, orcid } = res.data;
                     const sended = {
                         token, 
                         id, 
                         userId, 
-                        isAdmin
+                        isAdmin: roles.includes('admin'),
+                        orcid: orcid?.orcid ? orcid.orcid : undefined
                     }
                     this.$store.dispatch('updateUser',sended);
                     this.$store.dispatch('setStorage');
                 }
-                this.$router.push({path: '/'})
+
+                if (res.status == 200) {
+                    this.errorProfile = '';
+                    this.updatedProfile = this.$t('settigns.updatedProfile');
+                }
             } catch (error) {
-                console.log(error)                
+                console.log(error);
+                this.updatedProfile = '';
+                this.errorProfile = error.response.data.message;
             }
         },
         updateCopy (valor) {
@@ -317,72 +417,76 @@ export default {
                 console.log(error);
             }
         },
+        async deleteU() {
+            const res = await this.axios.delete(`users/${this.user.userId}`,{
+                headers: { token: this.$store.state.token}
+            });
+            if (this.user._id === this.id) {
+                this.$store.dispatch('deleteStorage');
+                this.$store.dispatch('logout');
+                this.$router.push({path: '/login'})                
+            } else {
+               this.$router.push({path: '/'})
+            }
+        },
+        async banUser() {
+            try {
+                const res = await this.axios.put(`users/${this.user.userId}`,{ banned: true }, {
+                    headers: { token: this.$store.state.token}
+                });
+                if (this.user._id === this.id) {
+                    this.$store.dispatch('deleteStorage');
+                    this.$store.dispatch('logout');
+                    this.$router.push({path: '/login'})                
+                } else {
+                    this.user.banned = res.data.banned;
+                }
+            } catch (error) {
+                console.log(error);
+            }      
+        },
+        async allowUser() {
+            try {
+                const res = await this.axios.put(`users/${this.user.userId}`,{ banned: false }, {
+                    headers: { token: this.$store.state.token}
+                });
+                this.user.banned = res.data.banned;
+            } catch (error) {
+                console.log(error);
+            }
+        },
+        async updatePassword() {
+            try {
+                if (this.currentPassword && this.newPassword && this.confirmPassword) {
+                    const body = {
+                        currentPassword: this.currentPassword,
+                        newPassword: this.newPassword
+                    }
+                    const res = await this.axios.put(`users/password/${this.user.userId}`, body, {
+                        headers: { token: this.$store.state.token}
+                    });
+                    if (res.status == 200) {
+                        this.errorPassword = '';
+                        this.changedPassword = this.$t('settigns.changedPassword');
+                    }
+                } else if (this.newPassword != this.confirmPassword) {
+                    this.changedPassword = '';
+                    this.errorPassword = this.$t('settigns.errorPasswordDifferent');
+                } else {
+                    this.changedPassword = '';
+                    this.errorPassword = this.$t('settigns.errorPasswordIncomplete');
+                }
+            } catch (error) {
+                console.log(error); 
+                this.changedPassword = '';
+                this.errorPassword = error.response.data.message;
+            }
+        },
         
     },
-    computed: mapState(['isAdmin']),
+    computed: mapState(['isAdmin','id']),
 }
 </script>
 
-<style scoped>
-.card {
-    border-radius: 4px;
-    background-color: #fff;
-    margin-bottom: 30px;
-}
-
-.card-header{
-    padding: 15px 15px 0;
-    background-color: #fff;
-    border-bottom: none !important;
-    display: flex;
-    justify-content: space-between;
-}
-
-.card-header>h4 {
-    margin: 0;
-    color: #333;
-    font-weight: 300;
-}
-
-.control-label {
-    font-size: 12px;
-    margin-bottom: 5px;
-    text-transform: uppercase;
-    font-weight: 400;
-    color: #9a9a9a;
-}
-
-.form-group {
-    margin-bottom: 1rem;
-}
-
-.form-control {
-    border: 1px solid #e3e3e3;
-    border-radius: 4px;
-    color: #565656;
-    padding: 8px 12px;
-    height: 40px;
-    display: block;
-    width: 100%;
-    font-size: 1rem;
-    line-height: 1.5;
-    background-image: none;
-    background-clip: padding-box;
-}
-
-.form-control::-moz-placeholder {
-  color: #cfcfca;
-  opacity: 1;
-  filter: alpha(opacity=100);
-}
-
-.profile-image {
-    left: 50px;
-    position: relative;
-}
-
-.profile-image a {
-    display: flex;
-    margin-top: 10px;
-}
+<style scoped src="@/assets/css/editProfile.css">
 </style>

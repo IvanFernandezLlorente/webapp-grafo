@@ -118,7 +118,7 @@ export default {
                 id, 
                 userId, 
                 isAdmin: roles.includes('admin'),
-                orcid: orcid ? orcid : undefined
+                orcid: orcid?.orcid ? orcid.orcid : undefined
             }
             this.$store.dispatch('login',sended);
             this.$store.dispatch('setStorage');

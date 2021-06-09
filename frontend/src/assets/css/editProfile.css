@@ -1,0 +1,432 @@
+.title {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    position: relative;
+    margin-top: 2rem;
+}
+
+.title > h1 {
+    padding: 2rem 4rem;
+    font-weight: bold;
+    font-size: 2rem;
+}
+
+.black-line {
+    border-top: 1px solid #707070;
+    width: 13rem;
+    position: absolute;
+    bottom: 1.5rem;
+}
+
+.red-line {
+    border-top: 4px solid #B81D24;
+    width: 3.5rem;
+    position: absolute;
+    bottom: 1.434rem;
+}
+
+
+.title > h1 {
+    padding: 1.8rem 0rem !important;
+}
+
+.body {
+    padding: 29px 49px;
+    min-height: 643px;
+}
+
+.choices {
+    display: flex;
+    margin-bottom: 18px;
+    overflow-x: auto;
+}
+
+.choices > div {
+    cursor: pointer;
+    font-size: 1.3rem;
+    font-weight: bold;
+    margin-right: 56px;
+}
+
+.active {
+    border-bottom: 4px solid #E50914;
+}
+
+.choices > div:hover {
+    border-bottom: 4px solid #E50914;
+}
+
+.form-data {
+    display: flex;
+    flex-direction: column;
+}
+
+.profile-image {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+}
+
+.profile-image a {
+    display: flex;
+    margin-top: 10px;    
+    width: 200px;
+}
+
+.profile-image img {    
+    width: 200px;
+    height: 200px;
+    border: 4px solid #B81D24;
+}
+
+.form-group {
+    margin-bottom: 1rem;
+}
+
+.form-group label {
+    margin-bottom: 0px;
+    font-weight: bold;
+}
+
+.form-group input, .form-group textarea {
+    margin-top: 5px;
+    margin-bottom: 1rem;
+    width: 100%;
+    background-color: #EFF2F5;
+    border: 0px;
+    border-radius: 16px;
+    height: 3rem;
+    padding: 12px 20px;
+}
+
+.form-group input:focus, .form-group textarea:focus{
+    outline: none;
+}
+
+
+input[type=submit] {
+    background-color: #E50914;
+    border-radius: 38px;
+    color: #FFF;
+    border: 0px;
+    height: 3rem;
+    width: 13rem;
+    align-self: end;
+}
+
+input[type=submit]:hover {
+    background-color: #B81D24;    
+    box-shadow: 0 0 4px #F01E28;
+}
+
+::placeholder {
+  color: #A6B0C3;
+}
+
+
+.btn-image {
+    width: 200px;
+    justify-content: center;
+    background-color: #E50914;
+    border-radius: 38px;
+    color: #FFF;
+}
+
+.btn-image:hover {
+    background-color: #B81D24;    
+    box-shadow: 0 0 4px #F01E28;
+    color: #FFF;
+}
+
+.vue-image-crop-upload >>> .vicp-wrap {
+    max-width: 600px !important;
+    height: 452px !important;
+    max-width: 600px;
+    width: auto;
+}
+
+.connect-btns {
+    display: flex;
+    margin-top: 3rem;
+    margin-bottom: 1rem;
+    flex-direction: column;
+}
+
+.account-box {
+    display: flex;
+    margin-bottom: 2rem;
+}
+
+.google-wrapper {
+    height: 53px;
+    width: 53px;
+    background-color: #4285f4;
+    border-radius: 64px;
+    box-shadow: 0 3px 5px 0 rgba(0,0,0,.25);
+    display: flex;
+    
+}
+.google-icon-wrapper {
+    margin-top: 4px;
+    margin-left: 4px;
+    width: 45px;
+    height: 45px;
+    border-radius: 600px;
+    background-color: #fff;
+}
+.google-icon {
+    width: 45px;
+    height: 45px;
+}
+
+.google-btn {
+    min-height: 53px;
+    background-color: #4285f4;
+    border-radius: 17px;
+    box-shadow: 0 3px 4px 0 rgba(0,0,0,.25);
+    display: flex;
+    text-transform: uppercase;
+    border: 0px;
+    text-align: center;
+    color: #fff;
+    padding: 14px;
+    margin-left: 25px;
+}
+
+.google-remove-btn {
+    height: 34px;
+    background-color: #4285f4;
+    border-radius: 17px;
+    box-shadow: 0 3px 4px 0 rgba(0,0,0,.25);
+    border: 0px;
+    text-align: center;
+    color: #fff;
+    margin-left: 25px;
+    align-self: center;
+    padding: 0px 28px;
+}
+
+.google-btn:hover, .google-remove-btn:hover {
+    box-shadow: 0 0 6px #4285f4;
+    background: #1669F2;
+}
+
+.github-icon-wrapper {
+    width: 53px;
+    height: 53px;
+    border-radius: 600px;
+    background-color: #fff;
+}
+.github-icon {
+    width: 53px;
+    height: 53px;
+}
+
+.github-btn {
+    min-height: 53px;
+    background-color: #333333;
+    border-radius: 17px;
+    box-shadow: 0 3px 4px 0 rgba(0,0,0,.25);
+    display: flex;
+    text-transform: uppercase;
+    border: 0px;
+    text-align: center;
+    color: #fff;
+    padding: 14px;
+    margin-left: 25px;
+}
+
+.github-remove-btn {
+    height: 34px;
+    background-color: #333333;
+    border-radius: 17px;
+    box-shadow: 0 3px 4px 0 rgba(0,0,0,.25);
+    border: 0px;
+    text-align: center;
+    color: #fff;
+    margin-left: 25px;
+    align-self: center;
+    padding: 0px 28px;
+}
+
+.github-btn:hover, .github-remove-btn:hover {
+    box-shadow: 0 0 6px #020202;
+    background: #020202;
+}
+
+.orcid-icon-wrapper {
+    width: 53px;
+    height: 53px;
+    border-radius: 600px;
+    background-color: #fff;
+}
+.orcid-icon {
+    width: 53px;
+    height: 53px;
+}
+
+.orcid-btn {
+    min-height: 53px;
+    background-color: #A1C837;
+    border-radius: 17px;
+    box-shadow: 0 3px 4px 0 rgba(0,0,0,.25);
+    display: flex;
+    text-transform: uppercase;
+    border: 0px;
+    text-align: center;
+    color: #fff;
+    padding: 14px;
+    margin-left: 25px;
+}
+
+.orcid-remove-btn {
+    height: 34px;
+    background-color: #A1C837;
+    border-radius: 17px;
+    box-shadow: 0 3px 4px 0 rgba(0,0,0,.25);
+    border: 0px;
+    text-align: center;
+    color: #fff;
+    margin-left: 25px;
+    align-self: center;
+    padding: 0px 28px;
+}
+
+.orcid-btn:hover, .orcid-remove-btn:hover {
+    box-shadow: 0 0 6px #9BB74F;
+    background: #9BB74F;
+}
+
+.social-text {
+    margin: 0;
+    margin-left: 31px;
+    align-self: center;
+}
+
+
+.social-text-error {
+    background-color: rgb(242, 222, 222);
+    color: #b94a48;
+    border: 1px solid transparent;
+    border-radius: 0.25rem;
+    padding: 0.5rem 1.25rem;
+    word-wrap: break-word;
+}
+
+.delete-btn {
+    width: 231px;
+    height: 50px;
+    background-color: #E50914;
+    border-radius: 38px;
+    box-shadow: 0 3px 4px 0 rgba(0,0,0,.25);
+    display: flex;
+    text-transform: uppercase;
+    border: 0px;
+    text-align: center;
+    color: #fff;
+    padding: 0px 28px;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer; 
+    margin-bottom: 2rem;  
+}
+
+.delete-btn:hover {
+    background-color: #B81D24;    
+    box-shadow: 0 0 4px #F01E28;
+}
+
+.delete-btn:focus {
+    background-color: #E50914;
+}
+
+.delete-btn:hover {
+    background-color: #B81D24;    
+    box-shadow: 0 0 4px #F01E28;
+}
+
+.delete-btn:focus {
+    background-color: #E50914;
+}
+
+.ban-btn {
+    width: 231px;
+    height: 50px;
+    background-color: #E59409;
+    border-radius: 38px;
+    box-shadow: 0 3px 4px 0 rgba(0,0,0,.25);
+    display: flex;
+    text-transform: uppercase;
+    border: 0px;
+    text-align: center;
+    color: #fff;
+    padding: 0px 28px;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer; 
+    margin-bottom: 2rem;  
+}
+
+.ban-btn:hover {
+    color: #fff;
+    background-color: #D08B14;
+    box-shadow: 0 0 4px #E59409;
+}
+.danger-btns {
+    margin-top: 3rem;
+    display: flex;
+    flex-direction: column;
+}
+
+form label.required:after {
+    color: red;
+    content: " *";
+}
+
+.msgResponse {
+    margin-top: 2rem;
+    margin-left: 1rem;
+    word-wrap: break-word;
+    border: 1px solid transparent;
+    border-radius: 0.25rem;
+    padding: 0.5rem 1.25rem;
+}
+
+.msgResponse-success {
+    background-color: rgb(207, 244, 187);
+    color: #000;
+} 
+
+.msgResponse-error {
+    background-color: rgb(242, 222, 222);
+    color: #b94a48;
+} 
+
+@media (min-width: 992px){
+    .padding-box {
+        padding: 0px 40px;
+    }
+}
+
+@media (max-width: 1199px){
+    .image-box {
+        order: 1;
+    }
+
+    .data-box {
+        order: 2;
+    }
+
+    .profile-image {
+        align-items: center;
+        margin-bottom: 20px;
+    }   
+}
+
+@media (min-width: 1715px){
+    .admin-selection {
+        position: absolute !important;
+    }
+}

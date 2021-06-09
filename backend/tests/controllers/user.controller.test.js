@@ -531,4 +531,98 @@ describe('User controller', () => {
             expect(res.body.token).toBeDefined();
         });
     });
+
+    describe('Change Password', () => {
+        beforeEach(() => {
+            authJwt.verifyToken.mockImplementation((req, res, next) => next());
+        });
+
+        it('User not found', async () => {
+            User.findOne = jest.fn(() => mockUsers.some( user => user.userId == "no-exist"));
+            const res = await request(app).put('/api/users/password/no-exist');
+            expect(res.statusCode).toEqual(404);
+            expect(res.body).toEqual(expect.objectContaining({ message: "User not found" }));
+        });
+
+        it('Change Password error', async () => {
+            User.findOne = jest.fn(() => {throw Error});
+            const res = await request(app).put('/api/users/password/el-userId-2');
+            expect(res.statusCode).toEqual(500);
+            expect(res.body).toEqual(expect.objectContaining({ message: "Error" }));
+        });
+
+        it('User doesnt have rights to change the password', async () => {
+            User.findOne = jest.fn(() => mockUsers.filter( user => user.userId == 'el-userId-2'));
+            authJwt.verifyToken.mockImplementation((req, res, next) => { 
+                req.isAdmin = false; 
+                req.userId = 'el-userId-2'
+                next() 
+            });
+
+            const res = await request(app).put('/api/users/password/el-userId-1');
+            expect(res.statusCode).toEqual(401);
+            expect(res.body).toEqual(expect.objectContaining({ message: "Unauthorized" }));
+        });
+
+        it('The current password is not the same', async () => {
+            User.findOne = jest.fn(() => mockUsers.filter( user => user.userId == 'el-userId-2'));
+            
+            authJwt.verifyToken.mockImplementation((req, res, next) => { 
+                req.isAdmin = false; 
+                req.userId = 'el-userId-2'
+                next() 
+            });
+
+            User.comparePassword = jest.fn(() => 'la pass 2' == 'is not the pass');
+            const res = await request(app).put('/api/users/password/el-userId-2').send({
+                currentPassword: "is not the pass",
+                newPassword: "new pass"
+            });
+
+            expect(res.statusCode).toEqual(401);
+            expect(res.body).toEqual(expect.objectContaining({ message: "The current password is not the same" }));
+            
+        });
+
+        it('User update the password', async () => {
+            User.findOne = jest.fn(() => mockUsers.filter( user => user.userId == 'el-userId-2'));
+            
+            authJwt.verifyToken.mockImplementation((req, res, next) => { 
+                req.isAdmin = false; 
+                req.userId = 'el-userId-2'
+                next() 
+            });
+
+            User.comparePassword = jest.fn(() => 'la pass 2' == 'la pass 2');
+            User.encryptPassword = jest.fn(() => 'encrypted password');
+
+            User.findOneAndUpdate = jest.fn(() => {
+                mockUsers[1] = {
+                    _id: 2,
+                    name: "el nombre 2",
+                    email: "el email 2",
+                    password: "encrypted password",
+                    userId: "el-userId-2",
+                    roles: ['user'],
+                };
+                return mockUsers[1];
+            });
+
+
+            const res = await request(app).put('/api/users/password/el-userId-2').send({
+                currentPassword: "la pass 2",
+                newPassword: "new pass"
+            });
+            
+            expect(res.statusCode).toEqual(200);
+            expect(res.body).toEqual(expect.objectContaining({
+                _id: 2,
+                name: "el nombre 2",
+                email: "el email 2",
+                password: "encrypted password",
+                userId: "el-userId-2",
+                roles: ['user']
+            }));
+        });
+    });
 });

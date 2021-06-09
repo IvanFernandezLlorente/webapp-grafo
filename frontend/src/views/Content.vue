@@ -12,7 +12,7 @@ export default {
 
 <style>
 .content{
-    padding: 30px 15px;
+    padding: 0px 15px;
     min-height: calc(100% - 160px);
 }
 </style>
