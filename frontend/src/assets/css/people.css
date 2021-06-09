@@ -1,0 +1,108 @@
+.title {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    position: relative;
+    margin-top: 2rem;
+}
+
+.title > h1 {
+    padding: 2rem 4rem;
+    font-weight: bold;
+    font-size: 2rem;
+}
+
+.black-line {
+    border-top: 1px solid #707070;
+    width: 13rem;
+    position: absolute;
+    bottom: 1.5rem;
+}
+
+.red-line {
+    border-top: 4px solid #B81D24;
+    width: 3.5rem;
+    position: absolute;
+    bottom: 1.434rem;
+}
+
+
+.title > h1 {
+    padding: 1.8rem 0rem !important;
+}
+
+.body {
+    width: 100%;
+    display: flex;
+    flex-wrap: wrap;
+    margin-top: 1rem;
+    justify-content: center;
+    margin-bottom: 2rem;
+}
+
+.person-box {  
+    float: left;
+    margin-left: 54px;
+    margin-right: 30px;
+    margin-top: 2rem;
+    height: 315px;
+    width: 239px;
+}
+
+.person-box > div{
+    height: 315px;
+    display: flex;
+    flex-direction: column;
+}
+
+.image-person {
+    border-radius: 75px;
+    width: 140px;
+    height: 140px;
+    margin-top: 1rem
+}
+
+.image-person:hover {
+    box-shadow: 3px 3px 7px #000000B3;
+}
+.content-box > a{
+    display: flex;
+    justify-content: center;
+    text-decoration: none;
+    color: #212529;
+}
+
+.name {
+    font-weight: bold;
+    text-align: center;
+    margin-bottom: 6px;
+}
+
+.networks {
+    display: flex;
+    justify-content: center;
+
+}
+
+input[type=button] {
+    background-color: #E50914;
+    border-radius: 38px;
+    color: #FFF;
+    border: 0px;
+    height: 3rem;
+    width: 13rem;
+    align-self: end;
+    margin-bottom: 1rem;
+}
+
+input[type=button]:hover {
+    background-color: #B81D24;    
+    box-shadow: 0 0 4px #F01E28;
+}
+
+@media (min-width: 992px){
+    .padding-box {
+        padding: 0px 40px;
+    }
+}

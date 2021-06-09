@@ -8,6 +8,8 @@ const router = Router();
 
 router.get('/', userController.getUsers);
 
+router.get('/pages/:page', userController.getUsersPaginated);
+
 router.get('/token',[authJwt.verifyToken], userController.getToken); 
 
 router.get('/:userId', userController.getUserById);

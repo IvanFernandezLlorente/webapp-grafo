@@ -117,7 +117,8 @@ const messages = {
             confirmBan: 'Are you sure you want to ban the user?',
         },
         people: {
-            title: 'People'
+            title: 'People',
+            showMore: 'Show more'
         },
         profile: {
             title: 'Researcher',
@@ -348,7 +349,8 @@ const messages = {
             confirmBan: '¿Estás seguro de bloquear al usuario?',
         },
         people: {
-            title: 'Personas'
+            title: 'Personas',
+            showMore: 'Mostrar más'
         },
         profile: {
             title: 'Investigador',

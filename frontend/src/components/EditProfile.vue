@@ -46,14 +46,14 @@
                                         <b-row>
                                             <b-col cols="12" md="6">
                                                 <div class="form-group">
-                                                    <label for="linkedin" class="control-label">LinkedIn</label>
-                                                    <input id="linkedin" @keydown.enter.prevent='' v-model="user.linkedinUrl" @change="updateCopy"  type="text" :placeholder="$t('settigns.linkedinPHolder')">
+                                                    <label for="linkedinUrl" class="control-label">LinkedIn</label>
+                                                    <input id="linkedinUrl" @keydown.enter.prevent='' v-model="user.linkedinUrl" @change="updateCopy"  type="text" :placeholder="$t('settigns.linkedinPHolder')">
                                                 </div>
                                             </b-col>
                                             <b-col cols="12" md="6">
                                                 <div class="form-group">
-                                                    <label for="scholar" class="control-label">Scholar</label>
-                                                    <input id="scholar" @keydown.enter.prevent='' v-model="user.scholarUrl"  @change="updateCopy" type="text" :placeholder="$t('settigns.scholarPHolder')">
+                                                    <label for="scholarUrl" class="control-label">Scholar</label>
+                                                    <input id="scholarUrl" @keydown.enter.prevent='' v-model="user.scholarUrl"  @change="updateCopy" type="text" :placeholder="$t('settigns.scholarPHolder')">
                                                 </div>
                                             </b-col>
                                         </b-row>
