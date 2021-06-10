@@ -1,5 +1,5 @@
 <template>
-    <b-row v-if="publicationsVisible" style="justify-content: center;">
+    <b-row v-if="publications" style="justify-content: center;">
         <b-col cols="12" class="padding-box">
             <div class="content-box title">
                 <h1>{{ $t('publications.title') }}</h1>
@@ -9,7 +9,7 @@
         </b-col>
         
         <div class="body">
-            <b-col cols="9" class="content-box publication" v-for="(publication,index) in publicationsVisible" :key="index">
+            <b-col cols="9" class="content-box publication" v-for="(publication,index) in publications" :key="index">
                 <div class="info">
                     <b-link :to="{path: `/publications/${publication.publicationId}`}">
                         <div style="margin-bottom: 10px;">{{ publication.title }}</div> 
@@ -43,7 +43,7 @@ export default {
 
     data: () => {
         return {
-            publicationsVisible: [],
+            publications: [],
             page: 0,
             stop: false
         }
@@ -54,27 +54,14 @@ export default {
     methods: {
         async fetchData() {
             if (!(this.stop)) {
-                const res = await this.axios.get(`users/pages/${this.page}`);
-                this.page += 1;
-                this.people.push(...res.data);
-                if (res.data.length == 0) {
-                    this.stop = true
-                }
-            }
-        },
-        async fetchData() {
-            if (!(this.stop)) {
                 const res = await this.axios.get(`publications/pages/${this.page}`);
                 this.page += 1;
                 if (res.data.length == 0) {
                     this.stop = true
                 } else {
-                    this.filterPublications(res.data);
+                    this.publications.push(...res.data);
                 }
             }            
-        },
-        filterPublications(publications) {
-            this.publicationsVisible.push(...publications.filter(publication => publication.visible));
         },
         getDoi(doi) {
             return doi.split("https://doi.org/")[1];

@@ -7,6 +7,11 @@ export const getProblems = async (req, res) => {
     return res.status(200).json(problems);
 }
 
+export const getProblemsPaginated = async (req, res) => {
+    const problems = await Problem.find({ visible: true }).sort({ _id: -1 }).skip(req.params.page * 10).limit(10);
+    return res.status(200).json(problems);
+};
+
 export const getProblemById = async (req, res) => {
     try {
         const { problemId } = req.params;

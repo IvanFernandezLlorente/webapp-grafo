@@ -148,7 +148,8 @@ const messages = {
             references: 'References'
         },
         problems: {
-            title: 'Problems'
+            title: 'Problems',
+            showMore: 'Show more'
         },
         problem: {
             title: 'Problem',
@@ -381,7 +382,8 @@ const messages = {
             references: 'Referencias'
         },
         problems: {
-            title: 'Problemas'
+            title: 'Problemas',
+            showMore: 'Mostrar más'
         },
         problem: {
             title: 'Problema',

@@ -8,7 +8,7 @@ export const getPublications = async (req, res) => {
 }
 
 export const getPublicationsPaginated = async (req, res) => {
-    const publications = await Publication.find().sort({ _id: -1 }).skip(req.params.page * 3).limit(3);
+    const publications = await Publication.find({ visible: true }).sort({ _id: -1 }).skip(req.params.page * 10).limit(10);
     return res.status(200).json(publications);
 };
 

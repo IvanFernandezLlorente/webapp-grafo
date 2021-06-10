@@ -6,6 +6,8 @@ const router = Router();
 
 router.get('/', problemController.getProblems);
 
+router.get('/pages/:page', problemController.getProblemsPaginated);
+
 router.get('/:problemId', problemController.getProblemById);
 
 router.post('/',[authJwt.verifyToken], problemController.createProblem);

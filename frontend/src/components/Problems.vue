@@ -1,18 +1,26 @@
 <template>
-  <b-row v-if="problems" style="justify-content: center;">
-    <b-col tag="h4" cols="12">{{ $t('problems.title') }}</b-col> 
-    <b-col cols="9" class="problem" v-for="(problem,index) in problems"
-        :key="index"
-    >
-        <div v-if="problem.visible">
-            <b-link class="nav-link" :to="{path: `/problems/${problem.problemId}`}">
-                <p>{{problem.name}}</p> 
-                <p>{{problem.alias}}</p>
-            </b-link>
+    <b-row v-if="problems" style="justify-content: center;">
+        <b-col cols="12" class="padding-box">
+            <div class="content-box title">
+                <h1>{{ $t('problems.title') }}</h1>
+                <div class="black-line"></div>
+                <div class="red-line"></div>
+            </div>
+        </b-col>
+
+        <div class="body">
+            <b-col cols="9" class="content-box problem" v-for="(problem,index) in problems" :key="index">
+                <div class="info">
+                    <b-link :to="{path: `/problems/${problem.problemId}`}">
+                        <div>{{ problem.name }}</div> 
+                    </b-link>
+
+                    <div style="margin-bottom: 10px;">{{ problem.alias }}</div> 
+                </div> 
+            </b-col>
         </div>
-        
-    </b-col>
-  </b-row>
+        <input v-if="!stop" type="button" @click="fetchData()" :value="$t('problems.showMore')">
+    </b-row>
 </template>
 
 <script>
@@ -22,7 +30,9 @@ export default {
 
     data: () => {
         return {
-            problems: [] 
+            problems: [],
+            page: 0,
+            stop: false
         }
     },
     created () {
@@ -30,24 +40,19 @@ export default {
     },
     methods: {
         async fetchData() {
-            const res = await this.axios.get("problems");
-            this.problems = res.data;
+            if (!(this.stop)) {
+                const res = await this.axios.get(`problems/pages/${this.page}`);
+                this.page += 1;
+                if (res.data.length == 0) {
+                    this.stop = true
+                } else {
+                    this.problems.push(...res.data);
+                }
+            }            
         }
     },
 }
 </script>
 
-<style scoped>
-.problem {
-    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
-    margin: 19px;
-    justify-content: space-between;
-    display: flex;
-}
-
-.problem a {
-    justify-content: space-between;
-    display: flex;
-    width: 100%;
-}
+<style scoped src="@/assets/css/problems.css">
 </style>
