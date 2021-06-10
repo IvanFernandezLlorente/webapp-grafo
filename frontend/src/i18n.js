@@ -127,7 +127,8 @@ const messages = {
             edit: 'Edit'
         },
         publications: {
-            title: 'Publications'
+            title: 'Publications',
+            showMore: 'Show more'
         },
         publication: {
             title: 'Publication',
@@ -359,7 +360,8 @@ const messages = {
             edit: 'Editar'
         },
         publications: {
-            title: 'Publicaciones'
+            title: 'Publicaciones',
+            showMore: 'Mostrar más'
         },
         publication: {
             title: 'Publicación',

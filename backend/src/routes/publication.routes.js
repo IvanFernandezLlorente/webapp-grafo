@@ -6,6 +6,8 @@ const router = Router();
 
 router.get('/', publicationController.getPublications);
 
+router.get('/pages/:page', publicationController.getPublicationsPaginated);
+
 router.get('/:publicationId',publicationController.getPublicationById);
 
 router.post('/',[authJwt.verifyToken],publicationController.createPublication);

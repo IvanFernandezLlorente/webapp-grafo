@@ -7,6 +7,11 @@ export const getPublications = async (req, res) => {
     return res.status(200).json(publications);
 }
 
+export const getPublicationsPaginated = async (req, res) => {
+    const publications = await Publication.find().sort({ _id: -1 }).skip(req.params.page * 3).limit(3);
+    return res.status(200).json(publications);
+};
+
 export const getPublicationById = async (req, res) => {
     try {
         const { publicationId } = req.params;

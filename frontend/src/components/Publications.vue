@@ -1,17 +1,39 @@
 <template>
-  <b-row v-if="publications" style="justify-content: center;">
-    <b-col tag="h4" cols="12">{{ $t('publications.title') }}</b-col> 
-    <b-col cols="9" class="publication" v-for="(publication,index) in publications"
-        :key="index"
-    >
-        <div v-if="publication.visible">
-            <b-link class="nav-link" :to="{path: `/publications/${publication.publicationId}`}">
-                <p>{{publication.title}}</p> 
-                <p>{{publication.userName}}</p>
-            </b-link>
-        </div>        
-    </b-col>
-  </b-row>
+    <b-row v-if="publicationsVisible" style="justify-content: center;">
+        <b-col cols="12" class="padding-box">
+            <div class="content-box title">
+                <h1>{{ $t('publications.title') }}</h1>
+                <div class="black-line"></div>
+                <div class="red-line"></div>
+            </div>
+        </b-col>
+        
+        <div class="body">
+            <b-col cols="9" class="content-box publication" v-for="(publication,index) in publicationsVisible" :key="index">
+                <div class="info">
+                    <b-link :to="{path: `/publications/${publication.publicationId}`}">
+                        <div style="margin-bottom: 10px;">{{ publication.title }}</div> 
+                    </b-link>
+
+                    <div>
+                        {{ getAuthors(publication.authors) }}      
+                    </div>
+
+                    <div class="journal-info">
+                        <div v-if="publication.journal" style="font-style: italic; margin-right: 8px;">{{ publication.journal }},</div>
+                        <div v-if="publication.volume" style="margin-right: 8px;">{{ publication.volume }},</div>
+                        <div v-if="publication.pages" style="margin-right: 8px;">{{ publication.pages }}.</div>
+                        <div v-if="publication.year" >({{ publication.year }})</div>
+                    </div>
+                    
+                    <a v-if="publication.doi" :href="publication.doi" target="_blank" style="color: #E50914; word-wrap: break-word;">
+                        {{ getDoi(publication.doi) }}        
+                    </a>
+                </div> 
+            </b-col>
+        </div>
+        <input v-if="!stop" type="button" @click="fetchData()" :value="$t('publications.showMore')">
+    </b-row>
 </template>
 
 <script>
@@ -21,7 +43,9 @@ export default {
 
     data: () => {
         return {
-            publications: [] 
+            publicationsVisible: [],
+            page: 0,
+            stop: false
         }
     },
     created () {
@@ -29,24 +53,40 @@ export default {
     },
     methods: {
         async fetchData() {
-            const res = await this.axios.get("publications");
-            this.publications = res.data;
+            if (!(this.stop)) {
+                const res = await this.axios.get(`users/pages/${this.page}`);
+                this.page += 1;
+                this.people.push(...res.data);
+                if (res.data.length == 0) {
+                    this.stop = true
+                }
+            }
+        },
+        async fetchData() {
+            if (!(this.stop)) {
+                const res = await this.axios.get(`publications/pages/${this.page}`);
+                this.page += 1;
+                if (res.data.length == 0) {
+                    this.stop = true
+                } else {
+                    this.filterPublications(res.data);
+                }
+            }            
+        },
+        filterPublications(publications) {
+            this.publicationsVisible.push(...publications.filter(publication => publication.visible));
+        },
+        getDoi(doi) {
+            return doi.split("https://doi.org/")[1];
+        },
+        getAuthors(authors) {
+            const authorsArray = JSON.parse(authors);
+            return authorsArray.map(user=> user[0]).reduce((text, user) => text + `, ${user}`);
         }
     },
+    
 }
 </script>
 
-<style scoped>
-.publication {
-    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
-    margin: 19px;
-    justify-content: space-between;
-    display: flex;
-}
-
-.publication a {
-    justify-content: space-between;
-    display: flex;
-    width: 100%;
-}
+<style scoped src="@/assets/css/publications.css">
 </style>
