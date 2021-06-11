@@ -1,0 +1,233 @@
+.title {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    position: relative;
+    margin-top: 2rem;
+}
+
+.title > h1 {
+    padding: 2rem 4rem;
+    font-weight: bold;
+    font-size: 2rem;
+}
+
+.black-line {
+    border-top: 1px solid #707070;
+    width: 13rem;
+    position: absolute;
+    bottom: 1.5rem;
+}
+
+.red-line {
+    border-top: 4px solid #B81D24;
+    width: 3.5rem;
+    position: absolute;
+    bottom: 1.434rem;
+}
+
+.title > h1 {
+    padding: 1.8rem 0rem !important;
+}
+
+.body {
+    width: 100%;
+    margin-top: 20px;
+    padding: 0px 15px;
+}
+
+.info {
+    padding: 33px;
+    position: relative;
+}
+
+.images{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.image-person {
+    width: 156px;
+    height: 156px;
+    border-radius: 75px;
+}
+
+.networks {
+    display: flex;
+    justify-content: center;
+    width: 156px;
+    margin-top: 11px;
+}
+
+.networks > a {
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.image-network {
+    height: 37px;
+    width: 37px;
+}
+
+.description {
+    overflow: auto;
+    max-height: 255px;
+    text-align: justify;
+    white-space: pre-wrap;
+}
+
+#name {
+    font-weight: bold;
+    font-size: 1.4rem;
+    margin-bottom: 20px;
+}
+
+.edit-button-box {
+    position: absolute;
+    right: 24px;
+    top: 15px;
+    z-index: 1;
+    background-color: #E50914;
+    border-radius: 38px;
+    color: #FFF;
+    border: 0px;
+    height: 3rem;
+    width: 7rem;
+    text-decoration: none;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.edit-button-box:hover {
+    background-color: #B81D24;    
+    box-shadow: 0 0 4px #F01E28;
+}
+
+.data > div {
+    margin-bottom: 5px;
+}
+
+.choices {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+}
+
+.choices > div {
+    cursor: pointer;
+    border-radius: 38px;
+    color: #212529;
+    border: 0px;
+    height: 3.25rem;
+    width: 100%;
+    font-size: 1.2rem;
+    text-align: center;
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+    margin-bottom: auto;
+    margin-top: auto;
+}
+
+.active {
+    background-color: #E50914;
+    color: #fff !important;
+}
+
+.choices > div:hover {
+    background-color: #E50914;
+    color: #fff !important;
+}
+
+.choices-box {
+    height: 228px;
+    max-width: 280px;
+}
+
+.articles-box {
+    max-height: 550px;
+    overflow: auto;
+    margin-left: auto;
+}
+
+.publication {
+    margin-bottom: 2rem;
+    min-height: 107px;
+}
+
+.problem {
+    margin-bottom: 2rem;
+    min-height: 65px;
+}
+
+.info-article {
+    padding: 10px 30px;
+    display: flex;
+    flex-direction: column;
+    position: relative;
+}
+
+.info-article > a{
+    text-decoration: none;
+    color: #212529;
+    font-weight: bold;
+}
+
+.info-article > div {
+    margin-bottom: 10px;
+}
+
+.eye {
+    width: 40px;
+    height: 30px;
+    align-self: end;
+    position: absolute;
+}
+
+.journal-info {
+    display: flex;
+    flex-wrap: wrap;
+}
+
+@media (max-width: 1199px){
+    .images {
+        order: 2;
+        margin-top: 2rem;
+    }
+
+    .info-person {
+        order: 1;
+    }
+
+    .data {
+        margin-bottom: 2rem;
+    }
+
+    .marginName {
+        margin-top: 2rem;
+    }
+    
+    .choices-box {
+        max-width: 481px;
+        height: 80px;
+        margin-bottom: 2rem;
+    }
+
+    .choices {
+        flex-direction: row;
+    }
+
+    .choices > div {
+        margin-right: 1rem;
+    }
+
+}
+
+@media (min-width: 992px){
+    .padding-box {
+        padding: 0px 40px;
+    }
+}

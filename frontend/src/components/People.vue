@@ -23,7 +23,7 @@
 
                     <div class="networks">
                         <a v-if="person.linkedinUrl" :href="person.linkedinUrl" target="_blank">
-                            <img src="../assets/linkedin.svg">
+                            <img src="../assets/linkedin.svg" style="width: 20px;height: 20px;margin-right: 10px;">
                         </a>
 
                         <a v-if="person.scholarUrl" :href="person.scholarUrl" target="_blank">

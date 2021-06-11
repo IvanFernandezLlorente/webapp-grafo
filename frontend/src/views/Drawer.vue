@@ -44,20 +44,20 @@
                         <div>{{ $t('drawer.people') }}</div>
                     </div>
                 </router-link>
-                <router-link to="/problems" class="link" @click.native="hideSidebar(); active = 'problems'" :class="{active: active === 'problems'}">
-                    <div class="icon">
-                        <b-icon-clipboard></b-icon-clipboard>
-                    </div>
-                    <div class="title">
-                        {{ $t('drawer.problems') }}
-                    </div>
-                </router-link>
                 <router-link to="/publications" class="link" @click.native="hideSidebar(); active = 'publications'"  :class="{active: active === 'publications'}">
                     <div class="icon">
                         <b-icon-chat-dots-fill></b-icon-chat-dots-fill>
                     </div>
                     <div class="title">
                         {{ $t('drawer.publications') }}
+                    </div>
+                </router-link>
+                <router-link to="/problems" class="link" @click.native="hideSidebar(); active = 'problems'" :class="{active: active === 'problems'}">
+                    <div class="icon">
+                        <b-icon-clipboard></b-icon-clipboard>
+                    </div>
+                    <div class="title">
+                        {{ $t('drawer.problems') }}
                     </div>
                 </router-link>
             </div>
