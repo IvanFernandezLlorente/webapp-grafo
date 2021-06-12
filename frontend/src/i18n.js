@@ -181,7 +181,8 @@ const messages = {
             date: 'Date',
             citation: 'Citation',
             import: 'Import publication',
-            msg: 'You cannot import a publication without citation'
+            msg: 'You cannot import a publication without citation',
+            noPublications: 'There aren\'t any publications'
         },
         createPublication: {
             new: 'New Publication',
@@ -416,7 +417,8 @@ const messages = {
             date: 'Fecha',
             citation: 'Citación',
             import: 'Importar publicación',
-            msg: 'No puedes importar una publicación sin la cita'
+            msg: 'No puedes importar una publicación sin la cita',
+            noPublications: 'No hay publicaciones'
         },
         createPublication: {
             new: 'Nueva Publicación',

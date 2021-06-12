@@ -1,44 +1,59 @@
 <template>
-  <b-row style="justify-content: center;">
-      <b-col class="card" cols="10">
-        <div class="card-header">
-            <h4 class="card-title">{{ $t('importORCID.title') }}</h4>
-        </div>
-        <div v-if="publications" class="card-body">
-            <b-row>
-                <b-col cols="4" class="publication-list">
-                    <div class="publication-object" @click="select(index)" :class="indexSelected == index ? 'publication-selected' : 'publication-not-selected'" v-for="(publication,index) in publications" :key="index">
-                        <div class="cut-text">
-                            <p><b>{{ $t('importORCID.titlePubli') }}: </b>{{publication.title.title.value}}</p> 
-                            <p v-if="journalExist(publication)"><b>{{ $t('importORCID.journal') }}: </b>{{publication["journal-title"]["value"]}}</p>
+    <b-row style="justify-content: center;">
+        <b-col cols="12" class="padding-box">
+            <div class="content-box title">
+                <h1>{{ $t('importORCID.title') }}</h1>
+                <div class="black-line"></div>
+                <div class="red-line"></div>
+            </div>
+        </b-col>
+
+        <b-row class="body padding-box">
+            <b-col cols="12">
+                <b-row v-if="spin" style="min-height: 500px;">
+                    <div id="preloader" class="content-box"></div>
+                </b-row>
+                <b-row v-if="publications.length != 0">
+                    <b-col cols="12" xl="4" class="publication-box">
+                        <div class="publication-list">
+                            <div class="publication-object content-box" @click="select(index)" :class="indexSelected == index ? 'publication-selected' : 'publication-not-selected'" v-for="(publication,index) in publications" :key="index">
+                                <div class="cut-text">
+                                    <p><b>{{ $t('importORCID.titlePubli') }}: </b>{{publication.title.title.value}}</p> 
+                                    <p v-if="journalExist(publication)"><b>{{ $t('importORCID.journal') }}: </b>{{publication["journal-title"]["value"]}}</p>
+                                </div>
+                            </div>
                         </div>
-                    </div>
-                </b-col>
-                <b-col cols="8">
-                    <div v-if="indexSelected!=-1" style="height: 100%;">
-                        <div>
-                            <p><b>{{ $t('importORCID.titlePubli') }}: </b>{{publicationSelected.title.title.value}}</p> 
-                            <p v-if="journalExist(publicationSelected)"><b>{{ $t('importORCID.journal') }}: </b>{{publicationSelected["journal-title"]["value"]}}</p>
-                            <p><b>Date: </b>{{publicationSelected["publication-date"].year.value}}</p>
-                            <p v-if="doiExist(publicationSelected)"><b>DOI: </b>https://doi.org/{{manageDOI(publicationSelected)}}</p>
-                            <p v-if="publicationSelected.citation"><b>{{ $t('importORCID.citation') }}: </b>{{publicationSelected.citation["citation-value"]}}</p>
+                    </b-col>
+
+                    <b-col cols="12" xl="8" class="info-box">
+                        <div class="content-box publication-data-box">
+                            <div v-if="indexSelected!=-1" class="publication-data">
+                                <div>                                
+                                    <p><b>{{ $t('importORCID.titlePubli') }}: </b>{{publicationSelected.title.title.value}}</p> 
+                                    <p v-if="journalExist(publicationSelected)"><b>{{ $t('importORCID.journal') }}: </b>{{publicationSelected["journal-title"]["value"]}}</p>
+                                    <p><b>Date: </b>{{publicationSelected["publication-date"].year.value}}</p>
+                                    <p v-if="doiExist(publicationSelected)"><b>DOI: </b>https://doi.org/{{manageDOI(publicationSelected)}}</p>
+                                    <p v-if="publicationSelected.citation" class="cite"><b>{{ $t('importORCID.citation') }}: </b>{{publicationSelected.citation["citation-value"]}}</p>                   
+                                </div>
+                                <div class="publication-buttons">
+                                    <button v-if="publicationSelected.citation" @click="importPublication" class="accept">
+                                        {{ $t('importORCID.import') }}
+                                    </button>
+                                    <p v-else class="error-text">{{ $t('importORCID.msg') }}</p>
+                                </div>
+                            </div>
                         </div>
-                        <div class="publication-buttons">
-                            <button v-if="publicationSelected.citation" @click="importPublication" class="btn btn-success">
-                                {{ $t('importORCID.import') }}
-                            </button>
-                            <p v-else>{{ $t('importORCID.msg') }}</p>
-                        </div>
-                    </div>
-                </b-col>
-            </b-row>
-        </div>
-      </b-col>
-  </b-row>
+                    </b-col>
+                </b-row>
+                <div v-else class="content-box no-publications">
+                    <h2>{{ $t('importORCID.noPublications') }}</h2>
+                </div>
+            </b-col>
+        </b-row>
+    </b-row>
 </template>
 
 <script>
-import { eventBus } from '../main';
 export default {
     name: 'Import-Orcid',
 
@@ -46,7 +61,8 @@ export default {
         return {
             publications: [],
             indexSelected: -1,
-            publicationSelected: {}
+            publicationSelected: {},
+            spin: false
         }
     },
     created () {
@@ -54,21 +70,28 @@ export default {
     },
     methods: {
         async fetchData() {
-            const promises = [];
-            const response = await this.axios.get("publications");
-            const doiPublications = new Set(response.data.filter(publication => publication.doi).map(publication => publication.doi));
+            try {
+                this.spin = true;
+                const promises = [];
+                const response = await this.axios.get("publications");
+                const doiPublications = new Set(response.data.filter(publication => publication.doi).map(publication => publication.doi));
 
-            const res = await this.axios.get(`https://pub.orcid.org/v2.0/${this.$store.state.orcid}/works`,{
-                headers: { Accept: 'application/orcid+json'}
-            });
-            res.data.group.map( publication => 
-                promises.push(this.axios.get(`https://pub.orcid.org/v2.0/${this.$store.state.orcid}/work/${publication["work-summary"][0]["put-code"]}`,{
+                const res = await this.axios.get(`https://pub.orcid.org/v2.0/${this.$store.state.orcid}/works`,{
                     headers: { Accept: 'application/orcid+json'}
-                }))
-            );
+                });
+                res.data.group.map( publication => 
+                    promises.push(this.axios.get(`https://pub.orcid.org/v2.0/${this.$store.state.orcid}/work/${publication["work-summary"][0]["put-code"]}`,{
+                        headers: { Accept: 'application/orcid+json'}
+                    }))
+                );
 
-            const result = await Promise.all(promises);
-            this.publications = result.map(result => result.data).filter(publication => !doiPublications.has(this.manageDOI(publication)));
+                const result = await Promise.all(promises);
+                this.publications = result.map(result => result.data).filter(publication => !doiPublications.has(this.manageDOI(publication)));
+                this.spin = false;
+            } catch (error) {
+                this.spin = false;
+                console.log(error);
+            }
         },
         select(index) {
             if (this.publications) {
@@ -96,67 +119,5 @@ export default {
 }
 </script>
 
-<style scoped>
-.card {
-    border-radius: 4px;
-    background-color: #fff;
-    margin-bottom: 30px;
-    min-height: 720px;
-    max-height: 720px;
-}
-
-.card-header{
-    padding: 15px 15px 0;
-    background-color: #fff;
-    border-bottom: none !important;
-    display: flex;
-    justify-content: space-between;
-}
-
-.card-header>h4 {
-    margin: 0;
-    color: #333;
-    font-weight: 300;
-}
-
-.publication-list{
-    overflow-y: auto;
-    height: 600px;
-    border-bottom: 1px solid;
-}
-
-.publication-object{
-    border-top: 1px solid;
-    padding-bottom: 10px;
-}
-
-.publication-object p{
-    margin-top: 5px;
-    margin-bottom: 9px;
-}
-
-.publication-object-focus {
-    background-color:#d0d0d0;
-}
-.publication-buttons {
-    position: absolute;
-    bottom: 0;
-    right: 0;
-}
-
-.publication-buttons button{
-    margin-right: 30px;
-}
-
-.publication-selected {
-    background-color:#d0d0d0;;
-}
-.publication-not-selected {
-    background-color:#fff;;
-}
-.cut-text p{
-    text-overflow: ellipsis;
-    overflow: hidden;
-    white-space: nowrap;
-}
+<style scoped src="@/assets/css/importOrcid.css">
 </style>

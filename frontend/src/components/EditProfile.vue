@@ -1,7 +1,7 @@
 <template>
   <b-row style="justify-content: center;">
         <b-col cols="12" class="padding-box">
-            <div class="content-box title" style="margin-top: 0px;">
+            <div class="content-box title">
                 <h1>{{ $t('settigns.title') }}</h1>
                 <div class="black-line"></div>
                 <div class="red-line"></div>

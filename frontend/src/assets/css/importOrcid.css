@@ -10,6 +10,7 @@
     padding: 2rem 4rem;
     font-weight: bold;
     font-size: 2rem;
+    text-align: center;
 }
 
 .black-line {
@@ -36,38 +37,41 @@
     padding: 0px 15px;
 }
 
-.application-box {
+.publication-box {
     max-height: 600px;
     max-width: 439px;
     overflow: auto;
     padding-left: 5px;
 }
 
-.application-list{
+.publication-list{
     display: flex;
     flex-direction: column; 
 }
 
-.application-object{
+.publication-object{
     margin-bottom: 1.8rem;
     padding: 10px 2rem;
     cursor: pointer;
 }
 
-.application-selected {
+.publication-selected {
     background-color:#E50914;
 
 }
 
-.application-selected p{
+.publication-selected p{
     color:#fff;    
 }
 
-.application-not-selected {
+.publication-not-selected {
     background-color:#fff;;
 }
 
-.application-object p{
+.cut-text p{
+    text-overflow: ellipsis;
+    overflow: hidden;
+    white-space: nowrap;
     margin-top: 5px;
     margin-bottom: 9px;
 }
@@ -78,23 +82,38 @@
     flex-direction: column;
 }
 
-.buttons {
+.publication-data-box {
+    min-height: 591px;
+    padding: 2rem 3rem;
     display: flex;
-    justify-content: flex-end;
-    margin-bottom: 1rem;
 }
 
-.buttons button {
-    border-radius: 38px;
-    color: #FFF;
-    border: 0px;
-    height: 3rem;
-    width: 9rem;
-    margin-left: 2rem;
+.publication-data {
+    height: 100%;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+}
+
+.cite {
+    white-space: pre-wrap;
+    max-height: 300px;
+    overflow-y: auto;
+}
+
+.publication-buttons {
+    flex-grow: 1;
+    display: flex;
+    justify-content: flex-end;
+    align-items: flex-end;
 }
 
 .accept {
     background-color: #E50914;
+    border-radius: 38px;
+    color: #FFF;
+    border: 0px;
+    padding: 0.8rem 1rem;
 }
 
 .accept:hover {
@@ -102,51 +121,16 @@
     box-shadow: 0 0 4px #F01E28;
 }
 
-.reject {
-    background-color: #564D4D;
+.error-text {
+    background-color: rgb(242, 222, 222);
+    color: #b94a48;
+    border: 1px solid transparent;
+    border-radius: 0.25rem;
+    padding: 0.5rem 1.25rem;
+    word-wrap: break-word;
 }
 
-.reject:hover {
-    background-color: #2F2C2C;    
-    box-shadow: 0 0 4px #564D4D;
-}
-
-.application-data-box {
-    min-height: 530px;
-    padding: 2rem 3rem;
-    display: flex;
-}
-
-.application-data {
-    height: 100%;
-    width: 100%;
-    display: flex;
-    flex-direction: column;
-    position: relative;
-}
-
-.description {
-    white-space: pre-wrap;
-    max-height: 332px;
-    overflow-y: auto;
-}
-
-.application-buttons {
-    flex-grow: 1;
-    display: flex;
-    justify-content: flex-end;
-    align-items: flex-end;
-}
-
-.application-buttons  button {
-    border-radius: 38px;
-    color: #FFF;
-    border: 0px;
-    height: 3rem;
-    width: 14rem;
-}
-
-.no-applications {
+.no-publications {
     display: flex;
     align-items: center;
     flex-direction: column;
@@ -155,38 +139,37 @@
     text-align: center;
 }
 
-.no-applications h2 {
+.no-publications h2 {
     padding: 1.8rem 0rem !important;
     font-weight: bold;
     font-size: 1.5rem;
 }
 
 @media (max-width: 1199px){
-    .application-box {
+    .publication-box {
         max-width: 100%;
     }
 
-    .application-list {
+    .publication-list {
         flex-direction: row;
     }
 
-    .application-object {
+    .publication-object {
         margin-right: 2rem;
         min-width: 277px;
     }
 
-    .application-data-box {
+    .publication-data-box {
         min-height: 400px;
     }
 
-    .no-applications {
+    .no-publications {
         width: 70%;
     }
-
 }
 
 @media (max-width: 600px){
-    .no-applications {
+    .no-publications {
         width: 100%;
     }
 }
