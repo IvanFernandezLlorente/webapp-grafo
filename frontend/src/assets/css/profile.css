@@ -153,6 +153,11 @@
     margin-left: auto;
 }
 
+.list-items {
+    display: flex;
+    flex-direction: column-reverse;
+}
+
 .publication {
     margin-bottom: 2rem;
     min-height: 107px;

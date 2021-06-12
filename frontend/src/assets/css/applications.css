@@ -1,0 +1,199 @@
+.title {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    position: relative;
+    margin-top: 2rem;
+}
+
+.title > h1 {
+    padding: 2rem 4rem;
+    font-weight: bold;
+    font-size: 2rem;
+}
+
+.black-line {
+    border-top: 1px solid #707070;
+    width: 13rem;
+    position: absolute;
+    bottom: 1.5rem;
+}
+
+.red-line {
+    border-top: 4px solid #B81D24;
+    width: 3.5rem;
+    position: absolute;
+    bottom: 1.434rem;
+}
+
+.title > h1 {
+    padding: 1.8rem 0rem !important;
+}
+
+.body {
+    width: 100%;
+    margin-top: 20px;
+    padding: 0px 15px;
+}
+
+.application-box {
+    max-height: 600px;
+    max-width: 439px;
+    overflow: auto;
+    padding-left: 5px;
+}
+
+.application-list{
+    display: flex;
+    flex-direction: column; 
+}
+
+.application-object{
+    margin-bottom: 1.8rem;
+    padding: 10px 2rem;
+    cursor: pointer;
+}
+
+.application-selected {
+    background-color:#E50914;
+
+}
+
+.application-selected p{
+    color:#fff;    
+}
+
+.application-not-selected {
+    background-color:#fff;;
+}
+
+.application-object p{
+    margin-top: 5px;
+    margin-bottom: 9px;
+}
+
+.info-box {
+    margin-left: auto;
+    display: flex;
+    flex-direction: column;
+}
+
+.buttons {
+    display: flex;
+    justify-content: flex-end;
+    margin-bottom: 1rem;
+}
+
+.buttons button {
+    border-radius: 38px;
+    color: #FFF;
+    border: 0px;
+    height: 3rem;
+    width: 9rem;
+    margin-left: 2rem;
+}
+
+.accept {
+    background-color: #E50914;
+}
+
+.accept:hover {
+    background-color: #B81D24;    
+    box-shadow: 0 0 4px #F01E28;
+}
+
+.reject {
+    background-color: #564D4D;
+}
+
+.reject:hover {
+    background-color: #2F2C2C;    
+    box-shadow: 0 0 4px #564D4D;
+}
+
+.application-data-box {
+    min-height: 530px;
+    padding: 2rem 3rem;
+    display: flex;
+}
+
+.application-data {
+    height: 100%;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    position: relative;
+}
+
+.description {
+    white-space: pre-wrap;
+    max-height: 332px;
+    overflow-y: auto;
+}
+
+.application-buttons {
+    flex-grow: 1;
+    display: flex;
+    justify-content: flex-end;
+    align-items: flex-end;
+}
+
+.application-buttons  button {
+    border-radius: 38px;
+    color: #FFF;
+    border: 0px;
+    height: 3rem;
+    width: 14rem;
+}
+
+.no-applications {
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    width: 50%;
+    margin: auto;
+    text-align: center;
+}
+
+.no-applications h2 {
+    padding: 1.8rem 0rem !important;
+    font-weight: bold;
+    font-size: 1.5rem;
+}
+
+@media (max-width: 1199px){
+    .application-box {
+        max-width: 100%;
+    }
+
+    .application-list {
+        flex-direction: row;
+    }
+
+    .application-object {
+        margin-right: 2rem;
+        min-width: 277px;
+    }
+
+    .application-data-box {
+        min-height: 400px;
+    }
+
+    .no-applications {
+        width: 70%;
+    }
+
+}
+
+@media (max-width: 600px){
+    .no-applications {
+        width: 100%;
+    }
+}
+
+@media (min-width: 992px){
+    .padding-box {
+        padding: 0px 40px;
+    }
+}

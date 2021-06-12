@@ -171,7 +171,8 @@ const messages = {
             email: 'Email',
             description: 'Description',
             acceptRequest: 'Accept Request',
-            rejectRequest: 'Reject Request'
+            rejectRequest: 'Reject Request',
+            noRequests: 'There aren\'t any requests'
         },
         importORCID: {
             title: 'Import from ORCID',
@@ -405,7 +406,8 @@ const messages = {
             email: 'Email',
             description: 'Descripción',
             acceptRequest: 'Aceptar solicitud',
-            rejectRequest: 'Rechazar solicitud'
+            rejectRequest: 'Rechazar solicitud',
+            noRequests: 'No hay solicitudes'
         },
         importORCID: {
             title: 'Importar de ORCID',

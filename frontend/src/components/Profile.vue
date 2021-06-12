@@ -58,7 +58,7 @@
             </b-col>
 
             <b-col cols="12" xl="9" class="articles-box">
-                <div v-if="choice == 1">
+                <div v-if="choice == 1" class="list-items">
                     <div v-for="(publication,index) in publications" :key="index">
                         <div class="info-article content-box publication" v-if="(publication.visible) || (!publication.visible && canEditVariable)">
                             <b-link :to="{path: `/publications/${publication.publicationId}`}">
@@ -84,7 +84,7 @@
                     </div>
                 </div>
 
-                <div v-if="choice == 2">
+                <div v-if="choice == 2" class="list-items">
                     <div v-for="(problem,index) in problems" :key="index">
                         <div class="content-box problem info-article" v-if="(problem.visible) || (!problem.visible && canEditVariable)">
                             <b-link :to="{path: `/problems/${problem.problemId}`}">

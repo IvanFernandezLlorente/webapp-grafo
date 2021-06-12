@@ -137,7 +137,7 @@ const routes = [
         }
      },
      {
-        path: '/applications',
+        path: '/requests',
         name: 'Applications',
         component: Applications,
         beforeEnter: (to, from, next) => {

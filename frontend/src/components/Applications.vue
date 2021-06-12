@@ -1,44 +1,58 @@
 <template>
-  <b-row style="justify-content: center;">
-      <b-col class="card" cols="10">
-        <div class="card-header">
-            <h4 class="card-title">{{ $t('applications.title') }}</h4>
-            <div>
-                <button @click="acceptAll">{{ $t('applications.acceptAll') }}</button>
-                <button @click="rejectAll">{{ $t('applications.rejectAll') }}</button>
+    <b-row style="justify-content: center;">
+        <b-col cols="12" class="padding-box">
+            <div class="content-box title" style="margin-top: 0px;">
+                <h1>{{ $t('applications.title') }}</h1>
+                <div class="black-line"></div>
+                <div class="red-line"></div>
             </div>
-        </div>
-        <div v-if="applications" class="card-body">
-            <b-row>
-                <b-col cols="3" class="application-list">
-                    <div class="application-object" @click="select(index)" :class="indexSelected == index ? 'application-selected' : 'application-not-selected'" v-for="(application,index) in applications" :key="index">
-                        <div>
-                            <p><b>{{ $t('applications.name') }}: </b>{{application.name}}</p> 
-                            <p><b>{{ $t('applications.email') }}: </b>{{application.email}}</p>
+        </b-col>
+        <b-row class="body padding-box">
+            <b-col cols="12">
+                <b-row v-if="spinAll">
+                    <div id="preloader" class="content-box"></div>
+                </b-row>
+                <b-row v-if="applications.length != 0">
+                    <b-col cols="12" xl="4" class="application-box">
+                        <div class="application-list">
+                            <div class="application-object content-box" @click="select(index)" :class="indexSelected == index ? 'application-selected' : 'application-not-selected'" v-for="(application,index) in applications" :key="index">
+                                <div>
+                                    <p><b>{{ $t('applications.name') }}: </b>{{application.name}}</p> 
+                                    <p style="word-break: break-word;"><b>{{ $t('applications.email') }}: </b>{{application.email}}</p>
+                                </div>
+                            </div>
                         </div>
-                    </div>
-                </b-col>
-                <b-col cols="9">
-                    <div v-if="indexSelected!=-1" style="height: 100%;">
-                        <div>
-                            <p><b>{{ $t('applications.name') }}: </b>{{applicationSelected.name}}</p> 
-                            <p><b>{{ $t('applications.email') }}: </b>{{applicationSelected.email}}</p>
-                            <p><b>{{ $t('applications.description') }}: </b>{{applicationSelected.description}}</p>
+                    </b-col>
+                    
+                    <b-col cols="12" xl="8" class="info-box">
+                         <div class="buttons">
+                            <button @click="acceptAll()" class="accept">{{ $t('applications.acceptAll') }}</button>
+                            <button @click="rejectAll()" class="reject">{{ $t('applications.rejectAll') }}</button>
                         </div>
-                        <div class="application-buttons">
-                            <button @click="accept" class="btn btn-success">
-                                {{ $t('applications.acceptRequest') }}
-                            </button>
-                            <button @click="reject" type="submit" class="btn btn-danger">
-                                {{ $t('applications.rejectRequest') }}
-                            </button>
+                        <div class="content-box application-data-box">
+                            <div v-if="indexSelected!=-1" class="application-data">
+                                <div v-if="spin" id="preloader"></div>
+                                <div>
+                                    <p><b>{{ $t('applications.name') }}: </b>{{applicationSelected.name}}</p> 
+                                    <p><b>{{ $t('applications.email') }}: </b>{{applicationSelected.email}}</p>
+                                    <p class="description"><b>{{ $t('applications.description') }}: </b>{{applicationSelected.description}}</p>
+                                </div>
+                                <div class="application-buttons">
+                                    <button @click="accept()" class="accept" style="margin-right: 2rem;">{{ $t('applications.acceptRequest') }}</button>
+                                    <button @click="reject()" class="reject">{{ $t('applications.rejectRequest') }}</button>
+                                </div>
+                            </div>
                         </div>
-                    </div>
-                </b-col>
-            </b-row>
-        </div>
-      </b-col>
-  </b-row>
+                    </b-col>
+                </b-row>
+                <div v-else class="content-box no-applications">
+                    <h2>{{ $t('applications.noRequests') }}</h2>
+                </div>
+            </b-col>
+        </b-row>
+        
+        
+    </b-row>
 </template>
 
 <script>
@@ -50,7 +64,9 @@ export default {
         return {
             applications: [],
             indexSelected: -1,
-            applicationSelected: {}
+            applicationSelected: {},
+            spin: false,
+            spinAll: false,
         }
     },
     created () {
@@ -61,7 +77,7 @@ export default {
             const res = await this.axios.get("applications",{
                 headers: { token: this.$store.state.token}
             });
-            this.applications = res.data.filter( application => !application.accepted);
+            this.applications = (res.data.filter( application => !application.accepted)).reverse();
         },
         select(index) {
             if (this.applications) {
@@ -74,16 +90,20 @@ export default {
         },
         async accept() {
             try {
+                this.spin = true;
                 const res = await this.axios.put(`applications/accept/${this.applicationSelected._id}`,{ accepted: true },{
                     headers: { token: this.$store.state.token}
                 });
                 this.deleteApplication();
+                this.spin = false;
             } catch (error) {
+                this.spin = false;
                 console.log(error);
             }
         },
         async acceptAll() {
             try {
+                this.spinAll = true;
                 const promises = []
                 this.applications.forEach(application => {
                     promises.push(this.axios.put(`applications/accept/${application._id}`,{ accepted: true },{
@@ -92,22 +112,28 @@ export default {
                 });
                 await Promise.all(promises);
                 this.applications = [];
+                this.spinAll = false;
             } catch (error) {
+                this.spinAll = false;
                 console.log(error);
             }
         },
         async reject() {
             try {
+                this.spin = true;
                 const res = await this.axios.delete(`applications/reject/${this.applicationSelected._id}`,{
                     headers: { token: this.$store.state.token}
                 });
                 this.deleteApplication();
+                this.spin = false;
             } catch (error) {
+                this.spin = false;
                 console.log(error);
             }
         },
         async rejectAll() {
             try {
+                this.spinAll = true;
                 const promises = []
                 this.applications.forEach(application => {
                     promises.push(this.axios.delete(`applications/reject/${application._id}`,{
@@ -116,7 +142,9 @@ export default {
                 });
                 await Promise.all(promises);
                 this.applications = [];
+                this.spinAll = false;
             } catch (error) {
+                this.spinAll = false;
                 console.log(error);
             }
         },
@@ -128,62 +156,5 @@ export default {
 }
 </script>
 
-<style scoped>
-.card {
-    border-radius: 4px;
-    background-color: #fff;
-    margin-bottom: 30px;
-    min-height: 720px;
-    max-height: 720px;
-}
-
-.card-header{
-    padding: 15px 15px 0;
-    background-color: #fff;
-    border-bottom: none !important;
-    display: flex;
-    justify-content: space-between;
-}
-
-.card-header>h4 {
-    margin: 0;
-    color: #333;
-    font-weight: 300;
-}
-
-.application-list{
-    overflow-y: auto;
-    height: 600px;
-    border-bottom: 1px solid;
-}
-
-.application-object{
-    border-top: 1px solid;
-    padding-bottom: 10px;
-}
-
-.application-object p{
-    margin-top: 5px;
-    margin-bottom: 9px;
-}
-
-.application-object-focus {
-    background-color:#d0d0d0;
-}
-.application-buttons {
-    position: absolute;
-    bottom: 0;
-    right: 0;
-}
-
-.application-buttons button{
-    margin-right: 30px;
-}
-
-.application-selected {
-    background-color:#d0d0d0;;
-}
-.application-not-selected {
-    background-color:#fff;;
-}
+<style scoped scoped src="@/assets/css/applications.css">
 </style>

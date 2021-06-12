@@ -31,7 +31,7 @@
             </div>
 
             <div v-if="isAdmin" class="nav-item">
-                <router-link class="nav-link hide-element" to="/applications">
+                <router-link class="nav-link hide-element" to="/requests">
                     {{ $t('topNavBar.requests') }}
                     <img src="../assets/requests.svg">
                 </router-link>
