@@ -285,8 +285,8 @@ export default {
     components: {
         'my-upload': myUpload
     },
-    created () {
-        this.fetchData();
+    async created () {
+        await this.fetchData();
     },
     methods: {
         setChoice(value) {

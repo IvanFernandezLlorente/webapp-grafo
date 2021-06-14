@@ -179,23 +179,23 @@ export default {
                 name: '',
                 alias: '',
                 description: {
-                    content: '<p>Here can be your description...</p>',
+                    content: '',
                     visible: true,
                 },
                 state: {
-                    content: '<p>Here can be your State of the Art Methods...</p>',
+                    content: '',
                     visible: true,
                 },
                 instances: {
-                    content: '<p>Here can be your instances...</p>',
+                    content: '',
                     visible: true,
                 },
                 computationalExperience: {
-                    content: '<p>Here can be your computational experience...</p>',
+                    content: '',
                     visible: true,
                 },
                 reference: {
-                    content: '<p>Here can be your references...</p>',
+                    content: '',
                     visible: true,
                 },
                 user: [],
@@ -241,9 +241,9 @@ export default {
     },
     async created () {
         await this.getUsers();
-        this.getPublications();
+        await this.getPublications();
         if (!this.isNew) {
-            this.fetchData();
+            await this.fetchData();
         }
     },
     methods: {

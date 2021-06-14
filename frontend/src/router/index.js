@@ -181,12 +181,12 @@ const routes = [
 ]
 
 const canEditPublication = async (publicationId) => {
-    const publication = await axios.get(`https://${this.$hostname}:3443/api/publications/${publicationId}`);
+    const publication = await axios.get(`https://localhost:3443/api/publications/${publicationId}`);
     return ((store.state.isAdmin) || (publication.data.user.some(user => user == store.state.id)));
 }
 
 const canEditProblem = async (problemId) => {
-    const problem = await axios.get(`https://${this.$hostname}:3443/api/problems/${problemId}`);
+    const problem = await axios.get(`https://localhost:3443/api/problems/${problemId}`);
     return ((store.state.isAdmin) || (problem.data.user.some(user => user == store.state.id)));
 }
 

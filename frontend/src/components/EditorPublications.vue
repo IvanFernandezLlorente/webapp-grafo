@@ -1,272 +1,315 @@
 <template>
-    <div class="container">
-        <div style="display: flex;">
-            <b-form-checkbox v-model="publication.visible" name="visible-button" switch style="align-self: center;margin-left: 30px;">Visible</b-form-checkbox>
-        </div>
-        <form @submit.prevent="savePublication">
-            <b-row>
-                <b-col cols="6">
-                    <div class="form-group">
-                        <label for="title" class="control-label">{{ $t('createPublication.titlePubli') }}</label>
-                        <input id="title" v-model="publication.title" @change="updateCopy" class="form-control" type="text" :placeholder="$t('createPublication.titlePubli')">
-                    </div>
-                </b-col>
-                <b-col cols="6">
-                    <div class="form-group">
-                        <label for="journal" class="control-label">{{ $t('createPublication.journal') }}</label>
-                        <input id="journal" v-model="publication.journal" @change="updateCopy" class="form-control" type="text" :placeholder="$t('createPublication.journal')">
-                    </div>
-                </b-col>
-            </b-row>
-            
-             <b-row>
-                <b-col cols="3">
-                    <div class="form-group">
-                        <label for="volume" class="control-label">{{ $t('createPublication.volume') }}</label>
-                        <input id="volume" v-model="publication.volume" @change="updateCopy" class="form-control" type="text" :placeholder="$t('createPublication.volume')">
-                    </div>
-                </b-col>
-                <b-col cols="3">
-                    <div class="form-group">
-                        <label for="pages" class="control-label">{{ $t('createPublication.pages') }}</label>
-                        <input id="pages" v-model="publication.pages" @change="updateCopy" class="form-control" type="text" :placeholder="$t('createPublication.pages')">
-                    </div>
-                </b-col>
-                <b-col cols="3">
-                    <div class="form-group">
-                        <label for="year" class="control-label">{{ $t('createPublication.year') }}</label>
-                        <input id="year" v-model="publication.year" @change="updateCopy" class="form-control" type="text" :placeholder="$t('createPublication.year')">
-                    </div>
-                </b-col>
-                <b-col cols="3">
-                    <div class="form-group">
-                        <label for="publisher" class="control-label">{{ $t('createPublication.publisher') }}</label>
-                        <input id="publisher" v-model="publication.publisher" @change="updateCopy" class="form-control" type="text" :placeholder="$t('createPublication.publisher')">
-                    </div>
-                </b-col>
-            </b-row>
+    <b-col cols="12" class="padding-box">
+        <b-row v-show="spin" class="preloader-box" style="min-height: 500px;">
+            <div id="preloader" class="content-box" style="position: relative;"></div>
+        </b-row>
 
-            <b-row>
-                <b-col cols="4">
-                    <div class="form-group">
-                        <label for="issn" class="control-label">{{ $t('createPublication.issn') }}</label>
-                        <input id="issn" v-model="publication.issn" @change="updateCopy" class="form-control" type="text" :placeholder="$t('createPublication.issn')">
-                    </div>
-                </b-col>
-                <b-col cols="4">
-                    <div class="form-group">
-                        <label for="doi" class="control-label">{{ $t('createPublication.doi') }}</label>
-                        <input id="doi" v-model="publication.doi" @change="updateCopy" class="form-control" type="text" :placeholder="$t('createPublication.doi')">
-                    </div>
-                </b-col>
-                <b-col cols="4">
-                    <div class="form-group">
-                        <label for="url" class="control-label">{{ $t('createPublication.url') }}</label>
-                        <input id="url" v-model="publication.url" @change="updateCopy" class="form-control" type="text" :placeholder="$t('createPublication.url')">
-                    </div>
-                </b-col>
-            </b-row>
+        <form-wizard v-show="!spin" @on-complete="savePublication()" color="#e50914" class="my-wizard"  
+            :back-button-text="$t('createPublication.back')"
+            :next-button-text="$t('createPublication.next')"
+            :finish-button-text="$t('createPublication.save')">
 
-            <b-row>
-                <b-col cols="12">
-                    <div class="form-group">
-                        <label for="keywords" class="control-label">{{ $t('createPublication.keywords') }}</label>
-                        <input id="keywords" v-model="publication.keywords" @change="updateCopy" class="form-control" type="text" :placeholder="$t('createPublication.keywords')">
-                    </div>
-                </b-col>
-            </b-row>
+            <h2 slot="title" style="display: none;"></h2>   
 
-            <b-row>
-                <b-col cols="12">
-                    <div class="form-group">
-                        <label for="abstract" class="control-label">{{ $t('createPublication.abstract') }}</label>
-                        <textarea id="abstract" v-model="publication.abstract" @change="updateCopy" class="form-control"  style="height: 20px; min-height: 50px;" :placeholder="$t('createPublication.abstract')"></textarea> 
-                    </div>
-                </b-col>
-            </b-row>
+            <tab-content :title="$t('createPublication.wizard1')" :before-change="checkEmptyTitle">
+                <b-row>
+                    <b-col cols="12" class="first-items">
+                        <div class="main-buttons">
+                            <b-button v-b-modal.modal-bibtex class="main-button">{{ $t('createPublication.importBibtex') }}</b-button>
+                            <b-modal id="modal-bibtex" title="BibTeX">
+                                <label for="bibtex">BibTeX</label>
+                                <textarea id="bibtex" v-model="publication.bibtex" @change="updateBibTeX" class="form-control" style="height: 200px; min-height: 200px;" :placeholder="$t('createPublication.bibtexPHolder')"></textarea>  
+                            </b-modal>
+                            <p v-if="bibtexError">{{bibtexError}}</p>
+                            
+                            <div style="display: flex;justify-content: center;">
+                                <div style="display: flex;align-items: baseline; flex-wrap: wrap;">
+                                    <b-form-file v-model="filePDFPublication" class="inputfile mt-3" id="inputfilePDFPublication" ref="file-input" accept=".pdf" plain></b-form-file>
+                                    <label class="main-button" for="inputfilePDFPublication" style="cursor: pointer;">{{ $t('createPublication.uploadPDF') }}</label>
 
-            <b-button v-b-modal.modal-bibtex>{{ $t('createPublication.importBibtex') }}</b-button>
-            <b-modal id="modal-bibtex" title="BibTeX">
-                <label for="bibtex" class="control-label">BibTeX</label>
-                <textarea id="bibtex" v-model="publication.bibtex" @change="updateBibTeX" class="form-control" style="height: 200px; min-height: 200px;" :placeholder="$t('createPublication.bibtexPHolder')"></textarea>  
-            </b-modal>
-            <p v-if="bibtexError">{{bibtexError}}</p>
+                                    <ul style="padding: 0;">
+                                        <li class="item-list" v-if="filePDFPublication">
+                                            <span>{{ filePDFPublication.name }}</span>
+                                            <button type="button" @click="deleteFilePDF()">x</button>
+                                        </li> 
+                                        <li class="item-list" v-else-if="filePDFPublicationPrevious">
+                                            <span>{{ filePDFPublicationPrevious.name }}</span>
+                                            <button type="button" @click="deleteFilePDFPrevious()">x</button>
+                                        </li> 
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
 
-            
-
-            <b-row>
-                <b-col cols="6" style="display: flex;flex-direction: column;">
-                    <h4>{{ $t('createPublication.authors') }}</h4>
-                    <div class="form-group search" v-for="(theUser, index) in usersChosenToShow" :key="index" style="padding-left: 0px;display: flex;">
-                        <vue-simple-suggest
-                            v-model="authors[index]">
-                        </vue-simple-suggest>
-                        <vue-simple-suggest style="margin-left: 15px;"
-                            v-model="usersChosenToShow[index]"
-                            :list="usersToChoose"
-                            :min-length="2"
-                            :filter-by-query="true">
-                        </vue-simple-suggest>
-                        <button type="button" class="btn" @click="deleteUser(index)">
-                            <b-icon-x-square></b-icon-x-square> 
-                        </button>
-                    </div>
-            
-                    <div class="form-group">
-                        <button @click="addUser" type="button" class="btn btn-secondary">
-                            {{ $t('createPublication.addAuthor') }}
-                        </button>
-                    </div>
-                </b-col>
+                        <div style="display: flex;">
+                            <img v-if="publication.visible" src="../assets/eye.svg" @click="changeVisibility('publication')" style="cursor: pointer;">
+                            <img v-if="!publication.visible" src="../assets/eyex.svg" @click="changeVisibility('publication')" style="cursor: pointer;">
+                        </div>
+                    </b-col>
+                </b-row> 
                 
-                <b-col style="display: flex;justify-content: center;">
-                    <div style="display: flex;align-items: baseline;">
-                        <b-form-file v-model="filePDFPublication" class="inputfile mt-3" id="inputfilePDFPublication" ref="file-input" accept=".pdf" plain></b-form-file>
-                        <label class="btn btn-secondary" for="inputfilePDFPublication">{{ $t('createPublication.uploadPDF') }}</label>
+                <b-row>
+                    <b-col cols="12" xl="6">
+                        <div class="form-group">
+                            <label for="title" class="required">{{ $t('createPublication.titlePubli') }}</label>
+                            <input id="title" v-model="publication.title" @change="updateCopy" type="text" :placeholder="$t('createPublication.titlePubli')">
+                            <p v-if="noTitle" style="color: red;">{{ $t('createPublication.noTitle') }}</p>
+                        </div>
+                    </b-col>
+                    <b-col cols="12" xl="6">
+                        <div class="form-group">
+                            <label for="journal">{{ $t('createPublication.journal') }}</label>
+                            <input id="journal" v-model="publication.journal" @change="updateCopy" type="text" :placeholder="$t('createPublication.journal')">
+                        </div>
+                    </b-col>
+                </b-row>
+                
+                <b-row>
+                    <b-col cols="12" md="6" xl="3">
+                        <div class="form-group">
+                            <label for="volume">{{ $t('createPublication.volume') }}</label>
+                            <input id="volume" v-model="publication.volume" @change="updateCopy" type="text" :placeholder="$t('createPublication.volume')">
+                        </div>
+                    </b-col>
+                    <b-col cols="12" md="6" xl="3">
+                        <div class="form-group">
+                            <label for="pages">{{ $t('createPublication.pages') }}</label>
+                            <input id="pages" v-model="publication.pages" @change="updateCopy" type="text" :placeholder="$t('createPublication.pages')">
+                        </div>
+                    </b-col>
+                    <b-col cols="12" md="6" xl="3">
+                        <div class="form-group">
+                            <label for="year">{{ $t('createPublication.year') }}</label>
+                            <input id="year" v-model="publication.year" @change="updateCopy" type="text" :placeholder="$t('createPublication.year')">
+                        </div>
+                    </b-col>
+                    <b-col cols="12" md="6" xl="3">
+                        <div class="form-group">
+                            <label for="publisher">{{ $t('createPublication.publisher') }}</label>
+                            <input id="publisher" v-model="publication.publisher" @change="updateCopy" type="text" :placeholder="$t('createPublication.publisher')">
+                        </div>
+                    </b-col>
+                </b-row>
 
-                        <ul>
-                            <li class="item-list" v-if="filePDFPublication">
-                                <span>{{ filePDFPublication.name }}</span>
-                                <button type="button" @click="deleteFilePDF()">x</button>
-                            </li> 
-                            <li class="item-list" v-else-if="filePDFPublicationPrevious">
-                                <span>{{ filePDFPublicationPrevious.name }}</span>
-                                <button type="button" @click="deleteFilePDFPrevious()">x</button>
-                            </li> 
-                        </ul>
+                <b-row>
+                    <b-col cols="12" md="4">
+                        <div class="form-group">
+                            <label for="issn">{{ $t('createPublication.issn') }}</label>
+                            <input id="issn" v-model="publication.issn" @change="updateCopy" type="text" :placeholder="$t('createPublication.issn')">
+                        </div>
+                    </b-col>
+                    <b-col cols="12" md="4">
+                        <div class="form-group">
+                            <label for="doi">{{ $t('createPublication.doi') }}</label>
+                            <input id="doi" v-model="publication.doi" @change="updateCopy" type="text" :placeholder="$t('createPublication.doi')">
+                        </div>
+                    </b-col>
+                    <b-col cols="12" md="4">
+                        <div class="form-group">
+                            <label for="url">{{ $t('createPublication.url') }}</label>
+                            <input id="url" v-model="publication.url" @change="updateCopy" type="text" :placeholder="$t('createPublication.url')">
+                        </div>
+                    </b-col>
+                </b-row>
+
+                <b-row>
+                    <b-col cols="12">
+                        <div class="form-group">
+                            <label for="keywords">{{ $t('createPublication.keywords') }}</label>
+                            <input id="keywords" v-model="publication.keywords" @change="updateCopy" type="text" :placeholder="$t('createPublication.keywords')">
+                        </div>
+                    </b-col>
+                </b-row>
+
+                <b-row>
+                    <b-col cols="12">
+                        <div class="form-group">
+                            <label for="abstract">{{ $t('createPublication.abstract') }}</label>
+                            <textarea id="abstract" v-model="publication.abstract" @change="updateCopy" style="min-height: 150px;" :placeholder="$t('createPublication.abstract')"></textarea> 
+                        </div>
+                    </b-col>
+                </b-row>
+
+                <b-row style="margin-bottom: 1rem;">
+                    <b-col cols="12" md="9" xl="6" style="display: flex;flex-direction: column;">
+                        <h4>{{ $t('createPublication.authors') }}</h4>
+                        <div class="form-group search" v-for="(theUser, index) in usersChosenToShow" :key="index" style="padding-left: 0px;display: flex;">
+                            <vue-simple-suggest
+                                v-model="authors[index]"
+                                :placeholder="$t('createPublication.scientificName')">
+                            </vue-simple-suggest>
+                            <vue-simple-suggest style="margin-left: 15px;"
+                                v-model="usersChosenToShow[index]"
+                                :list="usersToChoose"
+                                :min-length="2"
+                                :filter-by-query="true"
+                                :placeholder="$t('createPublication.userName')"
+                                >
+                            </vue-simple-suggest>
+                            <button type="button" class="btn" @click="deleteUser(index)">
+                                <b-icon-x-square></b-icon-x-square> 
+                            </button>
+                        </div>
+                
+                        <div class="form-group">
+                            <button @click="addUser" type="button" class="btn add">
+                                {{ $t('createPublication.addAuthor') }}
+                            </button>
+                        </div>
+                    </b-col>
+                </b-row>
+                
+                <b-row style="margin-bottom: 3rem;">
+                    <b-col cols="12" md="9" xl="6" style="display: flex;flex-direction: column;">
+                        <h4>{{ $t('createPublication.relatedProblems') }}</h4>
+                        <div class="form-group search" v-for="(theProblem, index) in problemsChosenToShow" :key="`${index} - p`" style="padding-left: 0px;display: flex;">
+                            <vue-simple-suggest
+                                v-model="problemsChosenToShow[index]"
+                                :list="problemsToChoose"
+                                :min-length="2"
+                                :filter-by-query="true">
+                            </vue-simple-suggest>
+                            <button type="button" class="btn" @click="deleteProblem(index)">
+                                <b-icon-x-square></b-icon-x-square> 
+                            </button>
+                        </div>
+
+                        <div class="form-group">
+                            <button @click="addProblem" type="button" class="btn add">
+                                {{ $t('createPublication.addProblem') }}
+                            </button>
+                        </div>
+                    </b-col>
+                </b-row>
+            </tab-content>
+
+
+
+            <tab-content :title="$t('createPublication.wizard2')">
+                <div class="body-edit">
+                    <div class="section-title">
+                        <h3>{{ $t('createPublication.wizard2') }}</h3>
+                        <img v-if="publication.description.visible" src="../assets/eye.svg" @click="changeVisibility('description')" class="eye">
+                        <img v-if="!publication.description.visible" src="../assets/eyex.svg" @click="changeVisibility('description')" class="eye">
                     </div>
-                </b-col>
-            </b-row>
-            
-
-            <h4>{{ $t('createPublication.relatedProblems') }}</h4>
-            <div class="form-group col-md-6 search" v-for="(theProblem, index) in problemsChosenToShow" :key="`${index} - p`" style="padding-left: 0px;display: flex;">
-                <vue-simple-suggest
-                    v-model="problemsChosenToShow[index]"
-                    :list="problemsToChoose"
-                    :min-length="2"
-                    :filter-by-query="true">
-                </vue-simple-suggest>
-                <button type="button" class="btn" @click="deleteProblem(index)">
-                    <b-icon-x-square></b-icon-x-square> 
-                </button>
-            </div>
-    
-            <div class="form-group">
-                <button @click="addProblem" type="button" class="btn btn-secondary">
-                    {{ $t('createPublication.addProblem') }}
-                </button>
-            </div>
-
-            <div class="body-edit">
-                <div style="display: flex;">
-                    <h3>{{ $t('createPublication.wizard2') }}</h3>
-                    <b-form-checkbox v-model="publication.description.visible" name="visible-button" switch style="align-self: center;margin-left: 30px;">Visible</b-form-checkbox>
+                    <ckeditor :editor="editor" v-model="publication.description.content" :config="editorConfig"></ckeditor>
                 </div>
-                <ckeditor :editor="editor" v-model="publication.description.content" :config="editorConfig"></ckeditor>
-            </div>
 
-            <div style="display: flex;align-items: baseline;">
-                <b-form-file v-model="fileDescription" class="inputfile mt-3" id="inputfileDescription" ref="file-input" multiple plain></b-form-file>
-                <label class="btn btn-secondary" for="inputfileDescription">{{ $t('createPublication.chooseFile') }}</label>
+                <div class="file-box">
+                    <b-form-file v-model="fileDescription" class="inputfile mt-3" id="inputfileDescription" ref="file-input" multiple plain></b-form-file>
+                    <label class="btn" for="inputfileDescription">{{ $t('createPublication.chooseFile') }}</label>
 
-                <ul>
-                    <li class="item-list" v-for="(file, index) in fileArrayDescription" :key="index">
-                        <span>{{ file ? file.name : '' }}</span>
-                        <button type="button" @click="deleteFile(index, fileArrayDescription, file)">x</button>
-                    </li> 
-                </ul>
-            </div>
-
-            <div class="body-edit">
-                <div style="display: flex;">
-                    <h3>{{ $t('createPublication.wizard3') }}</h3>
-                    <b-form-checkbox v-model="publication.state.visible" name="visible-button" switch style="align-self: center;margin-left: 30px;">Visible</b-form-checkbox>
+                    <ul>
+                        <li class="item-list" v-for="(file, index) in fileArrayDescription" :key="index">
+                            <span>{{ file ? file.name : '' }}</span>
+                            <button type="button" @click="deleteFile(index, fileArrayDescription, file)">x</button>
+                        </li> 
+                    </ul>
                 </div>
-                <ckeditor :editor="editor" v-model="publication.state.content" :config="editorConfig"></ckeditor>
-            </div>
+            </tab-content>
 
-            <div style="display: flex;align-items: baseline;">
-                <b-form-file v-model="fileState" class="inputfile mt-3" id="inputfileState" ref="file-input" multiple plain></b-form-file>
-                <label class="btn btn-secondary" for="inputfileState">{{ $t('createPublication.chooseFile') }}</label>
 
-                <ul>
-                    <li class="item-list" v-for="(file, index) in fileArrayState" :key="index">
-                        <span>{{ file ? file.name : '' }}</span>
-                        <button type="button" @click="deleteFile(index, fileArrayState, file)">x</button>
-                    </li> 
-                </ul>
-            </div>
 
-            <div class="body-edit">
-                <div style="display: flex;">
-                    <h3>{{ $t('createPublication.wizard4') }}</h3>
-                    <b-form-checkbox v-model="publication.instances.visible" name="visible-button" switch style="align-self: center;margin-left: 30px;">Visible</b-form-checkbox>
+            <tab-content :title="$t('createPublication.wizard3')">
+                <div class="body-edit">
+                    <div class="section-title">
+                        <h3>{{ $t('createPublication.wizard3') }}</h3>
+                        <img v-if="publication.state.visible" src="../assets/eye.svg" @click="changeVisibility('state')" class="eye">
+                        <img v-if="!publication.state.visible" src="../assets/eyex.svg" @click="changeVisibility('state')" class="eye">
+                    </div>
+                    <ckeditor :editor="editor" v-model="publication.state.content" :config="editorConfig"></ckeditor>
                 </div>
-                <ckeditor :editor="editor" v-model="publication.instances.content" :config="editorConfig"></ckeditor>
-            </div>
 
-            <div style="display: flex;align-items: baseline;">
-                <b-form-file v-model="fileInstances" class="inputfile mt-3" id="inputfileInstances" ref="file-input" multiple plain></b-form-file>
-                <label class="btn btn-secondary" for="inputfileInstances">{{ $t('createPublication.chooseFile') }}</label>
+                <div class="file-box">
+                    <b-form-file v-model="fileState" class="inputfile mt-3" id="inputfileState" ref="file-input" multiple plain></b-form-file>
+                    <label class="btn" for="inputfileState">{{ $t('createPublication.chooseFile') }}</label>
 
-                <ul>
-                    <li class="item-list" v-for="(file, index) in fileArrayInstances" :key="index">
-                        <span>{{ file ? file.name : '' }}</span>
-                        <button type="button" @click="deleteFile(index, fileArrayInstances, file)">x</button>
-                    </li> 
-                </ul>
-            </div>
-
-
-            <div class="body-edit">
-                <div style="display: flex;">
-                    <h3 v-bind:class="{ cross: !checked}">{{ $t('createPublication.wizard5') }}</h3>
-                    <b-form-checkbox v-model="checked" name="check-button" switch style="align-self: center;margin-left: 16px;">Optional</b-form-checkbox>
-                    <b-form-checkbox v-if="checked" v-model="publication.computationalExperience.visible" name="visible-button" switch style="align-self: center;margin-left: 70px;">Visible</b-form-checkbox>
+                    <ul>
+                        <li class="item-list" v-for="(file, index) in fileArrayState" :key="index">
+                            <span>{{ file ? file.name : '' }}</span>
+                            <button type="button" @click="deleteFile(index, fileArrayState, file)">x</button>
+                        </li> 
+                    </ul>
                 </div>
-                <ckeditor v-if="checked" :editor="editor" v-model="publication.computationalExperience.content" :config="editorConfig"></ckeditor>
-            </div>
+            </tab-content>
 
-            <div v-if="checked" style="display: flex;align-items: baseline;">
-                <b-form-file v-model="fileComputational" class="inputfile mt-3" id="inputfileComputational" ref="file-input" multiple plain></b-form-file>
-                <label class="btn btn-secondary" for="inputfileComputational">{{ $t('createPublication.chooseFile') }}</label>
 
-                <ul>
-                    <li class="item-list" v-for="(file, index) in fileArrayComputational" :key="index">
-                        <span>{{ file ? file.name : '' }}</span>
-                        <button type="button" @click="deleteFile(index, fileArrayComputational, file)">x</button>
-                    </li> 
-                </ul>
-            </div>
 
-            <div class="body-edit">
-                <div style="display: flex;">
-                    <h3>{{ $t('createPublication.wizard6') }}</h3>
-                    <b-form-checkbox v-model="publication.reference.visible" name="visible-button" switch style="align-self: center;margin-left: 30px;">Visible</b-form-checkbox>
+            <tab-content :title="$t('createPublication.wizard4')">
+                <div class="body-edit">
+                    <div class="section-title">
+                        <h3>{{ $t('createPublication.wizard4') }}</h3>
+                        <img v-if="publication.instances.visible" src="../assets/eye.svg" @click="changeVisibility('instances')" class="eye">
+                        <img v-if="!publication.instances.visible" src="../assets/eyex.svg" @click="changeVisibility('instances')" class="eye">
+                    </div>
+                    <ckeditor :editor="editor" v-model="publication.instances.content" :config="editorConfig"></ckeditor>
                 </div>
-                <ckeditor :editor="editor" v-model="publication.reference.content" :config="editorConfig"></ckeditor>
-            </div>
 
-            <div style="display: flex;align-items: baseline;">
-                <b-form-file v-model="fileReferences" class="inputfile mt-3" id="inputfileReferences" ref="file-input" multiple plain></b-form-file>
-                <label class="btn btn-secondary" for="inputfileReferences">{{ $t('createPublication.chooseFile') }}</label>
+                <div class="file-box">
+                    <b-form-file v-model="fileInstances" class="inputfile mt-3" id="inputfileInstances" ref="file-input" multiple plain></b-form-file>
+                    <label class="btn" for="inputfileInstances">{{ $t('createPublication.chooseFile') }}</label>
 
-                <ul>
-                    <li class="item-list" v-for="(file, index) in fileArrayReferences" :key="index">
-                        <span>{{ file ? file.name : '' }}</span>
-                        <button type="button" @click="deleteFile(index, fileArrayReferences, file)">x</button>
-                    </li> 
-                </ul>
-            </div>
+                    <ul>
+                        <li class="item-list" v-for="(file, index) in fileArrayInstances" :key="index">
+                            <span>{{ file ? file.name : '' }}</span>
+                            <button type="button" @click="deleteFile(index, fileArrayInstances, file)">x</button>
+                        </li> 
+                    </ul>
+                </div>
+            </tab-content>
 
-            <div class="text-center" style="margin-bottom: 63px;">
-                <button type="submit" class="btn btn-info float-right mb-50">
-                    {{ $t('createPublication.save') }}
-                </button>
-            </div>
-        </form>
-    </div>
+
+
+            <tab-content :title="$t('createPublication.wizard5')">
+                <div class="body-edit">
+                    <div class="section-title">
+                        <h3>{{ $t('createPublication.wizard5') }}</h3>
+                        <img v-if="publication.computationalExperience.visible" src="../assets/eye.svg" @click="changeVisibility('computationalExperience')" class="eye">
+                        <img v-if="!publication.computationalExperience.visible" src="../assets/eyex.svg" @click="changeVisibility('computationalExperience')" class="eye">
+                    </div>
+                    <ckeditor :editor="editor" v-model="publication.computationalExperience.content" :config="editorConfig"></ckeditor>
+                </div>
+
+                <div class="file-box">
+                    <b-form-file v-model="fileComputational" class="inputfile mt-3" id="inputfileComputational" ref="file-input" multiple plain></b-form-file>
+                    <label class="btn" for="inputfileComputational">{{ $t('createPublication.chooseFile') }}</label>
+
+                    <ul>
+                        <li class="item-list" v-for="(file, index) in fileArrayComputational" :key="index">
+                            <span>{{ file ? file.name : '' }}</span>
+                            <button type="button" @click="deleteFile(index, fileArrayComputational, file)">x</button>
+                        </li> 
+                    </ul>
+                </div>
+            </tab-content>
+
+
+
+            <tab-content :title="$t('createPublication.wizard6')">
+                <div class="body-edit">
+                    <div class="section-title">
+                        <h3>{{ $t('createPublication.wizard6') }}</h3>
+                        <img v-if="publication.reference.visible" src="../assets/eye.svg" @click="changeVisibility('reference')" class="eye">
+                        <img v-if="!publication.reference.visible" src="../assets/eyex.svg" @click="changeVisibility('reference')" class="eye">
+                    </div>
+                    <ckeditor :editor="editor" v-model="publication.reference.content" :config="editorConfig"></ckeditor>
+                </div>
+
+                <div class="file-box">
+                    <b-form-file v-model="fileReferences" class="inputfile mt-3" id="inputfileReferences" ref="file-input" multiple plain></b-form-file>
+                    <label class="btn" for="inputfileReferences">{{ $t('createPublication.chooseFile') }}</label>
+
+                    <ul>
+                        <li class="item-list" v-for="(file, index) in fileArrayReferences" :key="index">
+                            <span>{{ file ? file.name : '' }}</span>
+                            <button type="button" @click="deleteFile(index, fileArrayReferences, file)">x</button>
+                        </li> 
+                    </ul>
+                </div>
+                <p v-if="error" class="msgResponse col-md-6 col-xl-4 col-12" style="margin-left: 0;">{{ $t('createPublication.error') }}</p>  
+            </tab-content>
+        </form-wizard>
+    </b-col>
 </template>
 
 <script>
@@ -275,11 +318,15 @@ import { v4 as uuid } from 'uuid';
 import VueSimpleSuggest from 'vue-simple-suggest';
 import 'vue-simple-suggest/dist/styles.css';
 import { parseBibFile, normalizeFieldValue } from "bibtex";
+import { FormWizard, TabContent } from 'vue-form-wizard';
+import 'vue-form-wizard/dist/vue-form-wizard.min.css';
 
 export default {
     name: 'EditorPublications',
     components: {
-        VueSimpleSuggest
+        VueSimpleSuggest,
+        FormWizard,
+        TabContent
     },
     data() {
         return {
@@ -296,23 +343,23 @@ export default {
                 keywords: '',
                 abstract: '',
                 description: {
-                    content: '<p>Here can be your description...</p>',
+                    content: '',
                     visible: true,
                 },
                 state: {
-                    content: '<p>Here can be your State of the Art Methods...</p>',
+                    content: '',
                     visible: true,
                 },
                 instances: {
-                    content: '<p>Here can be your instances...</p>',
+                    content: '',
                     visible: true,
                 },
                 computationalExperience: {
-                    content: '<p>Here can be your computational experience...</p>',
+                    content: '',
                     visible: true,
                 },
                 reference: {
-                    content: '<p>Here can be your references...</p>',
+                    content: '',
                     visible: true,
                 },
                 user: [],
@@ -338,7 +385,6 @@ export default {
             problemsToChoose: [],
             problemsMap: new Map(),
             problemsChosen: [''],
-            checked: true,
             filesToUpload: [],
             filesToDelete: [],
             fileDescription: null, 
@@ -355,7 +401,11 @@ export default {
             filePDFPublicationPrevious: '',
             bibtexError: '',
             usersConfirm: [],
-            authors: ['']
+            authors: [''],
+            spin: false,
+            noTitle: false,
+            error: false,
+            errorMsg: ''
         };
     },
     props: {
@@ -365,25 +415,33 @@ export default {
         }
     },
     async created () {
-        await this.getUsers();
-        this.getProblems();
-        if (!this.isNew) {
-            this.fetchData();
-        }
-        if (this.$store.state.bibtex) {
-            this.publication.bibtex = this.$store.state.bibtex;
-            this.$store.dispatch('bibtexFromOrcid','');
-            this.updateBibTeX();
+        try {
+            this.spin = true;
+            await this.getUsers();
+            await this.getProblems();
+            if (!this.isNew) {
+                await this.fetchData();
+            }
+            if (this.$store.state.bibtex) {
+                this.publication.bibtex = this.$store.state.bibtex;
+                this.$store.dispatch('bibtexFromOrcid','');
+                this.updateBibTeX();
+            }
+            this.spin = false;
+        } catch (error) {
+            this.spin = false;
+            console.log(error)
         }
     },
     methods: {
         async savePublication () {
             try {
+                this.spin = true;
+                this.deleteEmptyUsers();
                 this.linkAuthorsUsers();
                 this.prepareUsers();
                 this.prepareProblems();
                 this.prepareContent();
-                this.computationalChecked();
                 this.generateBibtex();
                 
                 const idPDF = await this.prepareFilePDF();
@@ -396,25 +454,28 @@ export default {
                 }
                 const idsFiles = [...new Set([...files, ...this.prepareFiles()])];
 
+                let res;
                 if (this.isNew) {
-                    const res = await this.axios.post(`publications`,{...this.publication, "attachments": idsFiles, "pdf": idPDF},{
+                    res = await this.axios.post(`publications`,{...this.publication, "attachments": idsFiles, "pdf": idPDF},{
                         headers: { token: this.$store.state.token}
                     });
                 } else {
-                    const res = await this.axios.put(`publications/${this.$route.params.publicationId}`,{...this.publicationCopy, "attachments": idsFiles, "pdf": idPDF},{
+                    res = await this.axios.put(`publications/${this.$route.params.publicationId}`,{...this.publicationCopy, "attachments": idsFiles, "pdf": idPDF},{
                         headers: { token: this.$store.state.token}
                     });
                 }
-                
-                this.$router.push({path: '/'})
+                this.error = false;
+                this.spin = false;
+                this.$router.push({path: `/publications/${res.data.publicationId}`})
             } catch (error) {
+                this.spin = false;
+                this.error = true;
                 console.log(error)
             }
         },
         async fetchData() {
             const res = await this.axios.get(`publications/${this.$route.params.publicationId}`);
             this.publication = res.data;
-            this.checked = res.data.computationalExperience.content ? true : false;
             this.pushToUsersChosen();
             this.pushToProblemsChosen();
             await this.organiceFiles();
@@ -440,6 +501,15 @@ export default {
         deleteUser(index) {
             this.usersChosen.splice(index, 1);
             this.authors.splice(index, 1);
+        },
+        deleteEmptyUsers() {
+            const emptyUsers = [];
+            for (let i = 0; i < this.usersChosen.length; i++) {
+                if (!(this.authors[i]) && !(this.usersChosen[i])) {
+                    emptyUsers.push(i);
+                }
+            }
+            emptyUsers.forEach(index => this.deleteUser(index));
         },
         linkAuthorsUsers() {
             const mapa = new Map();
@@ -497,19 +567,6 @@ export default {
         },
         pushToProblemsChosen() {
             this.problemsChosen = [...this.problemsMap.entries()].filter(({ 1: v }) => this.publication.problems.includes(v)).map(([k]) => k);
-        },
-        computationalChecked () {
-            if (!this.checked) {
-                this.publication.computationalExperience.content = '';
-                this.publication.computationalExperience.visible = false;
-                this.publicationCopy.computationalExperience.content = '';
-                this.publicationCopy.computationalExperience.visible = false;
-                const length = this.fileArrayComputational.length;
-                for (let i = 0; i < length; i++) {
-                    this.deleteFile(0, this.fileArrayComputational, this.fileArrayComputational[0])
-                    
-                }
-            }
         },
         deleteFile(index, array, file) {
             if ((this.initialized) && !(this.filesToUpload.includes(file))) {
@@ -729,6 +786,36 @@ export default {
         },
         usersToBibtex(){
             return this.authors.reduce((text, name, index) =>  index==0 ? text + `${name}` : text + ` and ${name}`);
+        },
+        changeVisibility(field) {
+            switch (field) {
+                case 'publication':
+                    this.publication.visible = !this.publication.visible
+                    break;
+                case 'description':
+                    this.publication.description.visible = !this.publication.description.visible
+                    break;
+                case 'state':
+                    this.publication.state.visible = !this.publication.state.visible
+                    break;
+                case 'instances':
+                    this.publication.instances.visible = !this.publication.instances.visible
+                    break;
+                case 'computationalExperience':
+                    this.publication.computationalExperience.visible = !this.publication.computationalExperience.visible
+                    break;
+                case 'reference':
+                    this.publication.reference.visible = !this.publication.reference.visible
+                    break;
+            }
+        },
+        checkEmptyTitle: function() {
+            if (this.publication.title) {
+                this.noTitle = false;
+            } else {
+                this.noTitle = true;
+            }
+            return !this.noTitle;
         }
     },
     watch: {
@@ -805,91 +892,5 @@ export default {
 };
 </script> 
 
-<style scoped>
-.container {
-    border-radius: 4px;
-    background-color: #fff;
-    margin-bottom: 30px;
-}
-
-.body-edit {
-    margin-top: 40px;
-    margin-bottom: 40px;
-}
-
-.control-label {
-    font-size: 12px;
-    margin-bottom: 5px;
-    text-transform: uppercase;
-    font-weight: 400;
-    color: #9a9a9a;
-}
-
-.form-control {
-    border: 1px solid #e3e3e3;
-    border-radius: 4px;
-    color: #565656;
-    padding: 8px 12px;
-    height: 40px;
-    display: block;
-    width: 100%;
-    font-size: 1rem;
-    line-height: 1.5;
-    background-image: none;
-    background-clip: padding-box;
-}
-
-.form-control::-moz-placeholder {
-  color: #cfcfca;
-  opacity: 1;
-  filter: alpha(opacity=100);
-}
-
-.search > div {
-    width: 100%
-}
-
-.cross {
-    text-decoration: line-through;
-}
-
-.inputfile {
-	width: 0.1px;
-	height: 0.1px;
-	opacity: 0;
-	overflow: hidden;
-	position: absolute;
-	z-index: -1;
-}
-
-.item-list {
-    display: inline-flex;
-    color: #fff;
-    background-color: #007bff;
-    padding: 4px 10px;
-    border-radius: 10rem;
-    margin-right: 7px;
-}
-
-.item-list span {
-    color: #fff;
-    font-size: 75%;
-}
-
-.item-list button {
-    color: inherit;
-    line-height: 1;
-    margin-left: .25rem;
-    cursor: pointer;
-    padding: 0;
-    background-color: transparent;
-    border: 0;
-    text-shadow: 0 1px 0 #fff;
-    opacity: .5;
-    font-weight: 700;
-}
-.item-list button:hover {
-    opacity: .75;
-    font-weight: 700;
-}
+<style scoped src="@/assets/css/editorPublications.css">
 </style>
