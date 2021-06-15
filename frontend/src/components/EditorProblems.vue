@@ -1,177 +1,228 @@
 <template>
-    <div class="container">
-        <div style="display: flex;">
-            <b-form-checkbox v-model="problem.visible" name="visible-button" switch style="align-self: center;margin-left: 30px;">Visible</b-form-checkbox>
-        </div>
-        <form @submit.prevent="saveProblem">
-            <div class="form-group">
-                <label for="name" class="control-label">{{ $t('createProblem.titlePro') }}</label>
-                <input id="name" v-model="problem.name" @change="updateCopy" class="form-control" type="text" :placeholder="$t('createProblem.titlePro')">
-            </div>
+    <b-col cols="12" class="padding-box">
+        <b-row v-show="spin" class="preloader-box" style="min-height: 500px;">
+            <div id="preloader" class="content-box" style="position: relative;"></div>
+        </b-row>
 
-            <div class="form-group">
-                <label for="alias" class="control-label">{{ $t('createProblem.alias') }}</label>
-                <input id="alias" v-model="problem.alias" @change="updateCopy" class="form-control" type="text" :placeholder="$t('createProblem.alias')">
-            </div>
+        <form-wizard v-show="!spin" @on-complete="saveProblem()" color="#e50914" class="my-wizard"  
+            :back-button-text="$t('createProblem.back')"
+            :next-button-text="$t('createProblem.next')"
+            :finish-button-text="$t('createProblem.save')">
 
-            <h4>{{ $t('createProblem.managers') }}</h4>
-            <div class="form-group col-md-6 search" v-for="(theUser, index) in usersChosenToShow" :key="index" style="padding-left: 0px;display: flex;">
-                <vue-simple-suggest
-                    v-model="usersChosenToShow[index]"
-                    :list="usersToChoose"
-                    :min-length="2"
-                    :filter-by-query="true">
-                </vue-simple-suggest>
-                <button type="button" class="btn" @click="deleteUser(index)">
-                    <b-icon-x-square></b-icon-x-square> 
-                </button>
-            </div>
+            <h2 slot="title" style="display: none;"></h2>
+
+            <tab-content :title="$t('createProblem.wizard1')" :before-change="checkEmptyTitle">
+                <b-row>
+                    <b-col cols="12" class="first-items">
+                        <div style="display: flex; justify-content: flex-end;">
+                            <img v-if="problem.visible" src="../assets/eye.svg" @click="changeVisibility('problem')" style="cursor: pointer;">
+                            <img v-if="!problem.visible" src="../assets/eyex.svg" @click="changeVisibility('problem')" style="cursor: pointer;">
+                        </div>
+                    </b-col>
+                </b-row>
+
+                <b-row>
+                    <b-col cols="12" xl="6">
+                        <div class="form-group">
+                            <label for="name" class="required">{{ $t('createProblem.titlePro') }}</label>
+                            <input id="name" v-model="problem.name" @change="updateCopy" type="text" :placeholder="$t('createProblem.titlePro')">
+                            <p v-if="noTitle" style="color: red;">{{ $t('createProblem.noTitle') }}</p>
+                        </div>
+                    </b-col>
+                    <b-col cols="12" xl="6">
+                        <div class="form-group">
+                            <label for="alias">{{ $t('createProblem.alias') }}</label>
+                            <input id="alias" v-model="problem.alias" @change="updateCopy" type="text" :placeholder="$t('createProblem.alias')">
+                        </div>
+                    </b-col>
+                </b-row>
+
+                <b-row style="margin-bottom: 1rem;">
+                    <b-col cols="12" md="9" xl="6" style="display: flex;flex-direction: column;">
+                        <h4>{{ $t('createProblem.managers') }}</h4>
+                        <div class="form-group search" v-for="(theUser, index) in usersChosenToShow" :key="index" style="padding-left: 0px;display: flex;">
+                            <vue-simple-suggest
+                                v-model="usersChosenToShow[index]"
+                                :list="usersToChoose"
+                                :min-length="2"
+                                :filter-by-query="true">
+                            </vue-simple-suggest>
+                            <button type="button" class="btn" @click="deleteUser(index)">
+                                <b-icon-x-square></b-icon-x-square> 
+                            </button>
+                        </div>
+                
+                        <div class="form-group">
+                            <button @click="addUser" type="button" class="btn add">
+                                {{ $t('createProblem.addUser') }}
+                            </button>
+                        </div>
+                    </b-col>
+                </b-row>
+
+                <b-row style="margin-bottom: 3rem;">
+                    <b-col cols="12" md="9" xl="6" style="display: flex;flex-direction: column;">
+                        <h4>{{ $t('createProblem.relatedPublications') }}</h4>
+                        <div class="form-group search" v-for="(thePublication, index) in publicationsChosenToShow" :key="`${index} - p`" style="padding-left: 0px;display: flex;">
+                            <vue-simple-suggest
+                                v-model="publicationsChosenToShow[index]"
+                                :list="publicationsToChoose"
+                                :min-length="2"
+                                :filter-by-query="true">
+                            </vue-simple-suggest>
+                            <button type="button" class="btn" @click="deletePublication(index)">
+                                <b-icon-x-square></b-icon-x-square> 
+                            </button>
+                        </div>
+
+                        <div class="form-group">
+                            <button @click="addPublication" type="button" class="btn add">
+                                {{ $t('createProblem.addPublication') }}
+                            </button>
+                        </div>
+                    </b-col>
+                </b-row>
+            </tab-content>
+
+
+            <tab-content :title="$t('createProblem.wizard2')">
+                <div class="body-edit">
+                    <div class="section-title">
+                        <h3>{{ $t('createProblem.wizard2') }}</h3>
+                        <img v-if="problem.description.visible" src="../assets/eye.svg" @click="changeVisibility('description')" class="eye">
+                        <img v-if="!problem.description.visible" src="../assets/eyex.svg" @click="changeVisibility('description')" class="eye">
+                    </div>
+                    <ckeditor :editor="editor" v-model="problem.description.content" :config="editorConfig"></ckeditor>
+                </div>
+
+                <div class="file-box">
+                    <b-form-file v-model="fileDescription" class="inputfile mt-3" id="inputfileDescription" ref="file-input" multiple plain></b-form-file>
+                    <label class="btn" for="inputfileDescription">{{ $t('createProblem.chooseFile') }}</label>
+
+                    <ul>
+                        <li class="item-list" v-for="(file, index) in fileArrayDescription" :key="index">
+                            <span>{{ file ? file.name : '' }}</span>
+                            <button type="button" @click="deleteFile(index, fileArrayDescription, file)">x</button>
+                        </li> 
+                    </ul>
+                </div>
+            </tab-content>
+
+
+            <tab-content :title="$t('createProblem.wizard3')">
+                <div class="body-edit">
+                    <div class="section-title">
+                        <h3>{{ $t('createProblem.wizard3') }}</h3>
+                        <img v-if="problem.state.visible" src="../assets/eye.svg" @click="changeVisibility('state')" class="eye">
+                        <img v-if="!problem.state.visible" src="../assets/eyex.svg" @click="changeVisibility('state')" class="eye">
+                    </div>
+                    <ckeditor :editor="editor" v-model="problem.state.content" :config="editorConfig"></ckeditor>
+                </div>
+
+                <div class="file-box">
+                    <b-form-file v-model="fileState" class="inputfile mt-3" id="inputfileState" ref="file-input" multiple plain></b-form-file>
+                    <label class="btn" for="inputfileState">{{ $t('createProblem.chooseFile') }}</label>
+
+                    <ul>
+                        <li class="item-list" v-for="(file, index) in fileArrayState" :key="index">
+                            <span>{{ file ? file.name : '' }}</span>
+                            <button type="button" @click="deleteFile(index, fileArrayState, file)">x</button>
+                        </li> 
+                    </ul>
+                </div>
+            </tab-content>
+
+
+            <tab-content :title="$t('createProblem.wizard4')">
+                <div class="body-edit">
+                    <div class="section-title">
+                        <h3>{{ $t('createProblem.wizard4') }}</h3>
+                        <img v-if="problem.instances.visible" src="../assets/eye.svg" @click="changeVisibility('instances')" class="eye">
+                        <img v-if="!problem.instances.visible" src="../assets/eyex.svg" @click="changeVisibility('instances')" class="eye">
+                    </div>
+                    <ckeditor :editor="editor" v-model="problem.instances.content" :config="editorConfig"></ckeditor>
+                </div>
+
+                <div class="file-box">
+                    <b-form-file v-model="fileInstances" class="inputfile mt-3" id="inputfileInstances" ref="file-input" multiple plain></b-form-file>
+                    <label class="btn" for="inputfileInstances">{{ $t('createProblem.chooseFile') }}</label>
+
+                    <ul>
+                        <li class="item-list" v-for="(file, index) in fileArrayInstances" :key="index">
+                            <span>{{ file ? file.name : '' }}</span>
+                            <button type="button" @click="deleteFile(index, fileArrayInstances, file)">x</button>
+                        </li> 
+                    </ul>
+                </div>
+            </tab-content>
+
+
+            <tab-content :title="$t('createProblem.wizard5')">
+                <div class="body-edit">
+                    <div class="section-title">
+                        <h3>{{ $t('createProblem.wizard5') }}</h3>
+                        <img v-if="problem.computationalExperience.visible" src="../assets/eye.svg" @click="changeVisibility('computationalExperience')" class="eye">
+                        <img v-if="!problem.computationalExperience.visible" src="../assets/eyex.svg" @click="changeVisibility('computationalExperience')" class="eye">
+                    </div>
+                    <ckeditor :editor="editor" v-model="problem.computationalExperience.content" :config="editorConfig"></ckeditor>
+                </div>
+
+                <div class="file-box">
+                    <b-form-file v-model="fileComputational" class="inputfile mt-3" id="inputfileComputational" ref="file-input" multiple plain></b-form-file>
+                    <label class="btn" for="inputfileComputational">{{ $t('createProblem.chooseFile') }}</label>
+
+                    <ul>
+                        <li class="item-list" v-for="(file, index) in fileArrayComputational" :key="index">
+                            <span>{{ file ? file.name : '' }}</span>
+                            <button type="button" @click="deleteFile(index, fileArrayComputational, file)">x</button>
+                        </li> 
+                    </ul>
+                </div>
+            </tab-content>
+
+
+            <tab-content :title="$t('createPublication.wizard6')">
+                <div class="body-edit">
+                    <div class="section-title">
+                        <h3>{{ $t('createProblem.wizard6') }}</h3>
+                        <img v-if="problem.reference.visible" src="../assets/eye.svg" @click="changeVisibility('reference')" class="eye">
+                        <img v-if="!problem.reference.visible" src="../assets/eyex.svg" @click="changeVisibility('reference')" class="eye">
+                    </div>
+                    <ckeditor :editor="editor" v-model="problem.reference.content" :config="editorConfig"></ckeditor>
+                </div>
+
+                <div class="file-box">
+                    <b-form-file v-model="fileReferences" class="inputfile mt-3" id="inputfileReferences" ref="file-input" multiple plain></b-form-file>
+                    <label class="btn" for="inputfileReferences">{{ $t('createProblem.chooseFile') }}</label>
+
+                    <ul>
+                        <li class="item-list" v-for="(file, index) in fileArrayReferences" :key="index">
+                            <span>{{ file ? file.name : '' }}</span>
+                            <button type="button" @click="deleteFile(index, fileArrayReferences, file)">x</button>
+                        </li> 
+                    </ul>
+                </div>
+                <p v-if="error" class="msgResponse col-md-6 col-xl-4 col-12" style="margin-left: 0;">{{ $t('createProblem.error') }}</p>
+            </tab-content>
+        </form-wizard>
+    </b-col>
     
-            <div class="form-group">
-                <button @click="addUser" type="button" class="btn btn-secondary">
-                    {{ $t('createProblem.addUser') }}
-                </button>
-            </div>
-
-            <h4>{{ $t('createProblem.relatedPublications') }}</h4>
-            <div class="form-group col-md-6 search" v-for="(thePublication, index) in publicationsChosenToShow" :key="`${index} - p`" style="padding-left: 0px;display: flex;">
-                <vue-simple-suggest
-                    v-model="publicationsChosenToShow[index]"
-                    :list="publicationsToChoose"
-                    :min-length="2"
-                    :filter-by-query="true">
-                </vue-simple-suggest>
-                <button type="button" class="btn" @click="deletePublication(index)">
-                    <b-icon-x-square></b-icon-x-square> 
-                </button>
-            </div>
-
-            <div class="form-group">
-                <button @click="addPublication" type="button" class="btn btn-secondary">
-                    {{ $t('createProblem.addPublication') }}
-                </button>
-            </div>
-
-            <div class="body-edit">
-                <div style="display: flex;">
-                    <h3>{{ $t('createProblem.wizard2') }}</h3>
-                    <b-form-checkbox v-model="problem.description.visible" name="visible-button" switch style="align-self: center;margin-left: 30px;">Visible</b-form-checkbox>
-                </div>
-                <ckeditor :editor="editor" v-model="problem.description.content" :config="editorConfig"></ckeditor>
-            </div>
-
-            <div style="display: flex;align-items: baseline;">
-                <b-form-file v-model="fileDescription" class="inputfile mt-3" id="inputfileDescription" ref="file-input" multiple plain></b-form-file>
-                <label class="btn btn-secondary" for="inputfileDescription">{{ $t('createProblem.chooseFile') }}</label>
-
-                <ul>
-                    <li class="item-list" v-for="(file, index) in fileArrayDescription" :key="index">
-                        <span>{{ file ? file.name : '' }}</span>
-                        <button type="button" @click="deleteFile(index, fileArrayDescription, file)">x</button>
-                    </li> 
-                </ul>
-            </div>
-
-            <div class="body-edit">
-                <div style="display: flex;">
-                    <h3>{{ $t('createProblem.wizard3') }}</h3>
-                    <b-form-checkbox v-model="problem.state.visible" name="visible-button" switch style="align-self: center;margin-left: 30px;">Visible</b-form-checkbox>
-                </div>
-                <ckeditor :editor="editor" v-model="problem.state.content" :config="editorConfig"></ckeditor>
-            </div>
-
-            <div style="display: flex;align-items: baseline;">
-                <b-form-file v-model="fileState" class="inputfile mt-3" id="inputfileState" ref="file-input" multiple plain></b-form-file>
-                <label class="btn btn-secondary" for="inputfileState">{{ $t('createProblem.chooseFile') }}</label>
-
-                <ul>
-                    <li class="item-list" v-for="(file, index) in fileArrayState" :key="index">
-                        <span>{{ file ? file.name : '' }}</span>
-                        <button type="button" @click="deleteFile(index, fileArrayState, file)">x</button>
-                    </li> 
-                </ul>
-            </div>
-
-            <div class="body-edit">
-                <div style="display: flex;">
-                    <h3>{{ $t('createProblem.wizard4') }}</h3>
-                    <b-form-checkbox v-model="problem.instances.visible" name="visible-button" switch style="align-self: center;margin-left: 30px;">Visible</b-form-checkbox>
-                </div>
-                <ckeditor :editor="editor" v-model="problem.instances.content" :config="editorConfig"></ckeditor>
-            </div>
-
-            <div style="display: flex;align-items: baseline;">
-                <b-form-file v-model="fileInstances" class="inputfile mt-3" id="inputfileInstances" ref="file-input" multiple plain></b-form-file>
-                <label class="btn btn-secondary" for="inputfileInstances">{{ $t('createProblem.chooseFile') }}</label>
-
-                <ul>
-                    <li class="item-list" v-for="(file, index) in fileArrayInstances" :key="index">
-                        <span>{{ file ? file.name : '' }}</span>
-                        <button type="button" @click="deleteFile(index, fileArrayInstances, file)">x</button>
-                    </li> 
-                </ul>
-            </div>
-
-            <div class="body-edit">
-                <div style="display: flex;">
-                    <h3 v-bind:class="{ cross: !checked}">{{ $t('createProblem.wizard5') }}</h3>
-                    <b-form-checkbox v-model="checked" name="check-button" switch style="align-self: center;margin-left: 16px;">Optional</b-form-checkbox>
-                    <b-form-checkbox v-if="checked" v-model="problem.computationalExperience.visible" name="visible-button" switch style="align-self: center;margin-left: 70px;">Visible</b-form-checkbox>
-                </div>
-                <ckeditor v-if="checked" :editor="editor" v-model="problem.computationalExperience.content" :config="editorConfig"></ckeditor>
-            </div>
-
-            <div v-if="checked" style="display: flex;align-items: baseline;">
-                <b-form-file v-model="fileComputational" class="inputfile mt-3" id="inputfileComputational" ref="file-input" multiple plain></b-form-file>
-                <label class="btn btn-secondary" for="inputfileComputational">{{ $t('createProblem.chooseFile') }}</label>
-
-                <ul>
-                    <li class="item-list" v-for="(file, index) in fileArrayComputational" :key="index">
-                        <span>{{ file ? file.name : '' }}</span>
-                        <button type="button" @click="deleteFile(index, fileArrayComputational, file)">x</button>
-                    </li> 
-                </ul>
-            </div>
-
-            <div class="body-edit">
-                <div style="display: flex;">
-                    <h3>{{ $t('createProblem.wizard6') }}</h3>
-                    <b-form-checkbox v-model="problem.reference.visible" name="visible-button" switch style="align-self: center;margin-left: 30px;">Visible</b-form-checkbox>
-                </div>
-                <ckeditor :editor="editor" v-model="problem.reference.content" :config="editorConfig"></ckeditor>
-            </div>
-
-            <div style="display: flex;align-items: baseline;">
-                <b-form-file v-model="fileReferences" class="inputfile mt-3" id="inputfileReferences" ref="file-input" multiple plain></b-form-file>
-                <label class="btn btn-secondary" for="inputfileReferences">{{ $t('createProblem.chooseFile') }}</label>
-
-                <ul>
-                    <li class="item-list" v-for="(file, index) in fileArrayReferences" :key="index">
-                        <span>{{ file ? file.name : '' }}</span>
-                        <button type="button" @click="deleteFile(index, fileArrayReferences, file)">x</button>
-                    </li> 
-                </ul>
-            </div>
-
-            <div class="text-center" style="margin-bottom: 63px;">
-                <button type="submit" class="btn btn-info float-right mb-50">
-                    {{ $t('createProblem.save') }}
-                </button>
-            </div>
-        </form>
-    </div>
 </template>
 
 <script>
 import ClassicEditor from '../ckeditor';
 import { v4 as uuid } from 'uuid';
-import VueSimpleSuggest from 'vue-simple-suggest'
-import 'vue-simple-suggest/dist/styles.css'
+import VueSimpleSuggest from 'vue-simple-suggest';
+import 'vue-simple-suggest/dist/styles.css';
+import { FormWizard, TabContent } from 'vue-form-wizard';
+import 'vue-form-wizard/dist/vue-form-wizard.min.css';
 
 export default {
     name: 'EditorProblems',
     components: {
-        VueSimpleSuggest
+        VueSimpleSuggest,
+        FormWizard,
+        TabContent
     },
     data() {
         return {
@@ -218,7 +269,6 @@ export default {
             publicationsToChoose: [],
             publicationsMap: new Map(),
             publicationsChosen: [''],
-            checked: true,
             filesToUpload: [],
             filesToDelete: [],
             fileDescription: null, 
@@ -230,7 +280,11 @@ export default {
             fileReferences: null,
             fileArrayReferences: [],
             fileComputational: null,
-            fileArrayComputational: []
+            fileArrayComputational: [],
+            spin: false,
+            noTitle: false,
+            error: false,
+            errorMsg: ''
         };
     },
     props: {
@@ -240,19 +294,26 @@ export default {
         }
     },
     async created () {
-        await this.getUsers();
-        await this.getPublications();
-        if (!this.isNew) {
-            await this.fetchData();
+        try {
+            this.spin = true;
+            await this.getUsers();
+            await this.getPublications();
+            if (!this.isNew) {
+                await this.fetchData();
+            }
+            this.spin = false;
+        } catch (error) {
+            this.spin = false;
+            console.log(error)
         }
     },
     methods: {
         async saveProblem () {
             try {
+                this.spin = true;
                 this.prepareUsers();
                 this.preparePublications();
                 this.prepareContent();
-                this.computationalChecked();
                 let files;
                 if (this.filesToUpload) {
                     files = await this.uploadFile();
@@ -260,19 +321,25 @@ export default {
                 if (this.filesToDelete) {
                     await this.deleteFiles();
                 }
-                const idsFiles = [...new Set([...files, ...this.prepareFiles()])]
+                const idsFiles = [...new Set([...files, ...this.prepareFiles()])];
+
+                let res;
                 if (this.isNew) {
-                    const res = await this.axios.post(`problems`,{...this.problem, "attachments": idsFiles},{
+                    res = await this.axios.post(`problems`,{...this.problem, "attachments": idsFiles},{
                         headers: { token: this.$store.state.token}
                     });
                 } else {
-                    const res = await this.axios.put(`problems/${this.$route.params.problemId}`,{...this.problemCopy, "attachments": idsFiles},{
+                    res = await this.axios.put(`problems/${this.$route.params.problemId}`,{...this.problemCopy, "attachments": idsFiles},{
                         headers: { token: this.$store.state.token}
                     });
                 }
                 
-                this.$router.push({path: '/'})
+                this.error = false;
+                this.spin = false;
+                this.$router.push({path: `/problems/${res.data.problemId}`})
             } catch (error) {
+                this.spin = false;
+                this.error = true;
                 console.log(error)
             }
         },
@@ -304,7 +371,8 @@ export default {
             this.usersChosen.splice(index, 1);
         },
         prepareUsers() {
-            this.usersChosen.forEach( user => {
+            const users = [...new Set([...(this.usersChosen.filter(user => user))])]
+            users.forEach( user => {
                 if (this.userMap.has(user)) {
                     this.problem.user.push(this.userMap.get(user));
                     this.problemCopy.user.push(this.userMap.get(user));
@@ -343,19 +411,6 @@ export default {
         },
         pushToPublicationsChosen() {
             this.publicationsChosen = [...this.publicationsMap.entries()].filter(({ 1: v }) => this.problem.publications.includes(v)).map(([k]) => k);
-        },
-        computationalChecked () {
-            if (!this.checked) {
-                this.problem.computationalExperience.content = '';
-                this.problem.computationalExperience.visible = false;
-                this.problemCopy.computationalExperience.content = '';
-                this.problemCopy.computationalExperience.visible = false;
-                const length = this.fileArrayComputational.length;
-                for (let i = 0; i < length; i++) {
-                    this.deleteFile(0, this.fileArrayComputational, this.fileArrayComputational[0])
-                    
-                }
-            }
         },
         deleteFile(index, array, file) {
             if ((this.initialized) && !(this.filesToUpload.includes(file))) {
@@ -417,6 +472,36 @@ export default {
             this.problemCopy.computationalExperience = { ...this.problem.computationalExperience };
             this.problemCopy.reference = { ...this.problem.reference };
             this.problemCopy.visible = this.problem.visible;
+        },
+        changeVisibility(field) {
+            switch (field) {
+                case 'problem':
+                    this.problem.visible = !this.problem.visible
+                    break;
+                case 'description':
+                    this.problem.description.visible = !this.problem.description.visible
+                    break;
+                case 'state':
+                    this.problem.state.visible = !this.problem.state.visible
+                    break;
+                case 'instances':
+                    this.problem.instances.visible = !this.problem.instances.visible
+                    break;
+                case 'computationalExperience':
+                    this.problem.computationalExperience.visible = !this.problem.computationalExperience.visible
+                    break;
+                case 'reference':
+                    this.problem.reference.visible = !this.problem.reference.visible
+                    break;
+            }
+        },
+        checkEmptyTitle: function() {
+            if (this.problem.name) {
+                this.noTitle = false;
+            } else {
+                this.noTitle = true;
+            }
+            return !this.noTitle;
         }
     },
     watch: {
@@ -482,91 +567,5 @@ export default {
 };
 </script> 
 
-<style scoped>
-.container {
-    border-radius: 4px;
-    background-color: #fff;
-    margin-bottom: 30px;
-}
-
-.body-edit {
-    margin-top: 40px;
-    margin-bottom: 40px;
-}
-
-.control-label {
-    font-size: 12px;
-    margin-bottom: 5px;
-    text-transform: uppercase;
-    font-weight: 400;
-    color: #9a9a9a;
-}
-
-.form-control {
-    border: 1px solid #e3e3e3;
-    border-radius: 4px;
-    color: #565656;
-    padding: 8px 12px;
-    height: 40px;
-    display: block;
-    width: 100%;
-    font-size: 1rem;
-    line-height: 1.5;
-    background-image: none;
-    background-clip: padding-box;
-}
-
-.form-control::-moz-placeholder {
-  color: #cfcfca;
-  opacity: 1;
-  filter: alpha(opacity=100);
-}
-
-.search > div {
-    width: 100%
-}
-
-.cross {
-    text-decoration: line-through;
-}
-
-.inputfile {
-	width: 0.1px;
-	height: 0.1px;
-	opacity: 0;
-	overflow: hidden;
-	position: absolute;
-	z-index: -1;
-}
-
-.item-list {
-    display: inline-flex;
-    color: #fff;
-    background-color: #007bff;
-    padding: 4px 10px;
-    border-radius: 10rem;
-    margin-right: 7px;
-}
-
-.item-list span {
-    color: #fff;
-    font-size: 75%;
-}
-
-.item-list button {
-    color: inherit;
-    line-height: 1;
-    margin-left: .25rem;
-    cursor: pointer;
-    padding: 0;
-    background-color: transparent;
-    border: 0;
-    text-shadow: 0 1px 0 #fff;
-    opacity: .5;
-    font-weight: 700;
-}
-.item-list button:hover {
-    opacity: .75;
-    font-weight: 700;
-}
+<style scoped src="@/assets/css/editorProblems.css">
 </style>

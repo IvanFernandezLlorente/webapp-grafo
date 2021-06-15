@@ -1,0 +1,232 @@
+.form-group {
+    margin-bottom: 1rem;
+}
+
+.form-group label {
+    margin-bottom: 0px;
+    font-weight: bold;
+}
+
+.form-group input {
+    margin-top: 5px;
+    margin-bottom: 1rem;
+    width: 100%;
+    background-color: #EFF2F5;
+    border: 0px;
+    border-radius: 16px;
+    height: 3rem;
+    padding: 12px 20px;
+}
+
+.form-group input:focus, .form-group textarea:focus{
+    outline: none;
+}
+
+::placeholder {
+  color: #A6B0C3;
+}
+
+.section-title {
+    display: flex;
+    align-items: center;
+}
+
+.section-title h3 {
+    margin-right: 1rem;
+}
+
+.eye {
+    cursor: pointer;
+    width: 40px;
+    height: 30px;
+}
+
+.file-box {
+    display: flex;
+    align-items: baseline;
+    margin-bottom: 3rem;
+    flex-wrap: wrap;
+    margin-top: 1rem;
+}
+
+.file-box  label {
+    background-color: #E50914;
+    border-radius: 38px;
+    color: #FFF;
+    border: 0px;
+    margin-right: 1rem;
+}
+
+.file-box  label:hover {
+    background-color: #B81D24;    
+    box-shadow: 0 0 4px #F01E28;
+}
+
+.file-box ul{
+    padding-left: 0px;
+}
+
+.btn.add {
+    background-color: #E50914;
+    border-radius: 38px;
+    color: #FFF;
+    border: 0px;
+}
+
+.btn.add:hover {
+    background-color: #B81D24;    
+    box-shadow: 0 0 4px #F01E28;
+}
+
+@media (min-width: 992px){
+    .padding-box {
+        padding: 0px 40px;
+    }
+}
+
+.my-wizard >>> .wizard-icon {
+    color: #212529 !important;
+}
+
+.my-wizard >>> .wizard-progress-with-circle {
+    width: 75%;
+    margin: auto;
+}
+
+.my-wizard >>> .wizard-nav-pills {
+    overflow-x: auto;
+    overflow-y: hidden;
+    max-height: 118px;
+    flex-wrap: nowrap;
+    width: 75%;
+    margin: auto;
+}
+
+.my-wizard >>> .wizard-nav-pills li {
+    min-width: 143px;
+}
+
+.my-wizard >>> .wizard-tab-content {
+    background: #FFFFFF 0% 0% no-repeat padding-box;
+    box-shadow: 3px 3px 7px #000000B3;
+    border-radius: 17px;
+    opacity: 1;
+    margin-top: 2rem;
+}
+
+.my-wizard >>> .wizard-tab-container {
+    padding: 0px 21px
+}
+
+.my-wizard >>> .wizard-card-footer {
+    position: relative;
+    top: -50px;
+}
+
+.my-wizard >>> .wizard-btn {
+    border-radius: 37px;
+}
+
+.my-wizard >>> .wizard-btn:hover {
+    background-color: #B81D24 !important;   
+    border-color: #B81D24 !important; 
+    box-shadow: 0 0 4px #F01E28;
+}
+
+.my-wizard >>> .wizard-footer-left button{
+    background-color: #564D4D !important;   
+    border-color: #564D4D !important; 
+}
+
+.my-wizard >>> .wizard-footer-left button:hover{
+    background-color: #2F2C2C !important;   
+    border-color: #2F2C2C !important; 
+    box-shadow: 0 0 4px #564D4D;
+}
+
+.search > div {
+    width: 100%
+}
+
+.inputfile {
+	width: 0.1px;
+	height: 0.1px;
+	opacity: 0;
+	overflow: hidden;
+	position: absolute;
+	z-index: -1;
+}
+
+.item-list {
+    display: inline-flex;
+    color: #fff;
+    background-color: #564D4D;
+    padding: 4px 10px;
+    border-radius: 10rem;
+    margin-right: 7px;
+}
+
+.item-list span {
+    color: #fff;
+    font-size: 75%;
+    word-break: break-all;
+}
+
+.item-list button {
+    color: inherit;
+    line-height: 1;
+    margin-left: .25rem;
+    cursor: pointer;
+    padding: 0;
+    background-color: transparent;
+    border: 0;
+    text-shadow: 0 1px 0 #fff;
+    opacity: .5;
+    font-weight: 700;
+}
+.item-list button:hover {
+    opacity: .75;
+    font-weight: 700;
+}
+
+.preloader-box {
+    height: 550px;
+    width: 100%;
+    margin: auto;
+    margin-top: 2rem;
+}
+
+label.required:after {
+    color: red;
+    content: " *";
+}
+
+.msgResponse {
+    margin-bottom: 5rem;
+    word-wrap: break-word;
+    border: 1px solid transparent;
+    border-radius: 0.25rem;
+    padding: 0.5rem 1.25rem;
+    background-color: rgb(242, 222, 222);
+    color: #b94a48;
+}
+
+@media (max-width: 1569px){
+    .my-wizard >>> .wizard-progress-with-circle {
+        width: 100%;
+    }
+
+    .my-wizard >>> .wizard-nav-pills {
+        width: 100%;
+    }
+}
+
+@media (max-width: 1285px){
+    .my-wizard >>> .wizard-progress-with-circle {
+        display: none;
+    }
+
+    .my-wizard >>> .wizard-nav-pills {
+        width: 100%;
+    }
+}
