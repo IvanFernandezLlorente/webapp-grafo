@@ -46,21 +46,6 @@
                                         <b-row>
                                             <b-col cols="12" md="6">
                                                 <div class="form-group">
-                                                    <label for="linkedinUrl" class="control-label">LinkedIn</label>
-                                                    <input id="linkedinUrl" @keydown.enter.prevent='' v-model="user.linkedinUrl" @change="updateCopy"  type="text" :placeholder="$t('settigns.linkedinPHolder')">
-                                                </div>
-                                            </b-col>
-                                            <b-col cols="12" md="6">
-                                                <div class="form-group">
-                                                    <label for="scholarUrl" class="control-label">Scholar</label>
-                                                    <input id="scholarUrl" @keydown.enter.prevent='' v-model="user.scholarUrl"  @change="updateCopy" type="text" :placeholder="$t('settigns.scholarPHolder')">
-                                                </div>
-                                            </b-col>
-                                        </b-row>
-
-                                        <b-row>
-                                            <b-col cols="12" md="6">
-                                                <div class="form-group">
                                                     <label for="organization" class="control-label">{{ $t('settigns.organization') }}</label>
                                                     <input id="organization" @keydown.enter.prevent='' v-model="user.organization" @change="updateCopy" type="text" :placeholder="$t('settigns.organizationPHolder')">
                                                 </div>
@@ -73,7 +58,6 @@
                                             </b-col>
                                         </b-row>
 
-                                        
                                         <b-row>
                                              <b-col cols="12" md="6">
                                                 <div class="form-group">
@@ -89,11 +73,61 @@
                                             </b-col>
                                         </b-row>
 
+
+                                        <b-row>
+                                            <b-col cols="12" md="6">
+                                                <div class="form-group">
+                                                    <div>
+                                                        <label for="orcidPlainText" class="control-label" style="margin-right: 0.5rem">ORCID</label>
+                                                        <button v-b-tooltip.hover.right :title="$t('settigns.tooltip')" class="tooltip-button">
+                                                            <img src="../assets/question.svg" id="tooltip">
+                                                            <span class="tooltiptext">Tooltip text</span>
+                                                        </button>
+                                                        
+                                                    </div>
+                                                    <input id="orcidPlainText" @keydown.enter.prevent='' v-model="user.orcidPlainText" @change="updateCopy"  type="text" placeholder="0000-0003-2936-1478">
+                                                </div>
+                                            </b-col>
+                                            <b-col cols="12" md="6">
+                                                <div class="form-group">
+                                                    <label for="linkedinUrl" class="control-label">LinkedIn</label>
+                                                    <input id="linkedinUrl" @keydown.enter.prevent='' v-model="user.linkedinUrl" @change="updateCopy"  type="text" :placeholder="$t('settigns.linkedinPHolder')">
+                                                </div>
+                                            </b-col>
+                                            <b-col cols="12" md="6">
+                                                <div class="form-group">
+                                                    <label for="scholarUrl" class="control-label">Google Scholar</label>
+                                                    <input id="scholarUrl" @keydown.enter.prevent='' v-model="user.scholarUrl"  @change="updateCopy" type="text" :placeholder="$t('settigns.scholarPHolder')">
+                                                </div>
+                                            </b-col>
+                                            <b-col cols="12" md="6">
+                                                <div class="form-group">
+                                                    <label for="scopusUrl" class="control-label">Scopus</label>
+                                                    <input id="scopusUrl" @keydown.enter.prevent='' v-model="user.scopusUrl" @change="updateCopy"  type="text" :placeholder="$t('settigns.scopusPHolder')">
+                                                </div>
+                                            </b-col>
+                                            <b-col cols="12" md="6">
+                                                <div class="form-group">
+                                                    <label for="publonsUrl" class="control-label">Publons</label>
+                                                    <input id="publonsUrl" @keydown.enter.prevent='' v-model="user.publonsUrl" @change="updateCopy"  type="text" :placeholder="$t('settigns.publonsPHolder')">
+                                                </div>
+                                            </b-col>
+                                        </b-row>
+
+                                        <b-row>
+                                            <b-col cols="12">
+                                                <div class="form-group">
+                                                    <label for="projects" class="control-label">{{ $t('settigns.projects') }}</label>
+                                                    <textarea id="projects" v-model="user.projects" @change="updateCopy" rows="10" style="height: 20px; min-height: 150px;" :placeholder="$t('settigns.projectsPHolder')"></textarea>    
+                                                </div>
+                                            </b-col>
+                                        </b-row>
+
                                         <b-row>
                                             <b-col cols="12">
                                                 <div class="form-group">
                                                     <label for="description" class="control-label">{{ $t('settigns.description') }}</label>
-                                                    <textarea id="description" v-model="user.description" @change="updateCopy" rows="10" style="height: 20px; min-height: 50px;" :placeholder="$t('settigns.descriptionPHolder')"></textarea>    
+                                                    <textarea id="description" v-model="user.description" @change="updateCopy" rows="10" style="height: 20px; min-height: 150px;" :placeholder="$t('settigns.descriptionPHolder')"></textarea>    
                                                 </div>
                                             </b-col>
                                         </b-row>
@@ -145,6 +179,7 @@
                         </b-row>
                     </div>
                     <div v-if="choice == 3">
+                        <p>{{ $t('settigns.explainText') }}</p>
                         <div class="connect-btns">
                             <div class="account-box">
                                 <div class="google-wrapper">
@@ -181,7 +216,7 @@
                                     <img class="orcid-icon" src="../assets/orcid.svg"/>
                                 </div>
         
-                                <button v-if="!(user.orcid) || ((user.orcid) && !(user.orcid.orcid))" class="orcid-btn" type="button" @click="orcid">{{ $t('settigns.orcid') }}</button>
+                                <button disabled v-if="!(user.orcid) || ((user.orcid) && !(user.orcid.orcid))" class="orcid-btn" type="button" @click="orcid" style="cursor: no-drop;">{{ $t('settigns.orcid') }}</button>
                                 <div v-else style="display: flex; flex-wrap: wrap;">
                                     <p class="social-text">https://sandbox.orcid.org/{{user.orcid.orcid}}</p>
                                     <button type="button" class="orcid-remove-btn" @click="disconnectORCID">{{ $t('settigns.disconnect') }}</button>
@@ -243,7 +278,8 @@ export default {
           description: '',
           linkedinUrl: '',
           scholarUrl: '',
-          urjcUrl: '',
+          scopusUrl: '',
+          projects: '',
           google: {
                 methodId: '',
                 email: ''
@@ -256,7 +292,8 @@ export default {
                 orcid: '',
                 name: ''
           },
-          banned: false
+          banned: false,
+          orcidPlainText: ''
         },
         userCopy: {},
         currentPassword: '',
@@ -318,7 +355,8 @@ export default {
                         id, 
                         userId, 
                         isAdmin: roles.includes('admin'),
-                        orcid: orcid?.orcid ? orcid.orcid : undefined
+                        // orcid: orcid?.orcid ? orcid.orcid : undefined
+                        orcid
                     }
                     this.$store.dispatch('updateUser',sended);
                     this.$store.dispatch('setStorage');

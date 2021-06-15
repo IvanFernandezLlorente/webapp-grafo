@@ -66,8 +66,8 @@
 }
 
 .image-network {
-    height: 37px;
-    width: 37px;
+    height: 30px;
+    width: 30px;
 }
 
 .description {
@@ -75,6 +75,12 @@
     max-height: 255px;
     text-align: justify;
     white-space: pre-wrap;
+}
+
+.projects {
+    text-align: justify;
+    white-space: pre-wrap;
+    padding: 2rem;
 }
 
 #name {
@@ -147,14 +153,12 @@
 }
 
 .articles-box {
-    max-height: 550px;
-    overflow: auto;
     margin-left: auto;
 }
 
 .list-items {
     display: flex;
-    flex-direction: column-reverse;
+    flex-direction: column;
 }
 
 .publication {
@@ -194,6 +198,23 @@
 .journal-info {
     display: flex;
     flex-wrap: wrap;
+}
+
+input[type=button] {
+    background-color: #E50914;
+    border-radius: 38px;
+    color: #FFF;
+    border: 0px;
+    height: 3rem;
+    width: 13rem;
+    align-self: end;
+    margin-bottom: 1rem;
+    align-self: center;
+}
+
+input[type=button]:hover {
+    background-color: #B81D24;    
+    box-shadow: 0 0 4px #F01E28;
 }
 
 @media (max-width: 1199px){

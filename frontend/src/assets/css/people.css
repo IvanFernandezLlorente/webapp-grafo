@@ -78,10 +78,30 @@
     margin-bottom: 6px;
 }
 
+.organization {
+    text-align: center;
+    overflow: hidden;
+    width: 100%;
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    padding: 0 20px;
+}
+
 .networks {
     display: flex;
-    justify-content: center;
+    width: 156px;
+    align-self: center;
+}
 
+.networks a {
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.image-network {
+    width: 20px;
+    height: 20px;
 }
 
 input[type=button] {

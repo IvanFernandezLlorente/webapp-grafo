@@ -19,10 +19,10 @@
             </div>
             <div class="spacer"></div>
 
-            <div v-if="token" class="dropdown nav-item" @mouseover="createList = true" @mouseleave="createList = false">
+            <div v-if="token" class="dropdown nav-item" @click="createList = !createList" style="cursor: pointer;" :style="[createList ? {'border-bottom': '4px solid #E50914'} : {}]">
                 <div class="nav-link hide-element">{{ $t('topNavBar.create') }}<img src="../assets/create-icon.svg" style="margin-left: 6px;"></div>
                 <transition name="fade">
-                    <div class="dropdown-content" v-show="createList" @click="createList = false">
+                    <div class="dropdown-content" v-show="createList">
                         <router-link to="/newpublication">{{ $t('topNavBar.publication') }}</router-link>
                         <router-link to="/newproblem">{{ $t('topNavBar.problem') }}</router-link>
                         <router-link v-if="orcid" to="/import-orcid">{{ $t('topNavBar.importORCID') }}</router-link>

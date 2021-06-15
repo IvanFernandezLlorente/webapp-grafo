@@ -13,8 +13,10 @@ describe('User Model', () => {
         researchgroup: "el research 1",
         description: "la descri 1",
         linkedinUrl: "el linked 1",
-        urjcUrl: "el urjc 1",
+        scopusUrl: "el scopus 1",
         scholarUrl: "el scholar 1",
+        publonsUrl: "el publons 1",
+        projects: "los projects 1",
         imagenProfile: "la imagen",
         banned: false,
         roles: ['user'],
@@ -84,10 +86,16 @@ describe('User Model', () => {
         expect(user.linkedinUrl).toBeDefined()
     });
     it('UrjcUrl is defined in User model', () => {
-        expect(user.urjcUrl).toBeDefined()
+        expect(user.scopusUrl).toBeDefined()
     });
     it('ScholarUrl is defined in User model', () => {
         expect(user.scholarUrl).toBeDefined()
+    });
+    it('PublonsUrl is defined in User model', () => {
+        expect(user.publonsUrl).toBeDefined()
+    });
+    it('Projects is defined in User model', () => {
+        expect(user.projects).toBeDefined()
     });
     it('Roles is defined in User model', () => {
         expect(user.roles).toBeDefined()

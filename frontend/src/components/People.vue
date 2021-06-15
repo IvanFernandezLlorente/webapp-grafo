@@ -23,15 +23,21 @@
 
                     <div class="networks">
                         <a v-if="person.linkedinUrl" :href="person.linkedinUrl" target="_blank">
-                            <img src="../assets/linkedin.svg" style="width: 20px;height: 20px;margin-right: 10px;">
+                            <img src="../assets/linkedin.svg" class="image-network">
                         </a>
 
                         <a v-if="person.scholarUrl" :href="person.scholarUrl" target="_blank">
-                            <img src="../assets/scholar.svg">
+                            <img src="../assets/scholar.svg" class="image-network">
+                        </a>
+                        <a v-if="person.scopusUrl" :href="person.scopusUrl" target="_blank">
+                            <img src="../assets/scopus.svg" class="image-network">
+                        </a>
+                        <a v-if="person.publonsUrl" :href="person.publonsUrl" target="_blank">
+                            <img src="../assets/publons.svg" class="image-network">
                         </a>
                     </div>                    
 
-                    <div v-if="person.organization" style="text-align: center;">{{ person.organization }}</div>
+                    <div v-if="person.organization" class="organization">{{ person.organization }}</div>
                 </div>
             </div>
         </div>

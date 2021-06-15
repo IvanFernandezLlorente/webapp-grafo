@@ -26,6 +26,12 @@
                             <a v-if="user.scholarUrl" :href="user.scholarUrl" target="_blank">
                                 <img src="../assets/scholar.svg" class="image-network">
                             </a>
+                            <a v-if="user.scopusUrl" :href="user.scopusUrl" target="_blank">
+                                <img src="../assets/scopus.svg" class="image-network">
+                            </a>
+                            <a v-if="user.publonsUrl" :href="user.publonsUrl" target="_blank">
+                                <img src="../assets/publons.svg" class="image-network">
+                            </a>
                         </div>    
                     </b-col>
                     <b-col cols="12" xl="10" class="info-person">
@@ -53,7 +59,8 @@
             <b-col cols="12" xl="3" class="content-box choices-box">
                 <div class="choices">
                     <div @click="setChoice(1)" :class="[choice == 1 ? activeClass : '']">{{ $t('profile.publications') }}</div>
-                    <div @click="setChoice(2)" :class="[choice == 2 ? activeClass : '']">{{ $t('profile.problems') }}</div>                    
+                    <div @click="setChoice(2)" :class="[choice == 2 ? activeClass : '']">{{ $t('profile.problems') }}</div>
+                    <div v-if="user.projects" @click="setChoice(3)" :class="[choice == 3 ? activeClass : '']">{{ $t('profile.projects') }}</div>                   
                 </div>
             </b-col>
 
@@ -82,6 +89,7 @@
                             <img v-if="!publication.visible && canEditVariable" src="../assets/eyex.svg" class="eye">
                         </div> 
                     </div>
+                    <input v-if="!publicationsFetched" type="button" @click="fetchPublications()" :value="$t('profile.showMore')">
                 </div>
 
                 <div v-if="choice == 2" class="list-items">
@@ -95,6 +103,12 @@
                             <img v-if="!problem.visible && canEditVariable" src="../assets/eyex.svg" class="eye">
                         </div> 
                     </div>
+                    <input v-if="!problemsFetched" type="button" @click="fetchProblems()" :value="$t('profile.showMore')">
+                </div>
+                <div v-if="choice == 3" class="list-items">
+                    <b-col cols="12" class="content-box">
+                        <div class="projects" v-if="user.projects">{{ user.projects }}</div>
+                    </b-col>
                 </div>
             </b-col>
         </b-row>
@@ -121,6 +135,8 @@ export default {
           canEditVariable: false,
           choice: 1,
           activeClass: 'active',
+          indexPublication: 0,
+          indexProblem: 0,
         }
     },
     created () {
@@ -135,6 +151,8 @@ export default {
                 const res = await this.axios.get(`users/${this.$route.params.userId}`);
                 this.user = res.data;
                 this.canEdit();
+                this.indexPublication = (this.user.publications.length) - 1;
+                this.indexProblem = (this.user.problems.length) - 1;
                 await this.fetchPublications();
             } catch (error) {
                 console.log(error)                
@@ -146,17 +164,31 @@ export default {
         },
         async fetchProblems() {
             const promises = [];
-            this.user.problems.forEach( problemId => promises.push(this.axios.get(`problems/${problemId}`)));
+            const max = Math.max(-1,(this.indexProblem) - 10);
+            for (let i = this.indexProblem; i > max; i--) {
+                promises.push(this.axios.get(`problems/${this.user.problems[i]}`))
+            }
             const problems = await Promise.all(promises);
-            this.problems = problems.map( problem => problem.data);
-            this.problemsFetched = true;
+            this.problems.push(...problems.map( problem => problem.data));
+            this.indexProblem -= 10;
+
+            if (max === -1) {
+                this.problemsFetched = true;
+            }
         },
         async fetchPublications() {
             const promises = [];
-            this.user.publications.forEach( publicationId => promises.push(this.axios.get(`publications/${publicationId}`)));
+            const max = Math.max(-1,(this.indexPublication) - 10);
+            for (let i = this.indexPublication; i > max; i--) {
+                promises.push(this.axios.get(`publications/${this.user.publications[i]}`))
+            }
             const publications = await Promise.all(promises);
-            this.publications = publications.map( publication => publication.data);
-            this.publicationsFetched = true;
+            this.publications.push(...publications.map( publication => publication.data));
+            this.indexPublication -= 10;
+
+            if (max === -1) {
+                this.publicationsFetched = true;
+            }
         },
         getDoi(doi) {
             return doi.split("https://doi.org/")[1];

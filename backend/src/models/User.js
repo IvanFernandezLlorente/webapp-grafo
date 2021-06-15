@@ -20,9 +20,11 @@ const userSchema = new Schema(
     area: String,
     researchgroup: String,
     description: String,
-    linkedinUrl:String,
-    urjcUrl:String,
-    scholarUrl:String,
+    linkedinUrl: String,
+    scopusUrl: String,
+    scholarUrl: String,
+    publonsUrl: String,
+    projects: String,
     imagenProfile: String,
     roles: [
       {
@@ -49,7 +51,8 @@ const userSchema = new Schema(
     orcid: {
         orcid: String,
         name: String,
-    }
+    },
+    orcidPlainText: String
   },
   {
     versionKey: false,

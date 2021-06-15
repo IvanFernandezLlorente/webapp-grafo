@@ -44,7 +44,7 @@
                     </div>
                     <p class="btn-text"><b>{{ $t('login.github') }}</b></p>
                 </div>
-                <div class="orcid-btn" @click="orcid">
+                <div class="orcid-btn" style="cursor: no-drop;background-color: #bdc3c7;box-shadow: 0 0 0;"><!-- <div class="orcid-btn" @click="orcid"> -->
                     <div class="orcid-icon-wrapper">
                         <img class="orcid-icon" src="../assets/orcid.svg"/>
                     </div>
