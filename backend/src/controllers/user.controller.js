@@ -10,7 +10,7 @@ export const getUsers = async (req, res) => {
 };
 
 export const getUsersPaginated = async (req, res) => {
-    const users = await User.find({},{password: 0}).sort({ _id: -1 }).skip(req.params.page * 10).limit(10);
+    const users = await User.find({ showPeople: true },{password: 0}).sort({ _id: -1 }).skip(req.params.page * 10).limit(10);
     return res.status(200).json(users);
 };
 
@@ -186,7 +186,8 @@ export const signUp = async (req,res) => {
         const newUser = new User({
             email,
             password: await User.encryptPassword(password),
-            name
+            name,
+            showPeople: true
         });
         
         if(req.body.roles) {

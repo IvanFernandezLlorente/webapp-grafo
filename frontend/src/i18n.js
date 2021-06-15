@@ -61,7 +61,7 @@ const messages = {
             publication: 'Publication',
             importORCID: 'Import from ORCID',
             requests: 'Requests',
-            settigns: 'Settings',
+            settings: 'Settings',
             signIn: 'Sign In',
             signUp: 'Sign Up',
             logout: 'Log out'
@@ -72,7 +72,7 @@ const messages = {
             publications: 'Publications', 
             problems: 'Problems',
         },
-        settigns: {
+        settings: {
             title: 'Settings',
             tabProfile: 'Profile',
             tabPassword: 'Password',
@@ -121,6 +121,7 @@ const messages = {
             allow: 'Allow User',
             confirmDelete: 'Are you sure you want to remove the user?',
             confirmBan: 'Are you sure you want to ban the user?',
+            showPeople: 'Show user in the people list'
         },
         people: {
             title: 'People',
@@ -311,7 +312,7 @@ const messages = {
             publication: 'Publicación',
             importORCID: 'Importar de ORCID',
             requests: 'Solicitudes',
-            settigns: 'Ajustes',
+            settings: 'Ajustes',
             signIn: 'Iniciar Sesión',
             signUp: 'Registro',
             logout: 'Cerrar Sesión'
@@ -322,7 +323,7 @@ const messages = {
             publications: 'Publicaciones', 
             problems: 'Problemas',
         },
-        settigns: {
+        settings: {
             title: 'Ajustes',
             tabProfile: 'Perfil',
             tabPassword: 'Contraseña',
@@ -371,6 +372,7 @@ const messages = {
             allow: 'Permitir usuario',
             confirmDelete: '¿Estás seguro de eliminar este usuario?',
             confirmBan: '¿Estás seguro de bloquear al usuario?',
+            showPeople: 'Mostrar usuario en la lista de personas'
         },
         people: {
             title: 'Personas',

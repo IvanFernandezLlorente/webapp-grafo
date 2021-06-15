@@ -52,7 +52,8 @@ const userSchema = new Schema(
         orcid: String,
         name: String,
     },
-    orcidPlainText: String
+    orcidPlainText: String,
+    showPeople: Boolean
   },
   {
     versionKey: false,

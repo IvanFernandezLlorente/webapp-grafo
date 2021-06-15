@@ -39,7 +39,7 @@
 
             <div v-if="token" class="nav-item">
                 <router-link class="nav-link hide-element" to="/settings">
-                    {{ $t('topNavBar.settigns') }}
+                    {{ $t('topNavBar.settings') }}
                     <img src="../assets/settings.svg">
                 </router-link>
             </div>

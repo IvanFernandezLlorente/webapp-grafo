@@ -427,12 +427,6 @@ form label.required:after {
     }   
 }
 
-@media (min-width: 1715px){
-    .admin-selection {
-        position: absolute !important;
-    }
-}
-
 .tooltip-button {
     background: #fff;
     border: 0;
@@ -473,4 +467,14 @@ form label.required:after {
 }
 #tooltip:hover .tooltiptext {
   visibility: visible;
+}
+
+.check-group {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start
+}
+
+.check-group > div {
+    margin-top: 1rem;
 }
