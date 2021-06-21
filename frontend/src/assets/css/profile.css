@@ -256,3 +256,21 @@ input[type=button]:hover {
         padding: 0px 40px;
     }
 }
+
+.tag-box {
+    display: flex;
+    flex-wrap: wrap;
+    margin-top: 1rem; 
+    margin-bottom: 0px !important;
+}
+
+.tag {
+    color: #fff;
+    background-color: #B81D24;
+    padding: 3px 10px;
+    border-radius: 8px;
+    margin-right: 7px;
+    font-size: 13px;
+    height: min-content;
+    margin-bottom: 1rem;
+}

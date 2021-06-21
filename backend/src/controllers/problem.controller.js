@@ -8,7 +8,13 @@ export const getProblems = async (req, res) => {
 }
 
 export const getProblemsPaginated = async (req, res) => {
-    const problems = await Problem.find({ visible: true }).sort({ _id: -1 }).skip(req.params.page * 10).limit(10);
+    const filter = { visible: true };
+
+    if (req.query.tag) {
+        Object.assign(filter, { "tags.value": { "$all": req.query.tag } });
+    }
+
+    const problems = await Problem.find(filter).sort({ _id: -1 }).skip(req.params.page * 10).limit(10);
     return res.status(200).json(problems);
 };
 

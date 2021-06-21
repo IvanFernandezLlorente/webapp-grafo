@@ -99,7 +99,12 @@
                                 <div>{{ problem.name }}</div> 
                             </b-link>
 
-                            <div>{{ problem.alias }}</div> 
+                            <div v-if="problem.alias">{{ problem.alias }}</div> 
+                            <div v-if="problem.tags.length != 0" class="tag-box" >
+                                <div v-for="(tag,index) in problem.tags" :key="index" class="tag">
+                                    {{ tag.value }}
+                                </div>
+                            </div>
                             <img v-if="!problem.visible && canEditVariable" src="../assets/eyex.svg" class="eye">
                         </div> 
                     </div>

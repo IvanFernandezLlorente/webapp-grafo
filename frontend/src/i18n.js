@@ -158,7 +158,9 @@ const messages = {
         },
         problems: {
             title: 'Problems',
-            showMore: 'Show more'
+            showMore: 'Show more',
+            tagsPHolder: 'Filter by tag',
+            noRequests: 'There aren\'t any problem'
         },
         problem: {
             title: 'Problem',
@@ -247,11 +249,14 @@ const messages = {
             managers: 'Managers',
             addUser: 'Add User',
             relatedPublications: 'Related Publications',
+            tags: 'Tags',
             addPublication: 'Add Publication',
             chooseFile: 'Choose a File',
             next: 'Next',
             back: 'Back',
-            save: 'Save Problem'
+            save: 'Save Problem',
+            tagsPHolder: 'Añade una etiqueta',
+            tooltip: 'Select labels or add new ones by hitting enter'
         }
         
     },
@@ -409,7 +414,9 @@ const messages = {
         },
         problems: {
             title: 'Problemas',
-            showMore: 'Mostrar más'
+            showMore: 'Mostrar más',
+            tagsPHolder: 'Filtra por etiqueta',
+            noRequests: 'No hay problemas'
         },
         problem: {
             title: 'Problema',
@@ -498,11 +505,14 @@ const messages = {
             managers: 'Gestores',
             addUser: 'Añadir usuario',
             relatedPublications: 'Publicaciones relacionadas',
+            tags: 'Etiquetas',
             addPublication: 'Añadir publicación',
             chooseFile: 'Elige un archivo',
             next: 'Siguiente',
             back: 'Atrás',
-            save: 'Guardar Problema'
+            save: 'Guardar Problema',
+            tagsPHolder: 'Añade una etiqueta',
+            tooltip: 'Selecciona etiquetas o añade nuevas pulsando enter'
         }
     }
 };

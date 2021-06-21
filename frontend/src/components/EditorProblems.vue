@@ -60,7 +60,7 @@
                     </b-col>
                 </b-row>
 
-                <b-row style="margin-bottom: 3rem;">
+                <b-row style="margin-bottom: 1rem;">
                     <b-col cols="12" md="9" xl="6" style="display: flex;flex-direction: column;">
                         <h4>{{ $t('createProblem.relatedPublications') }}</h4>
                         <div class="form-group search" v-for="(thePublication, index) in publicationsChosenToShow" :key="`${index} - p`" style="padding-left: 0px;display: flex;">
@@ -80,6 +80,19 @@
                                 {{ $t('createProblem.addPublication') }}
                             </button>
                         </div>
+                    </b-col>
+                </b-row>
+
+                <b-row style="margin-bottom: 3rem;">
+                    <b-col cols="12" md="9" xl="6" class="tags-component" style="display: flex;flex-direction: column;">
+                        <div style="display: flex;">
+                            <h4 style="margin-right: 0.5rem;">{{ $t('createProblem.tags') }}</h4>
+                            <button v-b-tooltip.hover.right :title="$t('createProblem.tooltip')" class="tooltip-button">
+                                <img src="../assets/question.svg" id="tooltip">
+                                <span class="tooltiptext">Tooltip text</span>
+                            </button>
+                        </div>
+                        <tags-input v-model="selectedTags" :existing-tags="suggestions" :typeahead="true" :typeahead-max-results=10 :placeholder="$t('createProblem.tagsPHolder')"></tags-input>
                     </b-col>
                 </b-row>
             </tab-content>
@@ -216,13 +229,15 @@ import VueSimpleSuggest from 'vue-simple-suggest';
 import 'vue-simple-suggest/dist/styles.css';
 import { FormWizard, TabContent } from 'vue-form-wizard';
 import 'vue-form-wizard/dist/vue-form-wizard.min.css';
+import VoerroTagsInput from '@voerro/vue-tagsinput';
 
 export default {
     name: 'EditorProblems',
     components: {
         VueSimpleSuggest,
         FormWizard,
-        TabContent
+        TabContent,
+        "tags-input": VoerroTagsInput
     },
     data() {
         return {
@@ -253,13 +268,15 @@ export default {
                 usersNotRegistered: [],
                 attachments: [],
                 publications: [],
-                visible: true
+                visible: true,
+                tags: []
             },
             initialized: false,
             problemCopy: {
                 user: [],
                 usersNotRegistered: [],
-                publications: []
+                publications: [],
+                tags: []
             },                
             editor: ClassicEditor,
             editorConfig: ClassicEditor.defaultConfig,
@@ -284,7 +301,9 @@ export default {
             spin: false,
             noTitle: false,
             error: false,
-            errorMsg: ''
+            errorMsg: '',
+            selectedTags: [],
+            suggestions: []
         };
     },
     props: {
@@ -301,6 +320,7 @@ export default {
             if (!this.isNew) {
                 await this.fetchData();
             }
+            await this.getTags();
             this.spin = false;
         } catch (error) {
             this.spin = false;
@@ -314,6 +334,8 @@ export default {
                 this.prepareUsers();
                 this.preparePublications();
                 this.prepareContent();
+                await this.prepareTags();
+
                 let files;
                 if (this.filesToUpload) {
                     files = await this.uploadFile();
@@ -347,6 +369,7 @@ export default {
             const res = await this.axios.get(`problems/${this.$route.params.problemId}`);
             this.problem = res.data;
             this.checked = res.data.computationalExperience.content ? true : false;
+            this.selectedTags = res.data.tags;
             this.pushToChosen();
             this.pushToPublicationsChosen();
             await this.organiceFiles();
@@ -502,6 +525,31 @@ export default {
                 this.noTitle = true;
             }
             return !this.noTitle;
+        },
+        async getTags(){
+            const res = await this.axios.get(`tags`);
+            this.suggestions = res.data;
+        },
+        async prepareTags() {
+            try {
+                const newTags = [];
+                const tags = this.selectedTags.map(tagObject => {
+                    if (!tagObject.key) {
+                        tagObject.key = tagObject.value.split(" ").join("-").toLowerCase();
+                        newTags.push(tagObject);
+                    }
+                    return tagObject;    
+                });
+                this.problem.tags = tags;
+                this.problemCopy.tags = tags;
+                if (newTags.length !== 0) {
+                    await this.axios.post(`tags`, newTags, {
+                        headers: { token: this.$store.state.token}
+                    });
+                }
+            } catch (error) {
+                console.log(error)
+            }
         }
     },
     watch: {

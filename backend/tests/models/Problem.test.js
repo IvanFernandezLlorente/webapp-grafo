@@ -16,6 +16,7 @@ describe('Problem Model', () => {
         usersNotRegistered: ['pepe'],
         attachments: ['file-attachment'],
         visible: true,
+        tags: ['tag1']
     })    
  
     it('_id is defined in Problem model', () => {
@@ -60,4 +61,7 @@ describe('Problem Model', () => {
     it('Visible is defined in Problem model', () => {
         expect(problem.visible).toBeDefined()
     });
+    it('Tags is defined in Problem model', () => {
+        expect(problem.tags).toBeDefined()
+    })
 });

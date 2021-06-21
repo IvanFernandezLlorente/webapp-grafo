@@ -45,6 +45,10 @@ const problemSchema = new Schema(
         type: String
     }],
     visible: Boolean,
+    tags: [{
+        key: String,
+        value: String
+    }]
   },
   {
     versionKey: false,

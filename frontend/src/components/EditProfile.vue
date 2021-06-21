@@ -143,7 +143,7 @@
                                         </div>
                                         <div class="check-group">
                                             <b-form-checkbox-group v-if="isAdmin" :disabled='!isAdmin' v-model="selected" :options="options" class="admin-selection"></b-form-checkbox-group>
-                                            <b-form-checkbox v-model="user.showPeople" value=true unchecked-value=false style="margin-bottom: 1rem;">{{ $t('settings.showPeople') }}</b-form-checkbox>
+                                            <b-form-checkbox v-if="isAdmin" v-model="user.showPeople" value=true unchecked-value=false style="margin-bottom: 1rem;">{{ $t('settings.showPeople') }}</b-form-checkbox>
                                         </div>
                                     </b-col>
                                 </b-row>  
@@ -346,7 +346,7 @@ export default {
         async updateProfile () {
             try {
                 this.userCopy.roles = this.selected;
-                this.userCopy.showPeople = (this.user.showPeople === "true");
+                this.userCopy.showPeople = this.user.showPeople;
                 const res = await this.axios.put(`users/${this.$route.params.userId ? this.$route.params.userId : this.$store.state.userId}`,this.userCopy,{
                     headers: { token: this.$store.state.token}
                 });

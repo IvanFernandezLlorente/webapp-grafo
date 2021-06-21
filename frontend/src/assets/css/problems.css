@@ -35,7 +35,6 @@
     width: 100%;
     display: flex;
     flex-wrap: wrap;
-    margin-top: 1rem;
     justify-content: center;
     margin-bottom: 2rem;
 }
@@ -63,7 +62,7 @@ input[type=button] {
     height: 3rem;
     width: 13rem;
     align-self: end;
-    margin-bottom: 1rem;
+    margin: auto auto 1rem;
 }
 
 input[type=button]:hover {
@@ -75,4 +74,52 @@ input[type=button]:hover {
     .padding-box {
         padding: 0px 40px;
     }
+}
+
+.tags-component >>> .tags-input-badge-selected-default {
+    color: #fff !important;
+    background-color: #d23a3a !important;
+}
+
+.tags-component >>> .tags-input-remove::before, .tags-component >>> .tags-input-remove::after {
+    background: #000 !important;
+}
+
+.tag-box {
+    display: flex;
+    flex-wrap: wrap;
+    margin-top: 1rem; 
+}
+
+.tag {
+    color: #fff;
+    background-color: #B81D24;
+    padding: 3px 10px;
+    border-radius: 8px;
+    margin-right: 7px;
+    font-size: 13px;
+    height: min-content;
+    margin-bottom: 1rem;
+}
+
+.no-problems {
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    width: 50%;
+    margin: auto;
+    text-align: center;
+    margin-top: 2rem;
+}
+
+.no-problems h2 {
+    padding: 1.8rem 0rem !important;
+    font-weight: bold;
+    font-size: 1.5rem;
+}
+
+.spin-box {
+    min-height: 115px;
+    overflow: hidden;
+    margin: 2rem auto;
 }

@@ -56,11 +56,11 @@ export default {
             if (!(this.stop)) {
                 const res = await this.axios.get(`publications/pages/${this.page}`);
                 this.page += 1;
-                if (res.data.length == 0) {
+                if (res.data.length < 10) {
                     this.stop = true
-                } else {
-                    this.publications.push(...res.data);
                 }
+
+                this.publications.push(...res.data);
             }            
         },
         getDoi(doi) {
