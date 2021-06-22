@@ -35,7 +35,7 @@
     width: 100%;
     display: flex;
     flex-wrap: wrap;
-    margin-top: 1rem;
+    margin-top: 2rem;
     justify-content: center;
     margin-bottom: 2rem;
 }
@@ -84,4 +84,13 @@ input[type=button]:hover {
     .padding-box {
         padding: 0px 40px;
     }
+}
+
+.filterText {
+    padding: .5em .25em;
+    background: #fff;
+    border: 1px solid transparent;
+    border-radius: .25em;
+    border-color: #dbdbdb;
+    width: 100%;
 }

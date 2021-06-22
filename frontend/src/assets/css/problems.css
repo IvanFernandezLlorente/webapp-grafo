@@ -123,3 +123,18 @@ input[type=button]:hover {
     overflow: hidden;
     margin: 2rem auto;
 }
+
+.filterText {
+    padding: .5em .25em;
+    background: #fff;
+    border: 1px solid transparent;
+    border-radius: .25em;
+    border-color: #dbdbdb;
+    width: 100%;
+}
+
+@media (max-width: 767px){
+    .filterText {
+        margin-top: 1rem;
+    }
+}

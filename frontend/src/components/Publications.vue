@@ -7,9 +7,17 @@
                 <div class="red-line"></div>
             </div>
         </b-col>
-        
+
         <div class="body">
-            <b-col cols="9" class="content-box publication" v-for="(publication,index) in publications" :key="index">
+            <b-col cols="9" style="padding: 0;">
+                <b-row>
+                    <b-col cols="12" md="6">
+                        <input v-model="filterText" class="filterText" :placeholder="$t('publications.search')" />
+                    </b-col>
+                </b-row>
+            </b-col>
+
+            <b-col cols="9" class="content-box publication" v-for="(publication,index) in filteredPublications" :key="index">
                 <div class="info">
                     <b-link :to="{path: `/publications/${publication.publicationId}`}">
                         <div style="margin-bottom: 10px;">{{ publication.title }}</div> 
@@ -45,7 +53,8 @@ export default {
         return {
             publications: [],
             page: 0,
-            stop: false
+            stop: false,
+            filterText: ''
         }
     },
     created () {
@@ -71,7 +80,15 @@ export default {
             return authorsArray.map(user=> user[0]).reduce((text, user) => text + `, ${user}`);
         }
     },
-    
+    computed: {
+        filteredPublications() {
+            let filter = new RegExp(this.filterText, 'i');
+            return this.publications.filter(publication => publication.title.match(filter) || publication.authors.match(filter) ||
+                publication.journal.match(filter) || publication.volume.match(filter) || publication.pages.match(filter) || 
+                publication.year.match(filter) || publication.doi.match(filter) 
+            );
+        }
+    }
 }
 </script>
 

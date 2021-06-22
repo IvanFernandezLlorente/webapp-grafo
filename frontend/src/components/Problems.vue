@@ -8,15 +8,22 @@
             </div>
         </b-col>
 
-        <b-col cols="12" md="7" class="padding-box tags-component" style="margin: 2rem auto auto;">
-            <tags-input v-model="selectedTags" :existing-tags="suggestions" :typeahead="true" :typeahead-max-results=10 @tags-updated="fetchData(false)" :placeholder="$t('problems.tagsPHolder')"></tags-input>
+        <b-col cols="9" class="tags-component" style="margin: 2rem auto auto; padding: 0;">
+            <b-row>
+                <b-col cols="12" md="6">
+                    <tags-input v-model="selectedTags" :existing-tags="suggestions" :typeahead="true" :typeahead-max-results=10 @tags-updated="fetchData(false)" :placeholder="$t('problems.tagsPHolder')"></tags-input>
+                </b-col>
+                <b-col cols="12" md="6">
+                    <input v-model="filterText" class="filterText" :placeholder="$t('problems.searchName')" />
+                </b-col>
+            </b-row>
         </b-col>
 
         <b-col cols="12 padding-box spin-box" v-if="spinAll && page == 0">
             <div id="preloader" style="background-color: #EAEAEA;"></div>
         </b-col>
-        <div class="body" v-else-if="problems.length != 0">
-            <b-col cols="9" class="content-box problem" v-for="(problem,index) in problems" :key="index">
+        <div class="body" v-else-if="filteredProblems.length != 0">
+            <b-col cols="9" class="content-box problem" v-for="(problem,index) in filteredProblems" :key="index">
                 <div class="info">
                     <b-link :to="{path: `/problems/${problem.problemId}`}">
                         <div>{{ problem.name }}</div> 
@@ -56,6 +63,7 @@ export default {
             selectedTags: [],
             suggestions: [],
             spinAll: false,
+            filterText: ''
         }
     },
     async created () {
@@ -100,6 +108,12 @@ export default {
             }       
         },
     },
+    computed: {
+        filteredProblems() {
+            let filter = new RegExp(this.filterText, 'i');
+            return this.problems.filter(problem => problem.name.match(filter));
+        }
+    }
 }
 </script>
 

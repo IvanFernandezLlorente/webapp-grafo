@@ -137,7 +137,8 @@ const messages = {
         },
         publications: {
             title: 'Publications',
-            showMore: 'Show more'
+            showMore: 'Show more',
+            search: 'Search'
         },
         publication: {
             title: 'Publication',
@@ -160,7 +161,8 @@ const messages = {
             title: 'Problems',
             showMore: 'Show more',
             tagsPHolder: 'Filter by tag',
-            noRequests: 'There aren\'t any problem'
+            noRequests: 'There aren\'t any problem',
+            searchName: 'Search by problem name'
         },
         problem: {
             title: 'Problem',
@@ -399,7 +401,8 @@ const messages = {
         },
         publications: {
             title: 'Publicaciones',
-            showMore: 'Mostrar más'
+            showMore: 'Mostrar más',
+            search: 'Buscar'
         },
         publication: {
             title: 'Publicación',
@@ -422,7 +425,8 @@ const messages = {
             title: 'Problemas',
             showMore: 'Mostrar más',
             tagsPHolder: 'Filtra por etiqueta',
-            noRequests: 'No hay problemas'
+            noRequests: 'No hay problemas',
+            searchName: 'Buscar por el nombre del problema'
         },
         problem: {
             title: 'Problema',
