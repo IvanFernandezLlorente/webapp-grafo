@@ -282,3 +282,7 @@ label.required:after {
 #tooltip:hover .tooltiptext {
   visibility: visible;
 }
+
+.my-wizard >>> .ck .ck-editor__main > div {
+    min-height: 150px;
+}

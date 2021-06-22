@@ -25,7 +25,7 @@
                     <div class="dropdown-content" v-show="createList">
                         <router-link to="/newpublication">{{ $t('topNavBar.publication') }}</router-link>
                         <router-link to="/newproblem">{{ $t('topNavBar.problem') }}</router-link>
-                        <router-link v-if="orcid" to="/import-orcid">{{ $t('topNavBar.importORCID') }}</router-link>
+                        <router-link to="/import-orcid">{{ $t('topNavBar.importORCID') }}</router-link>
                     </div>
                 </transition>
             </div>
@@ -96,7 +96,7 @@ export default {
             this.$sidebar.displaySidebar(!this.$sidebar.showSidebar);
         }
     },
-    computed: mapState(['token', 'isAdmin','orcid'])
+    computed: mapState(['token', 'isAdmin'])
 }
 
 </script>

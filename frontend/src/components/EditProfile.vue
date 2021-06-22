@@ -37,7 +37,7 @@
                                             </b-col>
                                             <b-col cols="12" md="4"> 
                                                 <div class="form-group">
-                                                    <label for="userId" class="control-label required">ID</label>
+                                                    <label for="userId" class="control-label required">URL</label>
                                                     <input id="userId" @keydown.enter.prevent='' v-model="user.userId" @change="updateCopy" type="text" :placeholder="$t('settings.idPHolder')">
                                                 </div>
                                             </b-col>
@@ -118,7 +118,8 @@
                                             <b-col cols="12">
                                                 <div class="form-group">
                                                     <label for="projects" class="control-label">{{ $t('settings.projects') }}</label>
-                                                    <textarea id="projects" v-model="user.projects" @change="updateCopy" rows="10" style="height: 20px; min-height: 150px;" :placeholder="$t('settings.projectsPHolder')"></textarea>    
+                                                    <ckeditor :editor="editor" v-model="projects" :config="editorConfig" @ready="prefill()"></ckeditor>
+                                                    <!-- <textarea id="projects" v-model="user.projects" @change="updateCopy" rows="10" style="height: 20px; min-height: 150px;" :placeholder="$t('settings.projectsPHolder')"></textarea>     -->
                                                 </div>
                                             </b-col>
                                         </b-row>
@@ -264,6 +265,7 @@
 <script>
 import { mapState } from 'vuex';
 import myUpload from 'vue-image-crop-upload';
+import ClassicEditor from '../ckeditor';
 
 export default {
     name:'EditProfile',
@@ -297,7 +299,8 @@ export default {
           },
           banned: false,
           orcidPlainText: '',
-          showPeople: true
+          showPeople: true,
+          projects: ''
         },
         userCopy: {},
         currentPassword: '',
@@ -321,12 +324,19 @@ export default {
         imgDataUrl: '',
         choice: 1,
         activeClass: 'active',
+        url: '',
+        editor: ClassicEditor,
+        editorConfig: ClassicEditor.defaultConfig,
+        projects: '',
+        ckeditorReady: false
       }
     },
     components: {
         'my-upload': myUpload
     },
     async created () {
+        this.restartData();
+        this.url = this.$route.params.userId ? this.$route.params.userId : this.$store.state.userId;
         await this.fetchData();
     },
     methods: {
@@ -335,8 +345,12 @@ export default {
         },
         async fetchData() {
             try {
-                const res = await this.axios.get(`users/${this.$route.params.userId ? this.$route.params.userId : this.$store.state.userId}`);
+                const res = await this.axios.get(`users/${this.url}`);
                 this.user = res.data;
+                
+                if (this.ckeditorReady) {
+                    this.projects = this.user.projects
+                }
                 this.selected = this.user.roles
                 this.imgDataUrl = this.user.imagenProfile ? this.user.imagenProfile : '' 
             } catch (error) {
@@ -347,7 +361,9 @@ export default {
             try {
                 this.userCopy.roles = this.selected;
                 this.userCopy.showPeople = this.user.showPeople;
-                const res = await this.axios.put(`users/${this.$route.params.userId ? this.$route.params.userId : this.$store.state.userId}`,this.userCopy,{
+                this.userCopy.projects = this.projects;
+
+                const res = await this.axios.put(`users/${this.url}`,this.userCopy,{
                     headers: { token: this.$store.state.token}
                 });
                 if (!this.$route.params.userId) {
@@ -395,7 +411,7 @@ export default {
         async disconnectGoogle() {
             this.userCopy.roles = this.selected;
             this.userCopy.google = { name: '', email: '', methodId: '' };
-            const res = await this.axios.put(`users/${this.$route.params.userId ? this.$route.params.userId : this.$store.state.userId}`,this.userCopy,{
+            const res = await this.axios.put(`users/${this.url}`,this.userCopy,{
                 headers: { token: this.$store.state.token}
             });
             delete this.userCopy.google
@@ -416,7 +432,7 @@ export default {
         async disconnectGithub() {
             this.userCopy.roles = this.selected;
             this.userCopy.github = { name: '', methodId: '' };
-            const res = await this.axios.put(`users/${this.$route.params.userId ? this.$route.params.userId : this.$store.state.userId}`,this.userCopy,{
+            const res = await this.axios.put(`users/${this.url}`,this.userCopy,{
                 headers: { token: this.$store.state.token}
             });
             delete this.userCopy.github;
@@ -439,7 +455,7 @@ export default {
         async disconnectORCID() {
             this.userCopy.roles = this.selected;
             this.userCopy.orcid = { name: '', orcid: '' };
-            const res = await this.axios.put(`users/${this.$route.params.userId ? this.$route.params.userId : this.$store.state.userId}`,this.userCopy,{
+            const res = await this.axios.put(`users/${this.url}`,this.userCopy,{
                 headers: { token: this.$store.state.token}
             });
             delete this.userCopy.orcid;
@@ -453,7 +469,7 @@ export default {
         async cropSuccess(imgDataUrl, field){
             this.imgDataUrl = imgDataUrl;
             try {
-                const res = await this.axios.post(`users/images/${this.$route.params.userId ? this.$route.params.userId : this.$store.state.userId}`,{ imagenProfile: this.imgDataUrl },{
+                const res = await this.axios.post(`users/images/${this.url}`,{ imagenProfile: this.imgDataUrl },{
                     headers: { token: this.$store.state.token}
                 });
             } catch (error) {
@@ -525,9 +541,39 @@ export default {
                 this.errorPassword = error.response.data.message;
             }
         },
-        
+        restartData() {
+            this.userCopy = {};
+            this.currentPassword = ''
+            this.newPassword = ''
+            this.confirmPassword = ''
+            this.errorPassword = ''
+            this.changedPassword = ''
+            this.errorProfile = ''
+            this.updatedProfile = ''
+            this.errorGoogle = false
+            this.errorGoogleText = ''
+            this.errorGithub = false,
+            this.errorGithubText = ''
+            this.errorORCID = false
+            this.errorORCIDText = ''
+            this.choice = 1
+            this.activeClass = 'active'
+        },     
+        prefill(editor) {
+			this.projects = this.user.projects;
+            this.ckeditorReady = true;
+		}   
     },
     computed: mapState(['isAdmin','id']),
+
+    beforeRouteLeave(to, from, next) {
+        if ((to.path == "/settings") || (to.path.startsWith("/admin/edit-profile"))) {
+            this.url = to.params.userId ? to.params.userId : this.$store.state.userId;;
+            this.restartData();
+            this.fetchData();
+        }
+        next();
+    }
 }
 </script>
 

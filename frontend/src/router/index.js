@@ -153,7 +153,7 @@ const routes = [
         name: 'Import-Orcid',
         component: ImportOrcid,
         beforeEnter: (to, from, next) => {
-            if (store.state.orcid) {
+            if (store.state.token) {
                 next();
             } else {
                 next({path: '/'})

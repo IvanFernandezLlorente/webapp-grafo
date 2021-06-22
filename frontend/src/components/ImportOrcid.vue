@@ -9,7 +9,7 @@
         </b-col>
 
         <b-row class="body padding-box">
-            <b-col cols="12">
+            <b-col cols="12" v-if="orcid">
                 <b-row v-if="spin" style="min-height: 500px;">
                     <div id="preloader" class="content-box"></div>
                 </b-row>
@@ -49,11 +49,21 @@
                     <h2>{{ $t('importORCID.noPublications') }}</h2>
                 </div>
             </b-col>
+            <b-col cols="12" v-else>
+                <div class="content-box no-publications">
+                    <h2 style="padding: 1.8rem 1rem !important;">{{ $t('importORCID.explication') }}</h2>
+                    <router-link class="nav-link accept" to="/settings" style="margin-bottom: 1rem;">
+                        {{ $t('importORCID.settings') }}
+                    </router-link>
+                </div>
+            </b-col>
         </b-row>
     </b-row>
 </template>
 
 <script>
+import { mapState } from 'vuex';
+
 export default {
     name: 'Import-Orcid',
 
@@ -66,7 +76,9 @@ export default {
         }
     },
     created () {
-        this.fetchData();
+        if (orcid) {
+            this.fetchData();
+        }
     },
     methods: {
         async fetchData() {
@@ -115,7 +127,8 @@ export default {
         manageDOI(publication) {
             return publication["external-ids"] ? publication["external-ids"]["external-id"].filter(objectId  => objectId["external-id-type"]=="doi").map(id=> id["external-id-value"])[0] : undefined;
         }
-    }
+    },
+    computed: mapState(['orcid']),
 }
 </script>
 

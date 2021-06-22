@@ -55,7 +55,7 @@
             </b-col>
         </b-row>
 
-        <b-row class="body padding-box" style="margin-top: 30px;">
+        <b-row class="body padding-box" style="margin-top: 20px;">
             <b-col cols="12" xl="3" class="content-box choices-box">
                 <div class="choices">
                     <div @click="setChoice(1)" :class="[choice == 1 ? activeClass : '']">{{ $t('profile.publications') }}</div>
@@ -112,7 +112,7 @@
                 </div>
                 <div v-if="choice == 3" class="list-items">
                     <b-col cols="12" class="content-box">
-                        <div class="projects" v-if="user.projects">{{ user.projects }}</div>
+                        <div class="projects" v-if="user.projects" v-html="user.projects"></div>
                     </b-col>
                 </div>
             </b-col>
@@ -142,9 +142,11 @@ export default {
           activeClass: 'active',
           indexPublication: 0,
           indexProblem: 0,
+          url: '',
         }
     },
     created () {
+        this.url = this.$route.params.userId;
         this.fetchData();
     },
     methods: {
@@ -153,7 +155,7 @@ export default {
         },
         async fetchData() {
             try {
-                const res = await this.axios.get(`users/${this.$route.params.userId}`);
+                const res = await this.axios.get(`users/${this.url}`);
                 this.user = res.data;
                 this.canEdit();
                 this.indexPublication = (this.user.publications.length) - 1;
@@ -201,6 +203,18 @@ export default {
         getAuthors(authors) {
             const authorsArray = JSON.parse(authors);
             return authorsArray.map(user=> user[0]).reduce((text, user) => text + `, ${user}`);
+        },
+        restartData() {
+            this.problems = [];
+            this.problemsFetched = false;
+            this.publications = [];
+            this.publicationsFetched = false;
+            this.linkToEdit = '';
+            this.canEditVariable = false;
+            this.choice = 1;
+            this.activeClass = 'active';
+            this.indexPublication = 0;
+            this.indexProblem = 0;
         }
     },
     computed: mapState(['isAdmin','id']),
@@ -210,6 +224,12 @@ export default {
                 await this.fetchProblems();
             }
         }
+    },
+    beforeRouteUpdate(to, from, next) {
+        this.url = to.params.userId;
+        this.restartData();
+        this.fetchData();
+        next();
     }
 }
 </script>

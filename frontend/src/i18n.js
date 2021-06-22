@@ -193,7 +193,9 @@ const messages = {
             citation: 'Citation',
             import: 'Import publication',
             msg: 'You cannot import a publication without citation',
-            noPublications: 'There aren\'t any publications'
+            noPublications: 'There aren\'t any publications',
+            explication: 'If you want to import your publications from orcid, you need to fill in the ORCID field in your profile.',
+            settings: 'Go to settings',
         },
         createPublication: {
             new: 'New Publication',
@@ -449,7 +451,9 @@ const messages = {
             citation: 'Citación',
             import: 'Importar publicación',
             msg: 'No puedes importar una publicación sin la cita',
-            noPublications: 'No hay publicaciones'
+            noPublications: 'No hay publicaciones',
+            explication: 'Si desea importar sus publicaciones desde ORCID, debe completar el campo ORCID en su perfil.',
+            settings: 'Ir a ajustes',
         },
         createPublication: {
             new: 'Nueva Publicación',

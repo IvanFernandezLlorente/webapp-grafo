@@ -258,3 +258,7 @@ label.required:after {
         width: 100%;
     }
 }
+
+.my-wizard >>> .ck .ck-editor__main > div {
+    min-height: 150px;
+}
