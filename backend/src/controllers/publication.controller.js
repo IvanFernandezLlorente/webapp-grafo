@@ -25,17 +25,38 @@ export const getPublicationById = async (req, res) => {
     }
 }
 
+export const checkPublication = async (req, res) => {
+    try {
+        const { title, publicationId } = req.params;
+
+        if (title) {
+            const publication = await Publication.findOne({ title });
+                if (publication) {
+                    return res.status(500).json({ message: "The publication title already exists" });
+                }  
+        }
+
+        if (publicationId) {
+            const publication = await Publication.findOne({ publicationId });
+                if (publication) {
+                    return res.status(500).json({ message: "The publication id already exists" });
+                }  
+        }
+        
+        return res.status(200).json();
+    } catch (error) {
+        return res.status(500).json({ message: "Error" });
+    }
+}
+
 export const createPublication = async (req, res) => {
     try {
-        const publicationId = (Date.now().toString(36) + Math.random().toString(36).substr(2, 6));
-
         const publication = await Publication.findOne({ title: req.body.title });
         if (publication) {
             return res.status(400).json({ message: "The publication already exists" });
         }
         
-        const newPublication = new Publication(req.body)
-        newPublication.publicationId = publicationId;
+        const newPublication = new Publication(req.body);
         const publicationSaved = await newPublication.save();
 
         const promises = [];

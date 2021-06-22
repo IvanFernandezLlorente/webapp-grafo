@@ -11,7 +11,7 @@
 
             <h2 slot="title" style="display: none;"></h2>   
 
-            <tab-content :title="$t('createPublication.wizard1')" :before-change="checkEmptyTitle">
+            <tab-content :title="$t('createPublication.wizard1')" :before-change="checkEmptyFields">
                 <b-row>
                     <b-col cols="12" class="first-items">
                         <div class="main-buttons">
@@ -49,14 +49,21 @@
                 </b-row> 
                 
                 <b-row>
-                    <b-col cols="12" xl="6">
+                    <b-col cols="12" xl="4">
                         <div class="form-group">
                             <label for="title" class="required">{{ $t('createPublication.titlePubli') }}</label>
                             <input id="title" v-model="publication.title" @change="updateCopy" type="text" :placeholder="$t('createPublication.titlePubli')">
                             <p v-if="noTitle" style="color: red;">{{ $t('createPublication.noTitle') }}</p>
                         </div>
                     </b-col>
-                    <b-col cols="12" xl="6">
+                    <b-col cols="12" xl="4">
+                        <div class="form-group">
+                            <label for="publicationId" class="required">URL</label>
+                            <input id="publicationId" v-model="publication.publicationId" @change="updateCopy" type="text" placeholder="URL">
+                            <p v-if="noURL" style="color: red;">{{ $t('createPublication.noURL') }}</p>
+                        </div>
+                    </b-col>
+                    <b-col cols="12" xl="4">
                         <div class="form-group">
                             <label for="journal">{{ $t('createPublication.journal') }}</label>
                             <input id="journal" v-model="publication.journal" @change="updateCopy" type="text" :placeholder="$t('createPublication.journal')">
@@ -306,7 +313,7 @@
                         </li> 
                     </ul>
                 </div>
-                <p v-if="error" class="msgResponse col-md-6 col-xl-4 col-12" style="margin-left: 0;">{{ $t('createPublication.error') }}</p>  
+                <p v-if="error" class="msgResponse col-md-6 col-xl-4 col-12" style="margin-left: 0;">{{ errorMsg }}</p>  
             </tab-content>
         </form-wizard>
     </b-col>
@@ -332,6 +339,7 @@ export default {
         return {
             publication: {
                 title: '',
+                publicationId: '',
                 journal: '',
                 volume: '',
                 pages: '',
@@ -404,6 +412,7 @@ export default {
             authors: [''],
             spin: false,
             noTitle: false,
+            noURL: false,
             error: false,
             errorMsg: ''
         };
@@ -434,10 +443,25 @@ export default {
         }
     },
     methods: {
-        async savePublication () {
+        async savePublication() {
             try {
                 this.spin = true;
+
+                if (!(await this.checkUniquePublication())) {
+                    this.error = true;
+                    this.spin = false;
+                    this.errorMsg = this.$t('createPublication.error');
+                    return;
+                }  
+
                 this.deleteEmptyUsers();
+                if (this.authors.length == 0) {
+                    this.error = true;
+                    this.spin = false;
+                    this.errorMsg = this.$t('createPublication.errorAuthors');
+                    return
+                }
+
                 this.linkAuthorsUsers();
                 this.prepareUsers();
                 this.prepareProblems();
@@ -465,13 +489,36 @@ export default {
                     });
                 }
                 this.error = false;
+                this.errorMsg = ''
                 this.spin = false;
                 this.$router.push({path: `/publications/${res.data.publicationId}`})
             } catch (error) {
                 this.spin = false;
                 this.error = true;
+                this.errorMsg = this.$t('createPublication.error');
                 console.log(error)
             }
+        },
+        async checkUniquePublication() {
+            try {
+                if (this.isNew) {
+                    const res = await this.axios.get(`publications/check/${this.publication.title}/${this.publication.publicationId}`);
+                    if (res.status == 200){
+                        return true;
+                    }
+                    
+                } else {
+                    const res = await this.axios.get(`publications/check/${this.publicationCopy.title}/${this.publicationCopy.publicationId}`);
+                    if (res.status == 200){
+                        return true;
+                    }
+                }
+                return false;
+            } catch (error) {
+                console.log(error);
+                return false;
+            }
+            
         },
         async fetchData() {
             const res = await this.axios.get(`publications/${this.$route.params.publicationId}`);
@@ -785,7 +832,7 @@ export default {
             this.publicationCopy.bibtex = bibtex;
         },
         usersToBibtex(){
-            return this.authors.reduce((text, name, index) =>  index==0 ? text + `${name}` : text + ` and ${name}`);
+            return this.authors.reduce((text, name, index) =>  index==0 ? text + `${name}` : text + ` and ${name}`, "");
         },
         changeVisibility(field) {
             switch (field) {
@@ -809,13 +856,11 @@ export default {
                     break;
             }
         },
-        checkEmptyTitle: function() {
-            if (this.publication.title) {
-                this.noTitle = false;
-            } else {
-                this.noTitle = true;
-            }
-            return !this.noTitle;
+        checkEmptyFields: function() {
+            this.noTitle = this.publication.title ? false : true;
+            this.noURL = this.publication.publicationId ? false : true;
+            
+            return (!this.noTitle) && (!this.noURL);
         }
     },
     watch: {

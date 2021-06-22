@@ -119,7 +119,6 @@
                                                 <div class="form-group">
                                                     <label for="projects" class="control-label">{{ $t('settings.projects') }}</label>
                                                     <ckeditor :editor="editor" v-model="projects" :config="editorConfig" @ready="prefill()"></ckeditor>
-                                                    <!-- <textarea id="projects" v-model="user.projects" @change="updateCopy" rows="10" style="height: 20px; min-height: 150px;" :placeholder="$t('settings.projectsPHolder')"></textarea>     -->
                                                 </div>
                                             </b-col>
                                         </b-row>
@@ -347,7 +346,7 @@ export default {
             try {
                 const res = await this.axios.get(`users/${this.url}`);
                 this.user = res.data;
-                
+
                 if (this.ckeditorReady) {
                     this.projects = this.user.projects
                 }

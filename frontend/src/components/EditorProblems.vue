@@ -11,7 +11,7 @@
 
             <h2 slot="title" style="display: none;"></h2>
 
-            <tab-content :title="$t('createProblem.wizard1')" :before-change="checkEmptyTitle">
+            <tab-content :title="$t('createProblem.wizard1')" :before-change="checkEmptyFields">
                 <b-row>
                     <b-col cols="12" class="first-items">
                         <div style="display: flex; justify-content: flex-end;">
@@ -27,6 +27,13 @@
                             <label for="name" class="required">{{ $t('createProblem.titlePro') }}</label>
                             <input id="name" v-model="problem.name" @change="updateCopy" type="text" :placeholder="$t('createProblem.titlePro')">
                             <p v-if="noTitle" style="color: red;">{{ $t('createProblem.noTitle') }}</p>
+                        </div>
+                    </b-col>
+                    <b-col cols="12" xl="6">
+                        <div class="form-group">
+                            <label for="problemId" class="required">URL</label>
+                            <input id="problemId" v-model="problem.problemId" @change="updateCopy" type="text" placeholder="URL">
+                            <p v-if="noURL" style="color: red;">{{ $t('createProblem.noURL') }}</p>
                         </div>
                     </b-col>
                     <b-col cols="12" xl="6">
@@ -243,6 +250,7 @@ export default {
         return {
             problem: {
                 name: '',
+                problemId: '',
                 alias: '',
                 description: {
                     content: '',
@@ -300,8 +308,8 @@ export default {
             fileArrayComputational: [],
             spin: false,
             noTitle: false,
+            noURL: false,
             error: false,
-            errorMsg: '',
             selectedTags: [],
             suggestions: []
         };
@@ -328,9 +336,16 @@ export default {
         }
     },
     methods: {
-        async saveProblem () {
+        async saveProblem() {
             try {
                 this.spin = true;
+
+                if (!(await this.checkUniqueProblem())) {
+                    this.error = true;
+                    this.spin = false;
+                    return;
+                }  
+
                 this.prepareUsers();
                 this.preparePublications();
                 this.prepareContent();
@@ -364,6 +379,27 @@ export default {
                 this.error = true;
                 console.log(error)
             }
+        },
+        async checkUniqueProblem() {
+            try {
+                if (this.isNew) {
+                    const res = await this.axios.get(`problems/check/${this.problem.name}/${this.problem.problemId}`);
+                    if (res.status == 200){
+                        return true;
+                    }
+                    
+                } else {
+                    const res = await this.axios.get(`problems/check/${this.problemCopy.name}/${this.problemCopy.problemId}`);
+                    if (res.status == 200){
+                        return true;
+                    }
+                }
+                return false;
+            } catch (error) {
+                console.log(error);
+                return false;
+            }
+            
         },
         async fetchData() {
             const res = await this.axios.get(`problems/${this.$route.params.problemId}`);
@@ -518,13 +554,11 @@ export default {
                     break;
             }
         },
-        checkEmptyTitle: function() {
-            if (this.problem.name) {
-                this.noTitle = false;
-            } else {
-                this.noTitle = true;
-            }
-            return !this.noTitle;
+        checkEmptyFields: function() {
+            this.noTitle = this.problem.name ? false : true;
+            this.noURL = this.problem.problemId ? false : true;
+            
+            return (!this.noTitle) && (!this.noURL);
         },
         async getTags(){
             const res = await this.axios.get(`tags`);

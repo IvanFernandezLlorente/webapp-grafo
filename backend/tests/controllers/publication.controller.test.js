@@ -123,6 +123,43 @@ describe('Publications controller', () => {
         });
     });
 
+    describe('Check Publications', () => {
+                
+        it('Title already exists', async () => {
+            Publication.findOne = jest.fn(() => mockPublications.filter( publication => publication.title == 'el publication 2')[0]);
+            const res = await request(app).get('/api/publications/check/el publication 2/el-publication-2');
+            expect(res.statusCode).toEqual(500); 
+            expect(res.body).toEqual(expect.objectContaining({ message: "The publication title already exists" }));
+        });
+
+        it('PublicationId already exists', async () => {
+            Publication.findOne = jest.fn()
+            .mockImplementationOnce(() => { 
+                return mockPublications.some(publication => publication.title == 'no-exist')
+            })
+            .mockImplementationOnce(() => { 
+                return mockPublications.some(publication => publication.publicationId == 'el-publicationId-2')
+            });
+                
+            const res = await request(app).get('/api/publications/check/no-exist/el-publicationId-2');
+            expect(res.statusCode).toEqual(500);
+            expect(res.body).toEqual(expect.objectContaining({ message: "The publication id already exists" }));
+        });
+
+        it('Title and PublicationId doesnt exist', async () => {
+            Publication.findOne = jest.fn(() => mockPublications.some( publication => publication.publicationId == 'no-exist'));
+            const res = await request(app).get('/api/publications/check/no-exist/no-exist');
+            expect(res.statusCode).toEqual(200);
+        });
+
+        it('Check publication error', async () => {
+            Publication.findOne = jest.fn(() => {throw Error});
+            const res = await request(app).get('/api/publications/check/error/error');
+            expect(res.statusCode).toEqual(500);
+            expect(res.body).toEqual(expect.objectContaining({ message: "Error" }));
+        });
+    });
+
     describe('Create Publications', () => {
         beforeEach(() => {
             authJwt.verifyToken.mockImplementation((req, res, next) => next());

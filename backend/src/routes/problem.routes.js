@@ -10,6 +10,8 @@ router.get('/pages/:page', problemController.getProblemsPaginated);
 
 router.get('/:problemId', problemController.getProblemById);
 
+router.get('/check/:name/:problemId', problemController.checkProblem);
+
 router.post('/',[authJwt.verifyToken], problemController.createProblem);
 
 router.put('/:problemId', [authJwt.verifyToken], problemController.updateProblemById);

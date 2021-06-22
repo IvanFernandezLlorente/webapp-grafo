@@ -107,6 +107,43 @@ describe('Problem controller', () => {
         });
     });
 
+    describe('Check Problems', () => {
+                
+        it('Name already exists', async () => {
+            Problem.findOne = jest.fn(() => mockProblems.filter( problem => problem.name == 'el problem 2')[0]);
+            const res = await request(app).get('/api/problems/check/el problem 2/el-problem-2');
+            expect(res.statusCode).toEqual(500); 
+            expect(res.body).toEqual(expect.objectContaining({ message: "The problem name already exists" }));
+        });
+
+        it('ProblemId already exists', async () => {
+            Problem.findOne = jest.fn()
+            .mockImplementationOnce(() => { 
+                return mockProblems.some(problem => problem.name == 'no-exist')
+            })
+            .mockImplementationOnce(() => { 
+                return mockProblems.some(problem => problem.problemId == 'el-problemId-2')
+            });
+                
+            const res = await request(app).get('/api/problems/check/no-exist/el-problemId-2');
+            expect(res.statusCode).toEqual(500);
+            expect(res.body).toEqual(expect.objectContaining({ message: "The problem id already exists" }));
+        });
+
+        it('Name and ProblemId doesnt exist', async () => {
+            Problem.findOne = jest.fn(() => mockProblems.some( problem => problem.problemId == 'no-exist'));
+            const res = await request(app).get('/api/problems/check/no-exist/no-exist');
+            expect(res.statusCode).toEqual(200);
+        });
+
+        it('Check problem error', async () => {
+            Problem.findOne = jest.fn(() => {throw Error});
+            const res = await request(app).get('/api/problems/check/error/error');
+            expect(res.statusCode).toEqual(500);
+            expect(res.body).toEqual(expect.objectContaining({ message: "Error" }));
+        });
+    });
+
     describe('Create Problems', () => {
         beforeEach(() => {
             authJwt.verifyToken.mockImplementation((req, res, next) => next());

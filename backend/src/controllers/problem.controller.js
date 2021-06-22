@@ -31,17 +31,38 @@ export const getProblemById = async (req, res) => {
     }
 }
 
+export const checkProblem = async (req, res) => {
+    try {
+        const { name, problemId } = req.params;
+
+        if (name) {
+            const problem = await Problem.findOne({ name });
+                if (problem) {
+                    return res.status(500).json({ message: "The problem name already exists" });
+                }  
+        }
+
+        if (problemId) {
+            const problem = await Problem.findOne({ problemId });
+                if (problem) {
+                    return res.status(500).json({ message: "The problem id already exists" });
+                }  
+        }
+        
+        return res.status(200).json();
+    } catch (error) {
+        return res.status(500).json({ message: "Error" });
+    }
+}
+
 export const createProblem = async (req, res) => {
     try {
-        const problemId = (Date.now().toString(36) + Math.random().toString(36).substr(2, 6));
-
         const problem = await Problem.findOne({ name: req.body.name });
         if (problem) {
             return res.status(400).json({ message: "The problem already exists" });
         }
         
-        const newProblem = new Problem(req.body)
-        newProblem.problemId = problemId;
+        const newProblem = new Problem(req.body);
         const problemSaved = await newProblem.save();
 
         const promises = [];

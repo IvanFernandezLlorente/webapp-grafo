@@ -212,6 +212,7 @@ const messages = {
             uploadPDF: 'Upload PDF',
             titlePubli: 'Title',
             noTitle: 'Title is required',
+            noURL: 'URL is required',
             journal: 'Journal',
             volume: 'Volume',
             pages: 'Pages',
@@ -233,7 +234,8 @@ const messages = {
             next: 'Next',
             back: 'Back',
             save: 'Save Publication',
-            error: 'An error has occured'
+            error: 'The publication title or the URL already exists',
+            errorAuthors: 'It\'s mandatory to enter at least one author'
         },
         createProblem: {
             new: 'New Problem',
@@ -247,6 +249,7 @@ const messages = {
             wizard7: 'Confirm',
             titlePro: 'Name',
             noTitle: 'Name is required',
+            noURL: 'URL is required',
             alias: 'Alias',
             managers: 'Managers',
             addUser: 'Add User',
@@ -258,7 +261,8 @@ const messages = {
             back: 'Back',
             save: 'Save Problem',
             tagsPHolder: 'Añade una etiqueta',
-            tooltip: 'Select labels or add new ones by hitting enter'
+            tooltip: 'Select labels or add new ones by hitting enter',
+            error: 'The problem name or the URL already exists',
         }
         
     },
@@ -470,6 +474,7 @@ const messages = {
             uploadPDF: 'Añadir PDF',
             titlePubli: 'Título',
             noTitle: 'El titulo es obligatorio',
+            noURL: 'La URL es obligatoria',
             journal: 'Revista',
             volume: 'Volumen',
             pages: 'Paginas',
@@ -491,7 +496,8 @@ const messages = {
             next: 'Siguiente',
             back: 'Atrás',
             save: 'Guardar Publicación',
-            error: 'Ha ocurrido un error'
+            error: 'El titulo o la URL de la publicación ya existe',
+            errorAuthors: 'Es necesario introducir mínimo un author'
         },
         createProblem: {
             new: 'Nuevo Problema',
@@ -505,6 +511,7 @@ const messages = {
             wizard7: 'Confirmar',
             titlePro: 'Nombre',
             noTitle: 'El nombre es obligatorio',
+            noURL: 'La URL es obligatoria',
             alias: 'Alias',
             managers: 'Gestores',
             addUser: 'Añadir usuario',
@@ -516,7 +523,8 @@ const messages = {
             back: 'Atrás',
             save: 'Guardar Problema',
             tagsPHolder: 'Añade una etiqueta',
-            tooltip: 'Selecciona etiquetas o añade nuevas pulsando enter'
+            tooltip: 'Selecciona etiquetas o añade nuevas pulsando enter',
+            error: 'El nombre o el URL del problema ya existe'
         }
     }
 };
