@@ -78,6 +78,7 @@ const messages = {
             tabPassword: 'Password',
             tabAccounts: 'Conect Accounts',
             tabDanger: 'My Account',
+            tabTags: 'Tags',
             email: 'E-mail',
             emailPHolder: 'example@gmail.com',
             name: 'Full Name',
@@ -121,7 +122,13 @@ const messages = {
             allow: 'Allow User',
             confirmDelete: 'Are you sure you want to remove the user?',
             confirmBan: 'Are you sure you want to ban the user?',
-            showPeople: 'Show user in the people list'
+            showPeople: 'Show user in the people list',
+            deleteTagsText: 'Select the tags you want to remove',
+            searchTags: 'Search tags',
+            searchTagsDelete: 'Search removed tags',
+            searchNoTags: 'No tags selected',
+            deleteTags: 'Remove selected tags',
+            msgTags: 'The tags has been removed'
         },
         people: {
             title: 'People',
@@ -342,6 +349,7 @@ const messages = {
             tabPassword: 'Contraseña',
             tabAccounts: 'Conectar Cuentas',
             tabDanger: 'Mi cuenta',
+            tabTags: 'Etiquetas',
             email: 'E-mail',
             emailPHolder: 'ejemplo@gmail.com',
             name: 'Nombre completo',
@@ -385,7 +393,13 @@ const messages = {
             allow: 'Permitir usuario',
             confirmDelete: '¿Estás seguro de eliminar este usuario?',
             confirmBan: '¿Estás seguro de bloquear al usuario?',
-            showPeople: 'Mostrar usuario en la lista de personas'
+            showPeople: 'Mostrar usuario en la lista de personas',
+            deleteTagsText: 'Selecciona las etiquetas que desees eliminar',
+            searchTags: 'Buscar etiquetas',
+            searchTagsDelete: 'Buscar etiquetas eliminadas',
+            searchNoTags: 'Sin etiquetas',
+            deleteTags: 'Eliminar etiquetas seleccionadas',
+            msgTags: 'Las etiquetas han sido eliminadas'
         },
         people: {
             title: 'Personas',

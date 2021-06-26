@@ -15,7 +15,7 @@
                         <div @click="setChoice(2)" :class="[choice == 2 ? activeClass : '']">{{ $t('settings.tabPassword') }}</div>
                         <div @click="setChoice(3)" :class="[choice == 3 ? activeClass : '']">{{ $t('settings.tabAccounts') }}</div>
                         <div @click="setChoice(4)" :class="[choice == 4 ? activeClass : '']">{{ $t('settings.tabDanger') }}</div>
-                        
+                        <div v-if="isAdmin" @click="setChoice(5)" :class="[choice == 5 ? activeClass : '']">{{ $t('settings.tabTags') }}</div>
                     </div>
 
                     <div v-if="choice == 1">
@@ -253,6 +253,23 @@
                             </button>
                         </div>
                     </div>
+
+                    <div v-if="(choice == 5) && isAdmin" class="delete-tags">
+                        <p>{{ $t('settings.deleteTagsText') }}</p>
+                        <v-multiselect-listbox :options="tags"
+                            :reduce-display-property="(option) => option.value"
+                            :reduce-value-property="(option) => option.key"
+                            v-model="selectedTags"
+                            :search-options-placeholder="$t('settings.searchTags')"
+                            :selected-options-placeholder="$t('settings.searchTagsDelete')"
+                            :selected-no-options-text="$t('settings.searchNoTags')">
+                        </v-multiselect-listbox>
+                        <button class="delete-tags-button" @click="deleteTags"> 
+                            {{ $t('settings.deleteTags') }}
+                        </button>
+                        <p v-if="errorMsgTag" class="msgResponse-error msgResponse col-md-6 col-xl-4 col-12">{{errorMsgTag}}</p>  
+                        <p v-if="msgTag" class="msgResponse-success msgResponse col-md-6 col-xl-4 col-12">{{msgTag}}</p>
+                    </div>
                     
                 </div>
                 
@@ -265,6 +282,8 @@
 import { mapState } from 'vuex';
 import myUpload from 'vue-image-crop-upload';
 import ClassicEditor from '../ckeditor';
+import vMultiselectListbox from 'vue-multiselect-listbox';
+import 'vue-multiselect-listbox/dist/vue-multi-select-listbox.css';
 
 export default {
     name:'EditProfile',
@@ -327,11 +346,17 @@ export default {
         editor: ClassicEditor,
         editorConfig: ClassicEditor.defaultConfig,
         projects: '',
-        ckeditorReady: false
+        ckeditorReady: false,
+        tags: [],
+        tagsFetched: false,
+        selectedTags: [],
+        msgTag: '',
+        errorMsgTag: ''
       }
     },
     components: {
-        'my-upload': myUpload
+        'my-upload': myUpload,
+        'v-multiselect-listbox': vMultiselectListbox
     },
     async created () {
         this.restartData();
@@ -561,7 +586,39 @@ export default {
         prefill(editor) {
 			this.projects = this.user.projects;
             this.ckeditorReady = true;
-		}   
+		},
+        async fetchTags() {
+            const res = await this.axios.get(`tags`);
+            this.tags = res.data;
+            this.tagsFetched = true;
+        },   
+        async deleteTags() {
+            try {
+                const promises = [];
+                this.selectedTags.forEach(key => {
+                    promises.push(this.axios.delete(`tags/${key}`,{
+                        headers: { token: this.$store.state.token}
+                    }));
+                });
+                
+                await Promise.all(promises);
+                this.tags = this.tags.filter(tag => !(this.selectedTags.includes(tag.key)));
+                this.selectedTags = [];
+                this.errorMsgTag = '';
+                this.msgTag = this.$t('settings.msgTags');
+            } catch (error) {
+                console.log(error);
+                this.msgTag = '';
+                this.errorMsgTag = 'Error';
+            }
+        }
+    },
+    watch: {
+        async choice(newIndex) {
+            if ((newIndex === 5) && !this.tagsFetched ) {
+                await this.fetchTags();
+            }
+        }
     },
     computed: mapState(['isAdmin','id']),
 

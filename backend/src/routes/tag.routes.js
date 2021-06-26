@@ -6,6 +6,8 @@ const router = Router();
 
 router.get('/', tagController.getTags);
 
-router.post('/',[authJwt.verifyToken], tagController.createTag);
+router.post('/', [authJwt.verifyToken], tagController.createTag);
+
+router.delete('/:key', [authJwt.verifyToken], tagController.deleteTag);
 
 export default router;
