@@ -189,19 +189,25 @@ export default {
             this.choice = value;
         },
         async fetchData() {
-            const res = await this.axios.get(`problems/${this.url}`);
-            this.problem = res.data;
+            try {
+                const res = await this.axios.get(`problems/${this.url}`);
+                this.problem = res.data;
 
-            const promises = []
-            this.problem.user.forEach( userId => promises.push(this.axios.get(`users/${userId}`)));
-            const users = await Promise.all(promises);
-            this.users = users.map( user => user.data);
+                const promises = []
+                this.problem.user.forEach( userId => promises.push(this.axios.get(`users/${userId}`)));
+                const users = await Promise.all(promises);
+                this.users = users.map( user => user.data);
 
-            promises.splice(0,promises.length);
+                promises.splice(0,promises.length);
 
-            this.problem.publications.forEach( publicationId => promises.push(this.axios.get(`publications/${publicationId}`)));
-            const publications = await Promise.all(promises);
-            this.publications = publications.map( publication => publication.data).filter(publication => publication.visible == true);
+                this.problem.publications.forEach( publicationId => promises.push(this.axios.get(`publications/${publicationId}`)));
+                const publications = await Promise.all(promises);
+                this.publications = publications.map( publication => publication.data).filter(publication => publication.visible == true);
+            } catch (error) {
+                console.log(error);
+                this.$router.push({path: '/error'});
+            }
+            
         },
         canEdit() {
             return (this.isAdmin) || (this.problem.user.some( user => user == this.id));

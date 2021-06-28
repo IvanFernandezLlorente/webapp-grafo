@@ -162,7 +162,8 @@ export default {
                 this.indexProblem = (this.user.problems.length) - 1;
                 await this.fetchPublications();
             } catch (error) {
-                console.log(error)                
+                console.log(error);
+                this.$router.push({path: '/error'});              
             }
         },
         canEdit() {

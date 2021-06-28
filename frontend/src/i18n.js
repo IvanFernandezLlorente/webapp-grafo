@@ -285,8 +285,12 @@ const messages = {
             tooltip: 'Select labels or add new ones by hitting enter',
             error: 'The problem name or the URL already exists',
             generalError: 'An error occurred'
+        },
+        error: {
+            title: 'We are sorry. Page not found.',
+            subtitle: 'Sorry but the page you are looking for does not exist, have been removed, name changed or is temporarily unavailable.',
+            button: 'Go to Home'
         }
-        
     },
     'es': {
         home: {
@@ -569,6 +573,11 @@ const messages = {
             tooltip: 'Selecciona etiquetas o añade nuevas pulsando enter',
             error: 'El nombre o el URL del problema ya existe',
             generalError: 'Ha ocurrido un error'
+        },
+        error: {
+            title: 'Lo sentimos. Página no encontrada.',
+            subtitle: 'Lo sentimos, pero la página que está buscando no existe, se ha eliminado, se ha cambiado de nombre o no está disponible temporalmente.',
+            button: 'Ir a Inicio'
         }
     }
 };

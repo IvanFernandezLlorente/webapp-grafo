@@ -20,6 +20,7 @@ import Register from '../pages/Register';
 import RequestSignUp from '../pages/RequestSignUp';
 import Applications from '../components/Applications';
 import ImportOrcid from '../components/ImportOrcid';
+import ErrorComponent from '../components/Error';
 
 Vue.use(VueRouter)
 
@@ -160,6 +161,11 @@ const routes = [
             }
         }
      }, 
+     {
+        path: '/error',
+        name: 'Error',
+        component: ErrorComponent
+     }, 
     ]
   },
   {
@@ -177,7 +183,7 @@ const routes = [
     name: 'RequestSignUp',
     component: RequestSignUp,
 },
-  { path: '*', redirect: '/login' }
+  { path: '*', redirect: '/error'}
 ]
 
 const canEditPublication = async (publicationId) => {
