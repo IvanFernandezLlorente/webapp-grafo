@@ -278,15 +278,17 @@
                                 <b-col cols="12">
                                     <div class="form-group">
                                         <label for="webDescriptionEN" class="control-label">{{ $t('settings.webDescriptionEN') }}</label>
-                                        <textarea id="webDescriptionEN" v-model="description.en" rows="10" style="height: 20px; min-height: 150px;" :placeholder="$t('settings.descriptionPHolder')"></textarea>    
+                                        <!-- <textarea id="webDescriptionEN" v-model="description.en" rows="10" style="height: 20px; min-height: 150px;" :placeholder="$t('settings.descriptionPHolder')"></textarea>     -->
+                                        <ckeditor :editor="editor" v-model="description.en" :config="editorConfig"></ckeditor>
                                     </div>
                                 </b-col>
                             </b-row>
-                            <b-row>
+                            <b-row style="margin-top: 4rem;">
                                 <b-col cols="12">
                                     <div class="form-group">
                                         <label for="webDescriptionES" class="control-label">{{ $t('settings.webDescriptionES') }}</label>
-                                        <textarea id="webDescriptionES" v-model="description.es" rows="10" style="height: 20px; min-height: 150px;" :placeholder="$t('settings.descriptionPHolder')"></textarea>    
+                                        <ckeditor :editor="editor" v-model="description.es" :config="editorConfig"></ckeditor>
+                                        <!-- <textarea id="webDescriptionES" v-model="description.es" rows="10" style="height: 20px; min-height: 150px;" :placeholder="$t('settings.descriptionPHolder')"></textarea>     -->
                                     </div>
                                 </b-col>
                             </b-row>

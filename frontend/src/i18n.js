@@ -78,10 +78,10 @@ const messages = {
             title: 'Settings',
             tabProfile: 'Profile',
             tabPassword: 'Password',
-            tabAccounts: 'Conect Accounts',
+            tabAccounts: 'Connections',
             tabDanger: 'My Account',
             tabTags: 'Tags',
-            webDescription: 'Web Description',
+            webDescription: 'Front',
             webDescriptionES: 'Web description in spanish',
             webDescriptionEN: 'Web description in english',
             updateDescription: 'Save description',
@@ -151,7 +151,7 @@ const messages = {
         publications: {
             title: 'Publications',
             showMore: 'Show more',
-            search: 'Search'
+            search: 'Search by: title, author, journal or year'
         },
         publication: {
             title: 'Publication',
@@ -214,7 +214,7 @@ const messages = {
             import: 'Import publication',
             msg: 'You cannot import a publication without citation',
             noPublications: 'There aren\'t any publications',
-            explication: 'If you want to import your publications from orcid, you need to fill in the ORCID field in your profile.',
+            explication: 'Fill in the "ORCID" field in your profile to import your publications from orcid.org',
             settings: 'Go to settings',
         },
         createPublication: {
@@ -366,10 +366,10 @@ const messages = {
             title: 'Ajustes',
             tabProfile: 'Perfil',
             tabPassword: 'Contraseña',
-            tabAccounts: 'Conectar Cuentas',
+            tabAccounts: 'Conexiones',
             tabDanger: 'Mi cuenta',
             tabTags: 'Etiquetas',
-            webDescription: 'Descripción Web',
+            webDescription: 'Parte delantera',
             webDescriptionES: 'Descripción web en español',
             webDescriptionEN: 'Descripción web en inglés',
             updateDescription: 'Guardar Descripción',
@@ -439,7 +439,7 @@ const messages = {
         publications: {
             title: 'Publicaciones',
             showMore: 'Mostrar más',
-            search: 'Buscar'
+            search: 'Buscar por: título, autores, revista o año'
         },
         publication: {
             title: 'Publicación',
@@ -502,7 +502,7 @@ const messages = {
             import: 'Importar publicación',
             msg: 'No puedes importar una publicación sin la cita',
             noPublications: 'No hay publicaciones',
-            explication: 'Si desea importar sus publicaciones desde ORCID, debe completar el campo ORCID en su perfil.',
+            explication: 'Rellena el campo "ORCID" en tu perfil para importar tus publicaciones de orcid.org',
             settings: 'Ir a ajustes',
         },
         createPublication: {

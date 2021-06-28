@@ -511,3 +511,7 @@ form label.required:after {
     background-color: #B81D24;    
     box-shadow: 0 0 4px #F01E28;
 }
+
+.form-group >>> .ck .ck-editor__main > div {
+    min-height: 150px;
+}

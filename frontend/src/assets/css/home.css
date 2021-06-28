@@ -57,4 +57,43 @@
 .description {
     padding: 29px 49px;
     white-space: pre-wrap;
+    width: 89%;
+    margin: auto;
+    word-break: break-all;
+}
+
+.description >>> img {
+    width: 100%;
+}
+
+.description >>> figure.image {
+    margin: auto;
+}
+
+.description >>> table {
+    width: 100%;
+}
+
+.description >>> figure.table {
+    margin: auto;
+}
+
+.description >>> blockquote {
+    background: #f9f9f9;
+    border-left: 10px solid #ccc;
+    margin: 1.5em 10px;
+    padding: 0.5em 10px;
+    quotes: "\201C""\201D""\2018""\2019";
+}
+.description >>> blockquote:before {
+    color: #ccc;
+    content: open-quote;
+    font-size: 2em;
+    line-height: 0.1em;
+    margin-right: 0.25em;
+    vertical-align: -0.4em;
+}
+.description >>> blockquote p {
+    display: inline;
+    font-style: italic;
 }

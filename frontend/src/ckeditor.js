@@ -49,16 +49,19 @@ class Bibtex extends Plugin {
             view.on('execute', () => {
                 
                 editor.model.change( () => {
-                    const bibtexText = prompt('BibTeX');
-                    if (bibtexText) {
-                        let contents = bibtexify(bibtexText, [])
-                        console.log(contents);
-                        contents.forEach(content => {
-                            const viewFragment = editor.data.processor.toView( content );
-                            const modelFragment = editor.data.toModel(viewFragment);
-                            editor.model.insertContent(modelFragment,editor.model.document.selection);
-                        });
-                    }                    
+                    try {
+                        const bibtexText = prompt('BibTeX');
+                        if (bibtexText) {
+                            let contents = bibtexify(bibtexText, [])
+                            contents.forEach(content => {
+                                const viewFragment = editor.data.processor.toView( content );
+                                const modelFragment = editor.data.toModel(viewFragment);
+                                editor.model.insertContent(modelFragment,editor.model.document.selection);
+                            });
+                        }   
+                    } catch (error) {
+                        console.log(error);
+                    }       
                 });
             });
             return view;

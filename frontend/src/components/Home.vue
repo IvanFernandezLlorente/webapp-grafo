@@ -1,14 +1,10 @@
 <template>
     <b-row>
         <b-col v-if="(getLanguage() == 'en') && (description.en)" cols="12" class="padding-box">
-            <div class="content-box description">
-                {{ description.en }}
-            </div>
+            <div class="content-box description" v-html="description.en"></div>
         </b-col>
         <b-col v-if="(getLanguage() == 'es') && (description.es)" cols="12" class="padding-box">
-            <div class="content-box description">
-                {{ description.es }}
-            </div>
+            <div class="content-box description" v-html="description.es"></div>
         </b-col>
         <b-col cols="12" xl="6" v-if="publications.length != 0">
             <div class="subtitle">{{ $t('home.recentPublication') }}</div>
