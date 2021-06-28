@@ -222,7 +222,7 @@
                         </li> 
                     </ul>
                 </div>
-                <p v-if="error" class="msgResponse col-md-6 col-xl-4 col-12" style="margin-left: 0;">{{ $t('createProblem.error') }}</p>
+                <p v-if="error" class="msgResponse col-md-6 col-xl-4 col-12" style="margin-left: 0;">{{ errorMsg }}</p>
             </tab-content>
         </form-wizard>
     </b-col>
@@ -310,6 +310,7 @@ export default {
             noTitle: false,
             noURL: false,
             error: false,
+            errorMsg: '',
             selectedTags: [],
             suggestions: []
         };
@@ -342,6 +343,7 @@ export default {
 
                 if (!(await this.checkUniqueProblem())) {
                     this.error = true;
+                    this.errorMsg = this.$t('createProblem.error');
                     this.spin = false;
                     return;
                 }  
@@ -372,11 +374,13 @@ export default {
                 }
                 
                 this.error = false;
+                this.errorMsg = ''
                 this.spin = false;
                 this.$router.push({path: `/problems/${res.data.problemId}`})
             } catch (error) {
                 this.spin = false;
                 this.error = true;
+                this.errorMsg =
                 console.log(error)
             }
         },
