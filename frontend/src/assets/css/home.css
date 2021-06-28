@@ -1,0 +1,60 @@
+.publication {
+    margin-bottom: 2rem;
+    min-height: 107px;
+}
+
+.problem {
+    margin-bottom: 2rem;
+    min-height: 65px;
+}
+
+.info {
+    padding: 10px 30px;
+}
+
+.info > a{
+    text-decoration: none;
+    color: #212529;
+    font-weight: bold;
+}
+
+.info > div {
+    margin-bottom: 10px;
+}
+
+.journal-info {
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.tag-box {
+    display: flex;
+    flex-wrap: wrap;
+    margin-top: 1rem; 
+}
+
+.tag {
+    color: #fff;
+    background-color: #B81D24;
+    padding: 3px 10px;
+    border-radius: 8px;
+    margin-right: 7px;
+    font-size: 13px;
+    height: min-content;
+    margin-bottom: 1rem;
+}
+
+.subtitle {
+    font-weight: bold;
+    font-size: 1.2rem;
+    margin-bottom: 1.5rem;
+    border-left: 4px solid #B81D24;
+    padding-left: 8px;
+    margin-top: 2rem;
+    margin-left: 2rem;
+}
+
+.description {
+    padding: 29px 49px;
+    white-space: pre-wrap;
+}

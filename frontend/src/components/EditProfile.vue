@@ -16,6 +16,7 @@
                         <div @click="setChoice(3)" :class="[choice == 3 ? activeClass : '']">{{ $t('settings.tabAccounts') }}</div>
                         <div @click="setChoice(4)" :class="[choice == 4 ? activeClass : '']">{{ $t('settings.tabDanger') }}</div>
                         <div v-if="isAdmin" @click="setChoice(5)" :class="[choice == 5 ? activeClass : '']">{{ $t('settings.tabTags') }}</div>
+                        <div v-if="isAdmin" @click="setChoice(6)" :class="[choice == 6 ? activeClass : '']">{{ $t('settings.webDescription') }}</div>
                     </div>
 
                     <div v-if="choice == 1">
@@ -271,6 +272,27 @@
                         <p v-if="msgTag" class="msgResponse-success msgResponse col-md-6 col-xl-4 col-12">{{msgTag}}</p>
                     </div>
                     
+                    <div v-if="(choice == 6) && isAdmin">
+                        <form @submit.prevent="updateDescription" class="form-data">
+                            <b-row>
+                                <b-col cols="12">
+                                    <div class="form-group">
+                                        <label for="webDescriptionEN" class="control-label">{{ $t('settings.webDescriptionEN') }}</label>
+                                        <textarea id="webDescriptionEN" v-model="description.en" rows="10" style="height: 20px; min-height: 150px;" :placeholder="$t('settings.descriptionPHolder')"></textarea>    
+                                    </div>
+                                </b-col>
+                            </b-row>
+                            <b-row>
+                                <b-col cols="12">
+                                    <div class="form-group">
+                                        <label for="webDescriptionES" class="control-label">{{ $t('settings.webDescriptionES') }}</label>
+                                        <textarea id="webDescriptionES" v-model="description.es" rows="10" style="height: 20px; min-height: 150px;" :placeholder="$t('settings.descriptionPHolder')"></textarea>    
+                                    </div>
+                                </b-col>
+                            </b-row>
+                            <input type="submit" name="commit" :value="$t('settings.updateDescription')" style="margin-left: 15px;margin-top: 4rem;">
+                        </form>
+                    </div>
                 </div>
                 
             </div>
@@ -351,7 +373,11 @@ export default {
         tagsFetched: false,
         selectedTags: [],
         msgTag: '',
-        errorMsgTag: ''
+        errorMsgTag: '',
+        description: {
+            en: '',
+            es: ''
+        }
       }
     },
     components: {
@@ -377,6 +403,13 @@ export default {
                 }
                 this.selected = this.user.roles
                 this.imgDataUrl = this.user.imagenProfile ? this.user.imagenProfile : '' 
+
+                
+                const resDescription = await this.axios.get(`description`);
+                if((resDescription.data) && (Object.keys(resDescription.data).length !== 0)){
+                    this.description = resDescription.data;
+                }
+                
             } catch (error) {
                 console.log(error)                
             }
@@ -610,6 +643,16 @@ export default {
                 console.log(error);
                 this.msgTag = '';
                 this.errorMsgTag = 'Error';
+            }
+        },
+        async updateDescription() {
+            try {
+                const res = await this.axios.put(`description`, this.description, {
+                    headers: { token: this.$store.state.token}
+                });
+                this.$router.push({path: '/'})
+            } catch (error) {
+                console.log(error);
             }
         }
     },

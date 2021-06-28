@@ -6,7 +6,9 @@ Vue.use(VueI18n);
 const messages = {
     'en': {
         home: {
-            title: 'Home'
+            title: 'Home',
+            recentPublication: 'Most recent publications',
+            recentProblems: 'Most recent problems'
         },
         login: {
             title: 'Sign in to Grafo Research',
@@ -79,6 +81,10 @@ const messages = {
             tabAccounts: 'Conect Accounts',
             tabDanger: 'My Account',
             tabTags: 'Tags',
+            webDescription: 'Web Description',
+            webDescriptionES: 'Web description in spanish',
+            webDescriptionEN: 'Web description in english',
+            updateDescription: 'Save description',
             email: 'E-mail',
             emailPHolder: 'example@gmail.com',
             name: 'Full Name',
@@ -151,7 +157,8 @@ const messages = {
             title: 'Publication',
             edit: 'Edit',
             delete: 'Delete',
-            pdf: 'Get PDF',
+            confirmDelete: 'Are you sure you want to remove the publication?',
+            pdf: 'PDF',
             cite: 'Cite',
             url: 'URL',
             relatedProblems: 'Related Problems',
@@ -162,7 +169,9 @@ const messages = {
             state: 'State of the Art Methods',
             instances: 'Instances',
             computationalExperience: 'Computational Experience',
-            references: 'References'
+            references: 'References',
+            volume: 'Volume',
+            pages: 'Pages'
         },
         problems: {
             title: 'Problems',
@@ -175,7 +184,9 @@ const messages = {
             title: 'Problem',
             edit: 'Edit',
             delete: 'Delete',
+            confirmDelete: 'Are you sure you want to remove the problem?',
             relatedPublications: 'Related Publications',
+            tags: 'Tags',
             introduction: 'Introduction',
             description: 'Description',
             state: 'State of the Art Methods',
@@ -244,7 +255,8 @@ const messages = {
             back: 'Back',
             save: 'Save Publication',
             error: 'The publication title or the URL already exists',
-            errorAuthors: 'It\'s mandatory to enter at least one author'
+            errorAuthors: 'It\'s mandatory to enter at least one author',
+            generalError: 'An error occurred'
         },
         createProblem: {
             new: 'New Problem',
@@ -272,12 +284,15 @@ const messages = {
             tagsPHolder: 'Añade una etiqueta',
             tooltip: 'Select labels or add new ones by hitting enter',
             error: 'The problem name or the URL already exists',
+            generalError: 'An error occurred'
         }
         
     },
     'es': {
         home: {
-            title: 'Inicio'
+            title: 'Inicio',
+            recentPublication: 'Publicaciones más recientes',
+            recentProblems: 'Problemas más recientes'
         },
         login: {
             title: 'Iniciar sesión en Grafo Research',
@@ -350,6 +365,10 @@ const messages = {
             tabAccounts: 'Conectar Cuentas',
             tabDanger: 'Mi cuenta',
             tabTags: 'Etiquetas',
+            webDescription: 'Descripción Web',
+            webDescriptionES: 'Descripción web en español',
+            webDescriptionEN: 'Descripción web en inglés',
+            updateDescription: 'Guardar Descripción',
             email: 'E-mail',
             emailPHolder: 'ejemplo@gmail.com',
             name: 'Nombre completo',
@@ -422,6 +441,7 @@ const messages = {
             title: 'Publicación',
             edit: 'Editar',
             delete: 'Borrar',
+            confirmDelete: '¿Estás seguro de eliminar la publicación?',
             pdf: 'PDF',
             cite: 'Cita',
             url: 'URL',
@@ -433,7 +453,9 @@ const messages = {
             state: 'Estado del arte',
             instances: 'Instancias',
             computationalExperience: 'Experiencia computacional',
-            references: 'Referencias'
+            references: 'Referencias',
+            volume: 'Volumen',
+            pages: 'Páginas'
         },
         problems: {
             title: 'Problemas',
@@ -446,7 +468,9 @@ const messages = {
             title: 'Problema',
             edit: 'Editar',
             delete: 'Borrar',
+            confirmDelete: '¿Estás seguro de eliminar el problema?',
             relatedPublications: 'Publicaciones relacionadas',
+            tags: 'Etiquetas',
             introduction: 'Introdución',
             description: 'Descripción',
             state: 'Estado del arte',
@@ -515,7 +539,8 @@ const messages = {
             back: 'Atrás',
             save: 'Guardar Publicación',
             error: 'El titulo o la URL de la publicación ya existe',
-            errorAuthors: 'Es necesario introducir mínimo un author'
+            errorAuthors: 'Es necesario introducir mínimo un author',
+            generalError: 'Ha ocurrido un error'
         },
         createProblem: {
             new: 'Nuevo Problema',
@@ -542,7 +567,8 @@ const messages = {
             save: 'Guardar Problema',
             tagsPHolder: 'Añade una etiqueta',
             tooltip: 'Selecciona etiquetas o añade nuevas pulsando enter',
-            error: 'El nombre o el URL del problema ya existe'
+            error: 'El nombre o el URL del problema ya existe',
+            generalError: 'Ha ocurrido un error'
         }
     }
 };

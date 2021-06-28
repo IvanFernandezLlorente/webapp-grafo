@@ -1,6 +1,5 @@
 import Tag from "../../src/models/Tag";
 import Problem from "../../src/models/Problem";
-import * as tagController from '../../src/controllers/tag.controller';
 import request from 'supertest';
 
 jest.mock('../../src/middlewares/auth.jwt');
@@ -37,7 +36,10 @@ describe('Tag controller', () => {
                 tags: ["tag1", "tag2", "tag3"]
             }
         ]
-        authJwt.verifyToken.mockImplementation((req, res, next) => next());
+        authJwt.verifyToken.mockImplementation((req, res, next) => { 
+            req.isAdmin = true;
+            next() 
+        });
     });
 
 
@@ -79,6 +81,17 @@ describe('Tag controller', () => {
             const res = await request(app).delete('/api/tags/tag1');
             expect(res.statusCode).toEqual(500);
             expect(res.body).toEqual(expect.objectContaining({ message: "Error" }));
+        });
+
+        it('User is not admin', async () => {
+            authJwt.verifyToken.mockImplementation((req, res, next) => { 
+                req.isAdmin = false; 
+                next() 
+            });
+            
+            const res = await request(app).delete('/api/tags/no-exist');
+            expect(res.statusCode).toEqual(401);
+            expect(res.body).toEqual(expect.objectContaining({ message: "Unauthorized" }));
         });
 
         it('Tag doesnt exist', async () => {
