@@ -1,0 +1,294 @@
+.title {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    position: relative;
+}
+
+.title > h1 {
+    padding: 2rem 4rem;
+    font-weight: bold;
+    font-size: 2rem;
+}
+
+.black-line {
+    border-top: 1px solid #707070;
+    width: 13rem;
+    position: absolute;
+    bottom: 1.5rem;
+}
+
+.red-line {
+    border-top: 4px solid #B81D24;
+    width: 3.5rem;
+    position: absolute;
+    bottom: 1.434rem;
+}
+
+.title > h1 {
+    padding: 1.8rem 0rem !important;
+}
+
+.body {
+    width: 100%;
+    margin-top: 20px;
+}
+
+.info-box {
+    margin-left: auto;
+    padding: 0;
+}
+
+.choices {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    padding: 1rem 0;
+}
+
+.choices > div {
+    cursor: pointer;
+    border-radius: 38px;
+    color: #212529;
+    border: 0px;
+    height: 3.25rem;
+    width: 100%;
+    font-size: 1rem;
+    padding-left: 1rem;
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+    margin-bottom: 0.5rem;
+    margin-top: 0.5rem;
+}
+
+.active {
+    background-color: #E50914;
+    color: #fff !important;
+}
+
+.choices > div:hover {
+    background-color: #E50914;
+    color: #fff !important;
+}
+
+.choices-box {
+    max-height: 430px;
+    max-width: 315px;
+    align-self: flex-start;
+}
+
+.basic-info {
+    margin-bottom: 1rem;
+}
+
+.info {
+    padding: 29px 49px;
+}
+
+#title {
+    font-weight: bold;
+    font-size: 1.6rem;
+    margin-bottom: 20px;
+}
+
+#abstract {
+    text-align: justify;
+    white-space: pre-wrap;
+}
+
+
+.vopaye {
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.vopaye div {
+    margin-right: 10px;
+}
+
+.publissn {
+    display: flex;
+}
+
+.publissn div {
+    margin-right: 10px;
+}
+
+.basic-info > div {
+    margin-bottom: 5px;
+}
+
+.authors {
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.author {
+    margin-right: 5px;
+    overflow-wrap: break-word;
+}
+
+.author p {
+    margin-bottom: 0;
+}
+
+.problems {
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.problems p {
+    margin-bottom: 0;
+}
+
+.problems > a {
+    margin-right: 5px;
+}
+
+.subtitle {
+    font-weight: bold;
+    font-size: 1.2rem;
+    margin-bottom: 0.5rem;
+}
+
+.modify-buttons {
+    background-color: #E50914;
+    border-radius: 38px;
+    color: #FFF;
+    border: 0px;
+    width: 76px;
+    height: 36px;
+    margin-bottom: 1rem;
+}
+
+.modify-buttons:hover {
+    background-color: #B81D24;    
+    box-shadow: 0 0 4px #F01E28;
+    color: #FFF;
+}
+
+.buttons-box {
+    max-width: 76px;
+    padding: 0;
+    right: 0;
+    position: absolute;
+}
+
+.buttons {
+    display: flex;
+    flex-direction: column;
+    width: 76px;
+}
+
+.resource > a {
+    display: flex;
+    margin-right: 1.5rem;
+    text-decoration: none;
+    color: #212529;
+}
+
+.resource p {
+    margin: 0;
+}
+
+.resource img {
+    margin-right: 5px;
+}
+
+@media (min-width: 992px){
+    .padding-box {
+        padding: 0px 40px;
+    }
+}
+
+@media (max-width: 991px){
+    .body {
+        padding-right: 15px;
+        padding-left: 15px;
+    }
+}
+
+@media (max-width: 1730px){
+    .info-box {
+        flex: 0 0 100%;
+        max-width: 100%;
+    }
+ 
+    .choices-box {
+        max-width: 100%;
+        flex: 0 0 100%;
+        margin-bottom: 20px;
+        overflow-x: auto;
+        flex-basis: content;
+    }
+
+    .choices {
+        flex-direction: row;
+    }
+
+    .choices > div {
+        padding-left: 0;
+        margin-right: 0.5rem;
+        text-align: center;
+        min-width: 152px;
+    }
+}
+
+@media (max-width: 767px){
+    .buttons-box {
+        position: unset;
+        padding-right: 15px;
+        padding-left: 15px;
+    }
+
+    .buttons {
+        flex-direction: row;
+    }
+
+    .modify-buttons {
+        margin-right: 1rem;
+    }
+}
+
+.editable-content {
+    width: 100%;
+    word-break: break-all;
+}
+
+.editable-content >>> img {
+    width: 100%;
+}
+
+.editable-content >>> figure.image {
+    margin: auto;
+}
+
+.editable-content >>> table {
+    width: 100%;
+}
+
+.editable-content >>> figure.table {
+    margin: auto;
+}
+
+.editable-content >>> blockquote {
+  background: #f9f9f9;
+  border-left: 10px solid #ccc;
+  margin: 1.5em 10px;
+  padding: 0.5em 10px;
+  quotes: "\201C""\201D""\2018""\2019";
+}
+.editable-content >>> blockquote:before {
+  color: #ccc;
+  content: open-quote;
+  font-size: 2em;
+  line-height: 0.1em;
+  margin-right: 0.25em;
+  vertical-align: -0.4em;
+}
+.editable-content >>> blockquote p {
+  display: inline;
+  font-style: italic;
+}

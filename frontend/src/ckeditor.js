@@ -136,11 +136,11 @@ ClassicEditor.defaultConfig = {
     },
     image: {
         styles: [
-            'alignLeft', 'alignCenter', 'alignRight'
+            'alignCenter'
         ],
 
         toolbar: [
-            'imageStyle:alignLeft', 'imageStyle:alignCenter', 'imageStyle:alignRight'
+            'imageStyle:alignCenter'
         ]
     },
     alignment: {

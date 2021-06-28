@@ -495,7 +495,7 @@ export default {
             } catch (error) {
                 this.spin = false;
                 this.error = true;
-                this.errorMsg = this.$t('createPublication.error');
+                this.errorMsg = this.$t('createPublication.generalError');
                 console.log(error)
             }
         },
