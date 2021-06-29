@@ -33,7 +33,11 @@
                                 <input id="password" v-model="password" name="password" :placeholder="$t('signUp.passPHolder')" type="password">
                                 <p class="error-msg" v-if="noPass">{{ $t('signUp.passRequired') }}</p>
 
-                                <input type="submit" name="commit" :value="$t('signUp.button')">
+                                <vue-recaptcha ref="recaptcha"
+                                    @verify="onVerify" :sitekey="sitekey">
+                                </vue-recaptcha>
+
+                                <input type="submit" name="commit" :value="$t('signUp.button')" :class="[robot ? '' : disabledClass]">
                             </div>
                         </form>
                     </div>
@@ -45,21 +49,35 @@
 </template>
 
 <script>
+import VueRecaptcha from 'vue-recaptcha';
+
 export default {
     name: 'Register',
     
+    components: {
+        "vue-recaptcha": VueRecaptcha
+    },
+
     data: () => {
         return {
             application: {},
             password: '',
             error: '',
-            noPass: false
+            noPass: false,
+            robot: false,
+            sitekey: process.env.VUE_APP_SITE_KEY,
+            disabledClass: 'disabled'
         }
     },
     created () {
         this.fetchData();
     },
     methods: {
+        onVerify(response) {
+            if (response) {
+                this.robot = true;
+            }
+        },
         async fetchData() {
             try {
                 const res = await this.axios.get(`applications/${this.$route.params.id}`);
@@ -70,17 +88,19 @@ export default {
         },
         async signup () {
             try {
-                this.noPass = this.password ? false : true;
-                if (this.password) {
-                    const info = {
-                        email: this.application.email,
-                        password: this.password,
-                        name: this.application.name,
-                        token: this.application.token
-                    }
-                    const res = await this.axios.post("users/signup", info);
-                    this.manageSignUp(res.data);
-                }                
+                if (this.robot) {
+                    this.noPass = this.password ? false : true;
+                    if (this.password) {
+                        const info = {
+                            email: this.application.email,
+                            password: this.password,
+                            name: this.application.name,
+                            token: this.application.token
+                        }
+                        const res = await this.axios.post("users/signup", info);
+                        this.manageSignUp(res.data);
+                    }  
+                }              
             } catch (error) {
                 console.log(error)
                 this.error = this.manageError(error.response.data.message);

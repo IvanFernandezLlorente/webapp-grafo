@@ -22,7 +22,11 @@
                         <label for="password" style="margin-top: 15px;">{{ $t('login.pass') }}</label>
                         <input id="password" v-model="password" name="password" :placeholder="$t('login.passPHolder')" type="password">
 
-                        <input type="submit" name="commit" :value="$t('login.button')">
+                        <vue-recaptcha ref="recaptcha"
+                            @verify="onVerify" :sitekey="sitekey">
+                        </vue-recaptcha>
+
+                        <input type="submit" name="commit" :value="$t('login.button')" :class="[robot ? '' : disabledClass]">
                     </div>
                 </form>
             </div>
@@ -57,25 +61,41 @@
 </template>
 
 <script>
+import VueRecaptcha from 'vue-recaptcha';
+
 export default {
     name: 'Login',
     
+    components: {
+        "vue-recaptcha": VueRecaptcha
+    },
+
     data: () => {
         return {
             email: '',
             password: '',
-            error: ''
+            error: '',
+            robot: false,
+            sitekey: process.env.VUE_APP_SITE_KEY,
+            disabledClass: 'disabled'
         }
     },
     methods: {
+        onVerify(response) {
+            if (response) {
+                this.robot = true;
+            }
+        },
         async login () {
             try {
-                const info = {
-                    email: this.email,
-                    password: this.password
+                if (this.robot) {
+                     const info = {
+                        email: this.email,
+                        password: this.password
+                    }
+                    const res = await this.axios.post("users/signin", info);
+                    this.manageSignIn(res.data);
                 }
-                const res = await this.axios.post("users/signin", info);
-                this.manageSignIn(res.data);
             } catch (error) {
                 console.log(error.response.data)
                 this.error = this.manageError(error.response.data.message);

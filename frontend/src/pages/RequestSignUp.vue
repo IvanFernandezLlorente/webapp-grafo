@@ -43,7 +43,11 @@
                                 
                                 <div class="success-msg" v-if="submitedApplication">{{ $t('requestSignUp.successmsg') }}</div>
 
-                                <input type="submit" name="commit" :disabled="submitedApplication" :class="{'disable-input': submitedApplication}" :value="$t('requestSignUp.button')">
+                                <vue-recaptcha ref="recaptcha"
+                                    @verify="onVerify" :sitekey="sitekey">
+                                </vue-recaptcha>
+
+                                <input type="submit" name="commit" :disabled="submitedApplication" :class="{'disable-input': submitedApplication, 'disabledClass': !robot}" :value="$t('requestSignUp.button')">
                             </div>
                         </form>
                     </div>
@@ -57,9 +61,15 @@
 </template>
 
 <script>
+import VueRecaptcha from 'vue-recaptcha';
+
 export default {
     name: 'RequestSignUp',
     
+    components: {
+        "vue-recaptcha": VueRecaptcha
+    },
+
     data: () => {
         return {
             email: '',
@@ -70,10 +80,17 @@ export default {
             errorMessage: '',
             errorName: false,
             errorEmail: false,
-            wrongEmail: false
+            wrongEmail: false,
+            robot: false,
+            sitekey: process.env.VUE_APP_SITE_KEY,
         }
     },
     methods: {
+        onVerify(response) {
+            if (response) {
+                this.robot = true;
+            }
+        },
         async request () {
             try {
                 const info = {
@@ -92,14 +109,15 @@ export default {
             }            
         },
         checkForm(){
-            this.errorName = this.name ? false : true;
-            this.errorEmail = this.email ? false : true;
-            this.wrongEmail = (this.email) ? (this.validEmail(this.email)) ? false : true : false;
+            if (this.robot) {
+                this.errorName = this.name ? false : true;
+                this.errorEmail = this.email ? false : true;
+                this.wrongEmail = (this.email) ? (this.validEmail(this.email)) ? false : true : false;
 
-            if (!((this.errorName) || (this.errorEmail) || (this.wrongEmail))) {
-                this.request();
+                if (!((this.errorName) || (this.errorEmail) || (this.wrongEmail))) {
+                    this.request();
+                }
             }
-
         },
         validEmail(email) {
             const regex = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;

@@ -125,3 +125,9 @@ input[type=submit]:hover {
     left: 50%;
     display: ruby;
 }
+
+.disabled {
+    cursor: no-drop !important;
+    background-color: rgb(189, 195, 199) !important;
+    box-shadow: 0px 0px 0px !important;
+}
