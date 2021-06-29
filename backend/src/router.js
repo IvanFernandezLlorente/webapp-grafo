@@ -4,7 +4,7 @@ import fileRoutes from './routes/file.routes';
 import problemRoutes from './routes/problem.routes';
 import applicationRoutes from './routes/application.routes';
 import tagRoutes from './routes/tag.routes';
-import descriptionRoutes from './routes/description.routes';
+import textController from './routes/text.routes';
 
 export default app => {
     app.use('/api/users', userRoutes);
@@ -13,5 +13,5 @@ export default app => {
     app.use('/api/files', fileRoutes);
     app.use('/api/applications', applicationRoutes);
     app.use('/api/tags', tagRoutes);
-    app.use('/api/description', descriptionRoutes);
+    app.use('/api/texts', textController);
 }

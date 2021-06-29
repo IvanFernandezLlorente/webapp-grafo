@@ -402,6 +402,7 @@ export default {
         msgTagNew: '',
         errorMsgTagNew: '',
         description: {
+            type: 'description',
             en: '',
             es: ''
         }
@@ -433,7 +434,7 @@ export default {
                 this.imgDataUrl = this.user.imagenProfile ? this.user.imagenProfile : '' 
 
                 
-                const resDescription = await this.axios.get(`description`);
+                const resDescription = await this.axios.get(`texts/description`);
                 if((resDescription.data) && (Object.keys(resDescription.data).length !== 0)){
                     this.description = resDescription.data;
                 }
@@ -703,7 +704,7 @@ export default {
         },
         async updateDescription() {
             try {
-                const res = await this.axios.put(`description`, this.description, {
+                const res = await this.axios.put(`texts/description`, this.description, {
                     headers: { token: this.$store.state.token}
                 });
                 this.$router.push({path: '/'})

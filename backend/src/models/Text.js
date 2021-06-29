@@ -1,8 +1,9 @@
 import { Schema, model } from "mongoose";
 
 
-const descriptionSchema = new Schema(
+const textSchema = new Schema(
   {
+    type: String,  
     en: String,
     es: String,
   },
@@ -11,4 +12,4 @@ const descriptionSchema = new Schema(
   }
 );
 
-export default model("Description", descriptionSchema);
+export default model("Text", textSchema);

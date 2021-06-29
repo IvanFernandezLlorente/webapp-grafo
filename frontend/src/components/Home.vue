@@ -78,7 +78,7 @@ export default {
     methods: {
         async fetchData() {
             try {
-                const res = await this.axios.get(`description`);
+                const res = await this.axios.get(`texts/description`);
                 if((res.data) && (Object.keys(res.data).length !== 0)){
                     this.description = res.data;
                 }
