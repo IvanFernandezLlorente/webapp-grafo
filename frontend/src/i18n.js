@@ -134,7 +134,14 @@ const messages = {
             searchTagsDelete: 'Search removed tags',
             searchNoTags: 'No tags selected',
             deleteTags: 'Remove selected tags',
-            msgTags: 'The tags has been removed'
+            msgTagsDelete: 'The tags has been removed',
+            msgTagsNew: 'The tags has been created',
+            deleteTagsTitle: 'Delete tags',
+            addTagsTitle: 'Create tags',
+            createTags: 'Create selected tags',
+            tagsPHolder: 'Add a tag',
+            tooltipTags: 'Create new tags by hitting enter',
+            newTagsText: 'Fill in the following field in order to create new tags'
         },
         people: {
             title: 'People',
@@ -281,7 +288,7 @@ const messages = {
             next: 'Next',
             back: 'Back',
             save: 'Save Problem',
-            tagsPHolder: 'Añade una etiqueta',
+            tagsPHolder: 'Add a tag',
             tooltip: 'Select labels or add new ones by hitting enter',
             error: 'The problem name or the URL already exists',
             generalError: 'An error occurred'
@@ -422,7 +429,14 @@ const messages = {
             searchTagsDelete: 'Buscar etiquetas eliminadas',
             searchNoTags: 'Sin etiquetas',
             deleteTags: 'Eliminar etiquetas seleccionadas',
-            msgTags: 'Las etiquetas han sido eliminadas'
+            msgTagsDelete: 'Las etiquetas han sido eliminadas',
+            msgTagsNew: 'Las etiquetas han sido creadas',
+            deleteTagsTitle: 'Eliminar etiquetas',
+            addTagsTitle: 'Crear etiquetas',
+            createTags: 'Crear etiquetas seleccionadas',
+            tagsPHolder: 'Añade una etiqueta',
+            tooltipTags: 'Crea nuevas etiquetas pulsando enter',
+            newTagsText: 'Rellena el siguiente campo para crear etiquetas'
         },
         people: {
             title: 'Personas',

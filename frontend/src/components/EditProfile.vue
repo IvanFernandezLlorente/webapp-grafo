@@ -255,21 +255,42 @@
                         </div>
                     </div>
 
-                    <div v-if="(choice == 5) && isAdmin" class="delete-tags">
-                        <p>{{ $t('settings.deleteTagsText') }}</p>
-                        <v-multiselect-listbox :options="tags"
-                            :reduce-display-property="(option) => option.value"
-                            :reduce-value-property="(option) => option.key"
-                            v-model="selectedTags"
-                            :search-options-placeholder="$t('settings.searchTags')"
-                            :selected-options-placeholder="$t('settings.searchTagsDelete')"
-                            :selected-no-options-text="$t('settings.searchNoTags')">
-                        </v-multiselect-listbox>
-                        <button class="delete-tags-button" @click="deleteTags"> 
-                            {{ $t('settings.deleteTags') }}
-                        </button>
-                        <p v-if="errorMsgTag" class="msgResponse-error msgResponse col-md-6 col-xl-4 col-12">{{errorMsgTag}}</p>  
-                        <p v-if="msgTag" class="msgResponse-success msgResponse col-md-6 col-xl-4 col-12">{{msgTag}}</p>
+                    <div v-if="(choice == 5) && isAdmin" class="tags">
+                        <div class="add-tags">
+                            <div style="display: flex;">
+                                <h4 class="subtitle" style="margin-right: 0.5rem;">{{ $t('settings.addTagsTitle') }}</h4>
+                                <button v-b-tooltip.hover.right :title="$t('settings.tooltipTags')" class="tooltip-button">
+                                    <img src="../assets/question.svg" id="tooltip">
+                                    <span class="tooltiptext">Tooltip text</span>
+                                </button>
+                            </div>
+                            <p>{{ $t('settings.newTagsText') }}</p>
+                            <tags-input v-model="newTags" :existing-tags="tags" :typeahead="true" :typeahead-max-results=10 :placeholder="$t('settings.tagsPHolder')"></tags-input>
+                            
+                            <button class="delete-tags-button" @click="createTags"> 
+                                {{ $t('settings.createTags') }}
+                            </button>
+                            <p v-if="errorMsgTagNew" class="msgResponse-error msgResponse col-md-6 col-xl-4 col-12">{{errorMsgTagNew}}</p>  
+                            <p v-if="msgTagNew" class="msgResponse-success msgResponse col-md-6 col-xl-4 col-12">{{msgTagNew}}</p>
+                        </div>
+
+                        <div class="delete-tags"> 
+                            <h4 class="subtitle">{{ $t('settings.deleteTagsTitle') }}</h4>
+                            <p>{{ $t('settings.deleteTagsText') }}</p>
+                            <v-multiselect-listbox :options="tags"
+                                :reduce-display-property="(option) => option.value"
+                                :reduce-value-property="(option) => option.key"
+                                v-model="selectedTags"
+                                :search-options-placeholder="$t('settings.searchTags')"
+                                :selected-options-placeholder="$t('settings.searchTagsDelete')"
+                                :selected-no-options-text="$t('settings.searchNoTags')">
+                            </v-multiselect-listbox>
+                            <button class="delete-tags-button" @click="deleteTags"> 
+                                {{ $t('settings.deleteTags') }}
+                            </button>
+                            <p v-if="errorMsgTagDelete" class="msgResponse-error msgResponse col-md-6 col-xl-4 col-12">{{errorMsgTagDelete}}</p>  
+                            <p v-if="msgTagDelete" class="msgResponse-success msgResponse col-md-6 col-xl-4 col-12">{{msgTagDelete}}</p>
+                        </div>
                     </div>
                     
                     <div v-if="(choice == 6) && isAdmin">
@@ -308,6 +329,7 @@ import myUpload from 'vue-image-crop-upload';
 import ClassicEditor from '../ckeditor';
 import vMultiselectListbox from 'vue-multiselect-listbox';
 import 'vue-multiselect-listbox/dist/vue-multi-select-listbox.css';
+import VoerroTagsInput from '@voerro/vue-tagsinput';
 
 export default {
     name:'EditProfile',
@@ -374,8 +396,11 @@ export default {
         tags: [],
         tagsFetched: false,
         selectedTags: [],
-        msgTag: '',
-        errorMsgTag: '',
+        newTags: [],
+        msgTagDelete: '',
+        errorMsgTagDelete: '',
+        msgTagNew: '',
+        errorMsgTagNew: '',
         description: {
             en: '',
             es: ''
@@ -384,7 +409,8 @@ export default {
     },
     components: {
         'my-upload': myUpload,
-        'v-multiselect-listbox': vMultiselectListbox
+        'v-multiselect-listbox': vMultiselectListbox,
+        "tags-input": VoerroTagsInput
     },
     async created () {
         this.restartData();
@@ -611,12 +637,14 @@ export default {
             this.updatedProfile = ''
             this.errorGoogle = false
             this.errorGoogleText = ''
-            this.errorGithub = false,
+            this.errorGithub = false
             this.errorGithubText = ''
             this.errorORCID = false
             this.errorORCIDText = ''
             this.choice = 1
             this.activeClass = 'active'
+            this.projects = ''
+            this.ckeditorReady = false
         },     
         prefill(editor) {
 			this.projects = this.user.projects;
@@ -637,14 +665,40 @@ export default {
                 });
                 
                 await Promise.all(promises);
-                this.tags = this.tags.filter(tag => !(this.selectedTags.includes(tag.key)));
                 this.selectedTags = [];
-                this.errorMsgTag = '';
-                this.msgTag = this.$t('settings.msgTags');
+                this.errorMsgTagDelete = '';
+                this.msgTagDelete = this.$t('settings.msgTagsDelete');
+                await this.fetchTags();
             } catch (error) {
                 console.log(error);
-                this.msgTag = '';
-                this.errorMsgTag = 'Error';
+                this.msgTagDelete = '';
+                this.errorMsgTagDelete = 'Error';
+            }
+        },
+        async createTags() {
+            try {
+                const newTagsToCreate = [];
+                this.newTags.forEach(tagObject => {
+                    if (!tagObject.key) {
+                        tagObject.key = tagObject.value.split(" ").join("-").toLowerCase();
+                        newTagsToCreate.push(tagObject);
+                    }
+                });
+
+                if (newTagsToCreate.length !== 0) {
+                    await this.axios.post(`tags`, newTagsToCreate, {
+                        headers: { token: this.$store.state.token}
+                    });
+                }
+
+                this.newTags = [];
+                this.errorMsgTagNew = '';
+                this.msgTagNew = this.$t('settings.msgTagsNew');
+                await this.fetchTags();
+            } catch (error) {
+                console.log(error);
+                this.msgTagNew = '';
+                this.errorMsgTagNew = 'Error';
             }
         },
         async updateDescription() {

@@ -515,3 +515,69 @@ form label.required:after {
 .form-group >>> .ck .ck-editor__main > div {
     min-height: 150px;
 }
+
+.subtitle {
+  font-weight: bold;
+  font-size: 1.2rem;
+  margin-bottom: 0.5rem;
+}
+
+.add-tags , .delete-tags {
+    margin-top: 3rem;
+}
+
+.add-tags >>> .tags-input-badge-selected-default {
+    color: #fff !important;
+    background-color: #d23a3a !important;
+}
+
+.add-tags >>> .tags-input-remove::before, .add-tags >>> .tags-input-remove::after {
+    background: #000 !important;
+}
+
+.add-tags >>> .tags-input-root {
+    width: 50%;
+}
+
+.tooltip-button {
+    background: #fff;
+    border: 0;
+    align-self: baseline;
+}
+
+.tooltip-button:focus {
+    outline: 0 !important;
+}
+
+#tooltip {
+    position: relative;
+    display: inline-block;
+}
+
+.tooltiptext {
+    visibility: hidden;
+    width: 120px;
+    background-color: black;
+    color: #fff;
+    text-align: center;
+    border-radius: 6px;
+    padding: 5px 0;
+    position: absolute;
+    z-index: 1;
+    top: -5px;
+    left: 110%;
+}
+
+.tooltiptext::after {
+    content: "";
+    position: absolute;
+    top: 50%;
+    right: 100%;
+    margin-top: -5px;
+    border-width: 5px;
+    border-style: solid;
+    border-color: transparent black transparent transparent;
+}
+#tooltip:hover .tooltiptext {
+    visibility: visible;
+}
