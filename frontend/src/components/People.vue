@@ -1,5 +1,5 @@
 <template>
-    <b-row v-if="people" style="justify-content: center;">
+    <b-row v-if="people.length != 0" style="justify-content: center;">
         <b-col cols="12" class="padding-box">
             <div class="content-box title">
                 <h1>{{ $t('people.title') }}</h1>
@@ -8,7 +8,12 @@
             </div>
         </b-col>
 
-        <div class="body">
+        <div class="padding-box" v-if="spin" style="width: 100%;margin-top: 1rem;">
+            <div id="preloader" class="content-box" style="height: 550px; position: relative;"></div>
+        </div>
+
+
+        <div class="body" v-if="!(spin)">
             <div class="person-box" v-for="(person,index) in people" :key="index">
                 <div class="content-box">
                     <b-link class="nav-link" :to="{path: `/profile/${person.userId}`}">
@@ -42,7 +47,7 @@
             </div>
         </div>
 
-        <input v-if="!stop" type="button" @click="fetchData()" :value="$t('people.showMore')">
+        <input v-if="!(stop) && !(spin)" type="button" @click="fetchData()" :value="$t('people.showMore')">
     </b-row>
 </template>
 
@@ -55,11 +60,14 @@ export default {
         return {
             people: [],
             page: 0,
-            stop: false
+            stop: false,
+            spin: false
         }
     },
-    created() {
-        this.fetchData();
+    async created() {
+        this.spin = true;
+        await this.fetchData();
+        this.spin = false;        
     },
     methods: {
         async fetchData() {
@@ -67,7 +75,7 @@ export default {
                 const res = await this.axios.get(`users/pages/${this.page}`);
                 this.page += 1;
                 this.people.push(...res.data);
-                if (res.data.length == 0) {
+                if (res.data.length < 10) {
                     this.stop = true
                 }
             }

@@ -8,7 +8,11 @@
             </div>
         </b-col>
         <b-row class="body padding-box">
-            <b-col cols="12" class="content-box info">
+            <b-col cols="12" v-if="spin" style="display: flex;justify-content: center;">
+                <div id="preloader" class="content-box" style="height: 550px;"></div>
+            </b-col>
+
+            <b-col cols="12" v-if="!spin" class="content-box info">
                 
                 <router-link v-if="canEditVariable" class="edit-button-box" :to="{path: linkToEdit}">
                     {{ $t('profile.edit') }}
@@ -55,11 +59,11 @@
             </b-col>
         </b-row>
 
-        <b-row class="body padding-box" style="margin-top: 20px;">
-            <b-col cols="12" xl="3" class="content-box choices-box">
+        <b-row class="body padding-box" v-if="!spin" style="margin-top: 20px;">
+            <b-col cols="12" xl="3" class="content-box choices-box" v-if="(user.projects) || (publications.length != 0) || (problems.length != 0)">
                 <div class="choices">
-                    <div @click="setChoice(1)" :class="[choice == 1 ? activeClass : '']">{{ $t('profile.publications') }}</div>
-                    <div @click="setChoice(2)" :class="[choice == 2 ? activeClass : '']">{{ $t('profile.problems') }}</div>
+                    <div v-if="publications.length != 0" @click="setChoice(1)" :class="[choice == 1 ? activeClass : '']">{{ $t('profile.publications') }}</div>
+                    <div v-if="problems.length != 0" @click="setChoice(2)" :class="[choice == 2 ? activeClass : '']">{{ $t('profile.problems') }}</div>
                     <div v-if="user.projects" @click="setChoice(3)" :class="[choice == 3 ? activeClass : '']">{{ $t('profile.projects') }}</div>                   
                 </div>
             </b-col>
@@ -143,6 +147,7 @@ export default {
           indexPublication: 0,
           indexProblem: 0,
           url: '',
+          spin: false,
         }
     },
     created () {
@@ -155,14 +160,19 @@ export default {
         },
         async fetchData() {
             try {
+                this.spin = true;
                 const res = await this.axios.get(`users/${this.url}`);
                 this.user = res.data;
                 this.canEdit();
                 this.indexPublication = (this.user.publications.length) - 1;
                 this.indexProblem = (this.user.problems.length) - 1;
-                await this.fetchPublications();
+                this.fetchPublications();
+                await this.fetchProblems();
+                this.choice = (this.publications.length) != 0 ? 1 : (this.problems.length != 0) ? 2 : (this.user.projects) ? 3 : 0;
+                this.spin = false;
             } catch (error) {
                 console.log(error);
+                this.spin = false;
                 this.$router.push({path: '/error'});              
             }
         },

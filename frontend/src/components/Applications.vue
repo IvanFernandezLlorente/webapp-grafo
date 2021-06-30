@@ -10,7 +10,7 @@
         <b-row class="body padding-box">
             <b-col cols="12">
                 <b-row v-if="spinAll">
-                    <div id="preloader" class="content-box"></div>
+                    <div id="preloader" class="content-box" style="height: 550px;"></div>
                 </b-row>
                 <b-row v-if="applications.length != 0">
                     <b-col cols="12" xl="4" class="application-box">
@@ -45,7 +45,7 @@
                         </div>
                     </b-col>
                 </b-row>
-                <div v-else class="content-box no-applications">
+                <div v-else-if="(applications.length == 0) && !(spinAll)" class="content-box no-applications">
                     <h2>{{ $t('applications.noRequests') }}</h2>
                 </div>
             </b-col>
@@ -74,10 +74,18 @@ export default {
     },
     methods: {
         async fetchData() {
-            const res = await this.axios.get("applications",{
-                headers: { token: this.$store.state.token}
-            });
-            this.applications = (res.data.filter( application => !application.accepted)).reverse();
+            try {
+                this.spinAll = true;
+                const res = await this.axios.get("applications",{
+                    headers: { token: this.$store.state.token}
+                });
+                this.applications = (res.data.filter( application => !application.accepted)).reverse();
+                this.spinAll = false;
+            } catch (error) {
+                this.spinAll = false;
+                console.log(error);
+            }
+            
         },
         select(index) {
             if (this.applications) {

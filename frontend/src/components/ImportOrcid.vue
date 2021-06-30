@@ -76,7 +76,7 @@ export default {
         }
     },
     created () {
-        if (orcid) {
+        if (this.orcid) {
             this.fetchData();
         }
     },

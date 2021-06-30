@@ -19,9 +19,10 @@
             </b-row>
         </b-col>
 
-        <b-col cols="12 padding-box spin-box" v-if="spinAll && page == 0">
-            <div id="preloader" style="background-color: #EAEAEA;"></div>
-        </b-col>
+        <div class="padding-box" v-if="spinAll && page == 0" style="width: 100%;margin-top: 1rem;">
+            <div id="preloader" class="content-box" style="height: 550px; position: relative;"></div>
+        </div>
+        
         <div class="body" v-else-if="filteredProblems.length != 0">
             <b-col cols="9" class="content-box problem" v-for="(problem,index) in filteredProblems" :key="index">
                 <div class="info">

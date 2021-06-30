@@ -8,7 +8,11 @@
             </div>
         </b-col>
 
-        <div class="body">
+        <div class="padding-box" v-if="spinAll && page == 0" style="width: 100%;margin-top: 1rem;">
+            <div id="preloader" class="content-box" style="height: 550px; position: relative;"></div>
+        </div>
+
+        <div class="body" v-else-if="filteredPublications.length != 0">
             <b-col cols="9" style="padding: 0;">
                 <b-row>
                     <b-col cols="12" md="6">
@@ -39,8 +43,13 @@
                     </a>
                 </div> 
             </b-col>
+            <div class="button-box">
+                <input v-if="!stop" type="button" @click="fetchData()" :value="$t('publications.showMore')">
+            </div>
         </div>
-        <input v-if="!stop" type="button" @click="fetchData()" :value="$t('publications.showMore')">
+        <div v-else class="content-box no-publications">
+            <h2>{{ $t('publications.noRequests') }}</h2>
+        </div>
     </b-row>
 </template>
 
@@ -54,11 +63,14 @@ export default {
             publications: [],
             page: 0,
             stop: false,
-            filterText: ''
+            filterText: '',
+            spinAll: false,
         }
     },
-    created () {
-        this.fetchData();
+    async created () {
+        this.spinAll = true;
+        await this.fetchData();
+        this.spinAll = false;
     },
     methods: {
         async fetchData() {

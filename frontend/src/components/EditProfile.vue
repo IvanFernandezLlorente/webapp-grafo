@@ -8,7 +8,11 @@
             </div>
         </b-col>
         <b-col cols="12" class="padding-box">
-            <div class="content-box" style="margin-top: 20px;">
+            <div v-if="spin" style="width: 100%;margin-top: 1rem;">
+                <div id="preloader" class="content-box" style="height: 550px; position: relative;"></div>
+            </div>
+
+            <div class="content-box" v-else style="margin-top: 20px;">
                 <div class="body">
                     <div class="choices">
                         <div @click="setChoice(1)" :class="[choice == 1 ? activeClass : '']">{{ $t('settings.tabProfile') }}</div>
@@ -405,7 +409,8 @@ export default {
             type: 'description',
             en: '',
             es: ''
-        }
+        },
+        spin: false
       }
     },
     components: {
@@ -424,6 +429,7 @@ export default {
         },
         async fetchData() {
             try {
+                this.spin = true;
                 const res = await this.axios.get(`users/${this.url}`);
                 this.user = res.data;
 
@@ -433,14 +439,16 @@ export default {
                 this.selected = this.user.roles
                 this.imgDataUrl = this.user.imagenProfile ? this.user.imagenProfile : '' 
 
-                
-                const resDescription = await this.axios.get(`texts/description`);
-                if((resDescription.data) && (Object.keys(resDescription.data).length !== 0)){
-                    this.description = resDescription.data;
+                if (this.isAdmin) {
+                    const resDescription = await this.axios.get(`texts/description`);
+                    if((resDescription.data) && (Object.keys(resDescription.data).length !== 0)){
+                        this.description = resDescription.data;
+                    }
                 }
-                
+                this.spin = false;                
             } catch (error) {
-                console.log(error)                
+                console.log(error);
+                this.spin = false;                
             }
         },
         async updateProfile () {

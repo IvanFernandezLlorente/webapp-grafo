@@ -49,7 +49,7 @@
                         <div v-if="problem.alias" class="subtitle">{{ problem.alias }}</div>
                     
                         <div class="authors">
-                            <div v-if="users.length != 0">
+                            <div v-if="users.length != 0" style="display: flex;">
                                 <div v-for="(user,index) in users" :key="index">
                                     <div class="author">
                                         <b-link :to="{path: `/profile/${user.userId}`}" style="color: rgb(229, 9, 20);"> 

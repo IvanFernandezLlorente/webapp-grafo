@@ -158,7 +158,8 @@ const messages = {
         publications: {
             title: 'Publications',
             showMore: 'Show more',
-            search: 'Search by: title, author, journal or year'
+            search: 'Search by: title, author, journal or year',
+            noRequests: 'There aren\'t any publication',
         },
         publication: {
             title: 'Publication',
@@ -453,7 +454,8 @@ const messages = {
         publications: {
             title: 'Publicaciones',
             showMore: 'Mostrar más',
-            search: 'Buscar por: título, autores, revista o año'
+            search: 'Buscar por: título, autores, revista o año',
+            noRequests: 'No hay publicaciones',
         },
         publication: {
             title: 'Publicación',

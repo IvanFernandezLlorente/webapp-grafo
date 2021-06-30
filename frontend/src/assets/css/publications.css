@@ -94,3 +94,26 @@ input[type=button]:hover {
     border-color: #dbdbdb;
     width: 100%;
 }
+
+.button-box {
+    flex-basis: 100%;
+    display: flex;
+    margin-top: 2rem;
+    justify-content: center;
+}
+
+.no-publications {
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    width: 50%;
+    margin: auto;
+    text-align: center;
+    margin-top: 2rem;
+}
+
+.no-publications h2 {
+    padding: 1.8rem 0rem !important;
+    font-weight: bold;
+    font-size: 1.5rem;
+}

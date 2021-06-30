@@ -126,7 +126,12 @@ export default {
             }
         }
     },
-    computed: mapState(['userId'])
+    computed: mapState(['userId']),
+    watch: {
+        userId() {
+            this.id = this.userId;
+        }
+    }
 }
 </script>
 

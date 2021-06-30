@@ -17,6 +17,8 @@
     border-top: 1px solid #e7e7e7;
     height: 60px;
     background-color: #EAEAEA;
+    display: flex;
+    align-items: center;
 }
 
 </style>
