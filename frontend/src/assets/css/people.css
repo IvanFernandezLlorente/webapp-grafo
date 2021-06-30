@@ -133,3 +133,19 @@ input[type=button]:hover {
         padding: 0px 40px;
     }
 }
+
+.no-people {
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    width: 50%;
+    margin: auto;
+    text-align: center;
+    margin-top: 2rem;
+}
+
+.no-people h2 {
+    padding: 1.8rem 0rem !important;
+    font-weight: bold;
+    font-size: 1.5rem;
+}

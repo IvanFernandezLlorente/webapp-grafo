@@ -145,7 +145,8 @@ const messages = {
         },
         people: {
             title: 'People',
-            showMore: 'Show more'
+            showMore: 'Show more',
+            noRequests: 'There isn\'t any person',
         },
         profile: {
             title: 'Researcher',
@@ -159,7 +160,7 @@ const messages = {
             title: 'Publications',
             showMore: 'Show more',
             search: 'Search by: title, author, journal or year',
-            noRequests: 'There aren\'t any publication',
+            noRequests: 'There isn\'t any publication',
         },
         publication: {
             title: 'Publication',
@@ -185,7 +186,7 @@ const messages = {
             title: 'Problems',
             showMore: 'Show more',
             tagsPHolder: 'Filter by tag',
-            noRequests: 'There aren\'t any problem',
+            noRequests: 'There isnn\'t any problem',
             searchName: 'Search by problem name'
         },
         problem: {
@@ -211,7 +212,7 @@ const messages = {
             description: 'Description',
             acceptRequest: 'Accept Request',
             rejectRequest: 'Reject Request',
-            noRequests: 'There aren\'t any requests'
+            noRequests: 'There isn\'t any requests'
         },
         importORCID: {
             title: 'Import from ORCID',
@@ -441,7 +442,8 @@ const messages = {
         },
         people: {
             title: 'Personas',
-            showMore: 'Mostrar más'
+            showMore: 'Mostrar más',
+            noRequests: 'No hay personas',
         },
         profile: {
             title: 'Investigador',

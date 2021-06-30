@@ -1,5 +1,5 @@
 <template>
-    <b-row v-if="people.length != 0" style="justify-content: center;">
+    <b-row style="justify-content: center;">
         <b-col cols="12" class="padding-box">
             <div class="content-box title">
                 <h1>{{ $t('people.title') }}</h1>
@@ -13,7 +13,7 @@
         </div>
 
 
-        <div class="body" v-if="!(spin)">
+        <div class="body" v-else-if="people.length != 0">
             <div class="person-box" v-for="(person,index) in people" :key="index">
                 <div class="content-box">
                     <b-link class="nav-link" :to="{path: `/profile/${person.userId}`}">
@@ -45,9 +45,13 @@
                     <div v-if="person.organization" class="organization">{{ person.organization }}</div>
                 </div>
             </div>
+            <div style="flex-basis: 100%;display: flex;margin-top: 2rem; justify-content: center;">
+                <input v-if="!(stop) && !(spin)" type="button" @click="fetchData()" :value="$t('people.showMore')">
+            </div>
         </div>
-
-        <input v-if="!(stop) && !(spin)" type="button" @click="fetchData()" :value="$t('people.showMore')">
+        <div v-else class="content-box no-people">
+            <h2>{{ $t('people.noRequests') }}</h2>
+        </div>
     </b-row>
 </template>
 
