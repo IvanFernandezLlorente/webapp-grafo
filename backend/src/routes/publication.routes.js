@@ -8,7 +8,9 @@ router.get('/', publicationController.getPublications);
 
 router.get('/pages/:page', publicationController.getPublicationsPaginated);
 
-router.get('/:publicationId', publicationController.getPublicationById);
+router.get('/:publicationId', publicationController.getPublicationByPublicationId);
+
+router.get('/id/:id', publicationController.getPublicationById);
 
 router.get('/check/:title/:publicationId', publicationController.checkPublication);
 

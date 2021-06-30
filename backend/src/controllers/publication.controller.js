@@ -12,10 +12,23 @@ export const getPublicationsPaginated = async (req, res) => {
     return res.status(200).json(publications);
 };
 
-export const getPublicationById = async (req, res) => {
+export const getPublicationByPublicationId = async (req, res) => {
     try {
         const { publicationId } = req.params;
         const publication = await Publication.findOne({ publicationId });
+        if (publication) {
+            return res.status(200).json(publication);
+        }
+        return res.status(404).json({ message: "Publication not found" });
+    } catch (error) {
+        res.status(500).json({ message: "Error" });
+    }
+}
+
+export const getPublicationById = async (req, res) => {
+    try {
+        const { id } = req.params;
+        const publication = await Publication.findById(id);
         if (publication) {
             return res.status(200).json(publication);
         }
@@ -62,12 +75,12 @@ export const createPublication = async (req, res) => {
         const promises = [];
         const promises2 = [];
         
-        publicationSaved.user.forEach( userId => promises.push(User.findOne({ userId }, { password: 0 })))
+        publicationSaved.user.forEach( id => promises.push(User.findById(id, { password: 0 })))
         const users = await Promise.all(promises);
         await Promise.all(saveReferences(users, publicationSaved));
 
         
-        publicationSaved.problems.forEach( problemId => promises2.push(Problem.findOne({ problemId })));
+        publicationSaved.problems.forEach( id => promises2.push(Problem.findById(id)));
         const problems = await Promise.all(promises2);
         await Promise.all(saveReferences(problems, publicationSaved));
 
@@ -81,7 +94,7 @@ export const updatePublicationById = async (req, res) => {
     try {
         const publication = await Publication.findOne({ publicationId: req.params.publicationId });
         if (publication) {
-            const users = await User.find({ publications: publication.publicationId });
+            const users = await User.find({ publications: publication._id });
             if (req.isAdmin || (users.some(user => user._id == req.id))) {
                 
                 if (req.body.publicationId && await publicationIdUnique(req.body.publicationId)) {
@@ -92,7 +105,7 @@ export const updatePublicationById = async (req, res) => {
                 // Quitar las referencias de la publicacion a todos los users
                 await Promise.all(deleteReferences(users, publication));
 
-                const problems = await Problem.find({ publications: publication.publicationId });
+                const problems = await Problem.find({ publications: publication._id });
                 await Promise.all(deleteReferences(problems, publication));
 
                 const updatedPublication = await Publication.findOneAndUpdate(
@@ -104,12 +117,12 @@ export const updatePublicationById = async (req, res) => {
                 );
                 
                 // poner las referencias de la publicacion a los nuevos users
-                updatedPublication.user.forEach( userId => promises.push(User.findOne({ userId }, { password: 0 })))
+                updatedPublication.user.forEach( id => promises.push(User.findById(id, { password: 0 })))
                 const users2 = await Promise.all(promises);
                 await Promise.all(saveReferences(users2, updatedPublication));
 
 
-                updatedPublication.problems.forEach(problemId => promises2.push(Problem.findOne({ problemId })));
+                updatedPublication.problems.forEach(id => promises2.push(Problem.findById(id)));
                 const problems2 = await Promise.all(promises2);
                 await Promise.all(saveReferences(problems2, updatedPublication));
 
@@ -132,11 +145,11 @@ export const deletePublicationById = async (req, res) => {
     try {
         const publication = await Publication.findOne({ publicationId: req.params.publicationId });
         if (publication) {
-            const users = await User.find({ publications: publication.publicationId })
+            const users = await User.find({ publications: publication._id })
             if (req.isAdmin || (users.some( user => user._id == req.id))) {
                 await Promise.all(deleteReferences(users, publication));
 
-                const problems = await Problem.find({ publications: publication.publicationId });
+                const problems = await Problem.find({ publications: publication._id });
                 await Promise.all(deleteReferences(problems, publication));
                 
                 await Publication.findOneAndDelete({ publicationId: publication.publicationId });
@@ -155,7 +168,7 @@ const saveReferences = (array, publication) => {
     const promises = [];
 
     array.forEach( item => {
-        item.publications.push(publication.publicationId);
+        item.publications.push(publication._id);
         promises.push(item.save());
     });
 
@@ -166,7 +179,7 @@ const deleteReferences = (array, publication) => {
     const promises = [];
     
     array.forEach( item => {
-        const index = item.publications.indexOf(publication.publicationId);
+        const index = item.publications.indexOf(publication._id);
         item.publications.splice(index, 1);
         promises.push(item.save());
     });

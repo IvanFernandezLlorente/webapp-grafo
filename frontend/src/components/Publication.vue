@@ -229,13 +229,13 @@ export default {
                 this.publication = res.data;
                 this.authors = JSON.parse(this.publication.authors);
                 const promises = []
-                this.publication.user.forEach( userId => promises.push(this.axios.get(`users/${userId}`)));
+                this.publication.user.forEach( id => promises.push(this.axios.get(`users/id/${id}`)));
                 const users = await Promise.all(promises);
                 this.users = users.map( user => user.data);
 
                 promises.splice(0,promises.length);
                 
-                this.publication.problems.forEach( problemId => promises.push(this.axios.get(`problems/${problemId}`)));
+                this.publication.problems.forEach( id => promises.push(this.axios.get(`problems/id/${id}`)));
                 const problems = await Promise.all(promises);
                 this.problems = problems.map( problem => problem.data).filter(problem => problem.visible == true);
             } catch (error) {

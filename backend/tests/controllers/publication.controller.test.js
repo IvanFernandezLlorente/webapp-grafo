@@ -121,6 +121,28 @@ describe('Publications controller', () => {
             expect(res.statusCode).toEqual(500);
             expect(res.body).toEqual(expect.objectContaining({ message: "Error" }));
         });
+
+        it('Get publication by id', async () => {
+            Publication.findOne = jest.fn(() => mockPublications.filter( publication => publication.publicationId == 'el-publicationId-2'));
+            const res = await request(app).get('/api/publications/id/el-publicationId-2');
+            expect(res.statusCode).toEqual(200);
+            expect(res.body).toHaveLength(1);
+            expect(res.body).toEqual(expect.arrayContaining([expect.objectContaining({_id: 2})]));
+        });
+
+        it('Get publication by id not found', async () => {
+            Publication.findOne = jest.fn(() => mockPublications.some( publication => publication.publicationId == 'no-exist'));
+            const res = await request(app).get('/api/publications/id/no-exist');
+            expect(res.statusCode).toEqual(404);
+            expect(res.body).toEqual(expect.objectContaining({ message: "Publication not found" }));
+        });
+
+        it('Get publication by id error', async () => {
+            Publication.findOne = jest.fn(() => {throw Error});
+            const res = await request(app).get('/api/publications/id/no-exist');
+            expect(res.statusCode).toEqual(500);
+            expect(res.body).toEqual(expect.objectContaining({ message: "Error" }));
+        });
     });
 
     describe('Check Publications', () => {

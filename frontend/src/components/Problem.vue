@@ -194,13 +194,13 @@ export default {
                 this.problem = res.data;
 
                 const promises = []
-                this.problem.user.forEach( userId => promises.push(this.axios.get(`users/${userId}`)));
+                this.problem.user.forEach( id => promises.push(this.axios.get(`users/id/${id}`)));
                 const users = await Promise.all(promises);
                 this.users = users.map( user => user.data);
 
                 promises.splice(0,promises.length);
 
-                this.problem.publications.forEach( publicationId => promises.push(this.axios.get(`publications/${publicationId}`)));
+                this.problem.publications.forEach( id => promises.push(this.axios.get(`publications/id/${id}`)));
                 const publications = await Promise.all(promises);
                 this.publications = publications.map( publication => publication.data).filter(publication => publication.visible == true);
             } catch (error) {

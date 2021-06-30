@@ -249,6 +249,7 @@
 
 .editable-content >>> figure.table {
   margin: auto;
+  max-width: 100%;
 }
 
 .editable-content >>> blockquote {

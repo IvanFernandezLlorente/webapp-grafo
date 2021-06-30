@@ -12,7 +12,9 @@ router.get('/pages/:page', userController.getUsersPaginated);
 
 router.get('/token',[authJwt.verifyToken], userController.getToken); 
 
-router.get('/:userId', userController.getUserById);
+router.get('/:userId', userController.getUserByUserId);
+
+router.get('/id/:id', userController.getUserById);
 
 router.post('/signup', [verifySignUp.checkDuplicateNameOrEmail, verifySignUp.checkRolesExisted], userController.signUp);
 

@@ -475,6 +475,7 @@ export default {
                     }
                     this.$store.dispatch('updateUser',sended);
                     this.$store.dispatch('setStorage');
+                    this.url = this.$store.state.userId;
                 }
 
                 if (res.status == 200) {
@@ -571,7 +572,7 @@ export default {
             }
         },
         async deleteU() {
-            const res = await this.axios.delete(`users/${this.user.userId}`,{
+            const res = await this.axios.delete(`users/${this.url}`,{
                 headers: { token: this.$store.state.token}
             });
             if (this.user._id === this.id) {
@@ -584,7 +585,7 @@ export default {
         },
         async banUser() {
             try {
-                const res = await this.axios.put(`users/${this.user.userId}`,{ banned: true }, {
+                const res = await this.axios.put(`users/${this.url}`,{ banned: true }, {
                     headers: { token: this.$store.state.token}
                 });
                 if (this.user._id === this.id) {
@@ -600,7 +601,7 @@ export default {
         },
         async allowUser() {
             try {
-                const res = await this.axios.put(`users/${this.user.userId}`,{ banned: false }, {
+                const res = await this.axios.put(`users/${this.url}`,{ banned: false }, {
                     headers: { token: this.$store.state.token}
                 });
                 this.user.banned = res.data.banned;
@@ -615,7 +616,7 @@ export default {
                         currentPassword: this.currentPassword,
                         newPassword: this.newPassword
                     }
-                    const res = await this.axios.put(`users/password/${this.user.userId}`, body, {
+                    const res = await this.axios.put(`users/password/${this.url}`, body, {
                         headers: { token: this.$store.state.token}
                     });
                     if (res.status == 200) {

@@ -423,7 +423,7 @@ export default {
         async getUsers() {
             const res = await this.axios.get(`users`);
             res.data.forEach( user => {
-                this.userMap.set(user.name,user.userId);
+                this.userMap.set(user.name,user._id);
                 this.usersToChoose.push(user.name);
             });
         },
@@ -454,7 +454,7 @@ export default {
         async getPublications() {
             const res = await this.axios.get(`publications`);
             res.data.forEach( publication => {
-                this.publicationsMap.set(publication.title,publication.publicationId);
+                this.publicationsMap.set(publication.title,publication._id);
                 this.publicationsToChoose.push(publication.title);
             });
         },

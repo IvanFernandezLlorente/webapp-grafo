@@ -184,7 +184,7 @@ export default {
             const promises = [];
             const max = Math.max(-1,(this.indexProblem) - 10);
             for (let i = this.indexProblem; i > max; i--) {
-                promises.push(this.axios.get(`problems/${this.user.problems[i]}`))
+                promises.push(this.axios.get(`problems/id/${this.user.problems[i]}`))
             }
             const problems = await Promise.all(promises);
             this.problems.push(...problems.map( problem => problem.data));
@@ -198,7 +198,7 @@ export default {
             const promises = [];
             const max = Math.max(-1,(this.indexPublication) - 10);
             for (let i = this.indexPublication; i > max; i--) {
-                promises.push(this.axios.get(`publications/${this.user.publications[i]}`))
+                promises.push(this.axios.get(`publications/id/${this.user.publications[i]}`))
             }
             const publications = await Promise.all(promises);
             this.publications.push(...publications.map( publication => publication.data));

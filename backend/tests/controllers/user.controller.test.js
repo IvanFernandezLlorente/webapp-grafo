@@ -83,6 +83,28 @@ describe('User controller', () => {
             expect(res.statusCode).toEqual(500);
             expect(res.body).toEqual(expect.objectContaining({ message: "Error" }));
         });
+
+        it('Get user by id', async () => {
+            User.findOne = jest.fn(() => mockUsers.filter( user => user.userId == 'el-userId-2'));
+            const res = await request(app).get('/api/users/id/el-userId-2');
+            expect(res.statusCode).toEqual(200);
+            expect(res.body).toHaveLength(1);
+            expect(res.body).toEqual(expect.arrayContaining([expect.objectContaining({_id: 2})]));
+        });
+
+        it('Get user by id not found', async () => {
+            User.findOne = jest.fn(() => mockUsers.some( user => user.userId == "no-exist"));
+            const res = await request(app).get('/api/users/id/no-exist');
+            expect(res.statusCode).toEqual(404);
+            expect(res.body).toEqual(expect.objectContaining({ message: "User not found" }));
+        });
+
+        it('Get user by id error', async () => {
+            User.findOne = jest.fn(() => {throw Error});
+            const res = await request(app).get('/api/users/id/no-exist');
+            expect(res.statusCode).toEqual(500);
+            expect(res.body).toEqual(expect.objectContaining({ message: "Error" }));
+        });
     });
 
     describe('User image profile', () => {

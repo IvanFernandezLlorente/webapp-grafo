@@ -105,6 +105,28 @@ describe('Problem controller', () => {
             expect(res.statusCode).toEqual(500);
             expect(res.body).toEqual(expect.objectContaining({ message: "Error" }));
         });
+
+        it('Get problem by id', async () => {
+            Problem.findOne = jest.fn(() => mockProblems.filter( problem => problem.problemId == 'el-problemId-2'));
+            const res = await request(app).get('/api/problems/id/el-problemId-2');
+            expect(res.statusCode).toEqual(200);
+            expect(res.body).toHaveLength(1);
+            expect(res.body).toEqual(expect.arrayContaining([expect.objectContaining({_id: 2})]));
+        });
+
+        it('Get problem by id not found', async () => {
+            Problem.findOne = jest.fn(() => mockProblems.some( problem => problem.problemId == 'no-exist'));
+            const res = await request(app).get('/api/problems/id/no-exist');
+            expect(res.statusCode).toEqual(404);
+            expect(res.body).toEqual(expect.objectContaining({ message: "Problem not found" }));
+        });
+
+        it('Get problem by id error', async () => {
+            Problem.findOne = jest.fn(() => {throw Error});
+            const res = await request(app).get('/api/problems/id/no-exist');
+            expect(res.statusCode).toEqual(500);
+            expect(res.body).toEqual(expect.objectContaining({ message: "Error" }));
+        });
     });
 
     describe('Check Problems', () => {

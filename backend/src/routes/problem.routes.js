@@ -8,7 +8,9 @@ router.get('/', problemController.getProblems);
 
 router.get('/pages/:page', problemController.getProblemsPaginated);
 
-router.get('/:problemId', problemController.getProblemById);
+router.get('/:problemId', problemController.getProblemByProblemId);
+
+router.get('/id/:id', problemController.getProblemById);
 
 router.get('/check/:name/:problemId', problemController.checkProblem);
 
