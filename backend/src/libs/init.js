@@ -12,6 +12,7 @@ export const createUser = async () => {
                 name: "admin",
                 email: "admin@gmail.com",
                 userId: "admin",
+                showPeople: true,
                 password: await User.encryptPassword('admin')
             }).save();    
         }

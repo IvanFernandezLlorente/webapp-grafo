@@ -1,0 +1,95 @@
+.title {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+  position: relative;
+}
+
+.title > h1 {
+  padding: 2rem 4rem;
+  font-weight: bold;
+  font-size: 2rem;
+}
+
+.black-line {
+  border-top: 1px solid #707070;
+  width: 13rem;
+  position: absolute;
+  bottom: 1.5rem;
+}
+
+.red-line {
+  border-top: 4px solid #b81d24;
+  width: 3.5rem;
+  position: absolute;
+  bottom: 1.434rem;
+}
+
+.privacy {
+  padding: 29px 49px;
+  white-space: pre-wrap;
+  margin: auto;
+  word-break: break-all;
+}
+
+.privacy >>> img {
+  width: 100%;
+}
+
+.privacy >>> figure.image {
+  margin: auto;
+}
+
+.privacy >>> table {
+  width: 100%;
+}
+
+.privacy >>> figure.table {
+  margin: auto;
+  max-width: 100%;
+}
+
+.privacy >>> blockquote {
+  background: #f9f9f9;
+  border-left: 10px solid #ccc;
+  margin: 1.5em 10px;
+  padding: 0.5em 10px;
+  quotes: "\201C""\201D""\2018""\2019";
+}
+
+.privacy >>> blockquote:before {
+  color: #ccc;
+  content: open-quote;
+  font-size: 2em;
+  line-height: 0.1em;
+  margin-right: 0.25em;
+  vertical-align: -0.4em;
+}
+
+.privacy >>> blockquote p {
+  display: inline;
+  font-style: italic;
+}
+
+@media (min-width: 992px) {
+  .padding-box {
+    padding: 0px 40px;
+  }
+}
+
+.noPrivacy {
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+  width: 75%;
+  margin: auto;
+  text-align: center;
+  margin-top: 2rem;
+}
+
+.noPrivacy h2 {
+  padding: 1.8rem 0rem !important;
+  font-weight: bold;
+  font-size: 1.5rem;
+}

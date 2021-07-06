@@ -81,6 +81,10 @@ const messages = {
             tabAccounts: 'Connections',
             tabDanger: 'My Account',
             tabTags: 'Tags',
+            tabPrivacy: 'Privacy law',
+            updatePrivacy: 'Save privacy',
+            privacyEN: 'Privacy law in english',
+            privacyES: 'Privacy law in spanish',
             webDescription: 'Front',
             webDescriptionES: 'Web description in spanish',
             webDescriptionEN: 'Web description in english',
@@ -299,6 +303,10 @@ const messages = {
             title: 'We are sorry. Page not found.',
             subtitle: 'Sorry but the page you are looking for does not exist, have been removed, name changed or is temporarily unavailable.',
             button: 'Go to Home'
+        },
+        privacy: {
+            title: 'Privacy law',
+            noPrivacy: 'There isn\'t privacy law',
         }
     },
     'es': {
@@ -378,6 +386,10 @@ const messages = {
             tabAccounts: 'Conexiones',
             tabDanger: 'Mi cuenta',
             tabTags: 'Etiquetas',
+            tabPrivacy: 'Política de privacidad',
+            updatePrivacy: 'Guardar política',
+            privacyEN: 'Política de privacidad en inglés',
+            privacyES: 'Política de privacidad en español',
             webDescription: 'Parte delantera',
             webDescriptionES: 'Descripción web en español',
             webDescriptionEN: 'Descripción web en inglés',
@@ -596,6 +608,10 @@ const messages = {
             title: 'Lo sentimos. Página no encontrada.',
             subtitle: 'Lo sentimos, pero la página que está buscando no existe, se ha eliminado, se ha cambiado de nombre o no está disponible temporalmente.',
             button: 'Ir a Inicio'
+        },
+        privacy: {
+            title: 'Política de privacidad',
+            noPrivacy: 'No existe una política de privacidad',
         }
     }
 };

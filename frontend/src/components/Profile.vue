@@ -166,7 +166,7 @@ export default {
                 this.canEdit();
                 this.indexPublication = (this.user.publications.length) - 1;
                 this.indexProblem = (this.user.problems.length) - 1;
-                this.fetchPublications();
+                await this.fetchPublications();
                 await this.fetchProblems();
                 this.choice = (this.publications.length) != 0 ? 1 : (this.problems.length != 0) ? 2 : (this.user.projects) ? 3 : 0;
                 this.spin = false;

@@ -2,8 +2,10 @@
   <footer class="footer">
     <div class="container-fluid">
       <div class="copyright text-center">
-        &copy; Coded with
-        Lorem Ipsum is simply dummy text of the printing and typesetting industry
+        Copyright &copy; {{ new Date().getFullYear() }}. All Rights Reserved.  
+        <router-link class="nav-link" to="/privacy">
+            {{ $t('privacy.title') }}.
+        </router-link>
       </div>
     </div>
   </footer>
@@ -21,4 +23,14 @@
     align-items: center;
 }
 
+.copyright {
+    display: flex;
+    justify-content: center;
+}
+
+.copyright a {
+    padding: 0;
+    color: #B81D24;
+    margin-left: 10px;
+}
 </style>

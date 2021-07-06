@@ -21,6 +21,7 @@
                         <div @click="setChoice(4)" :class="[choice == 4 ? activeClass : '']">{{ $t('settings.tabDanger') }}</div>
                         <div v-if="isAdmin" @click="setChoice(5)" :class="[choice == 5 ? activeClass : '']">{{ $t('settings.tabTags') }}</div>
                         <div v-if="isAdmin" @click="setChoice(6)" :class="[choice == 6 ? activeClass : '']">{{ $t('settings.webDescription') }}</div>
+                        <div v-if="isAdmin" @click="setChoice(7)" :class="[choice == 7 ? activeClass : '']">{{ $t('settings.tabPrivacy') }}</div>
                     </div>
 
                     <div v-if="choice == 1">
@@ -303,7 +304,6 @@
                                 <b-col cols="12">
                                     <div class="form-group">
                                         <label for="webDescriptionEN" class="control-label">{{ $t('settings.webDescriptionEN') }}</label>
-                                        <!-- <textarea id="webDescriptionEN" v-model="description.en" rows="10" style="height: 20px; min-height: 150px;" :placeholder="$t('settings.descriptionPHolder')"></textarea>     -->
                                         <ckeditor :editor="editor" v-model="description.en" :config="editorConfig"></ckeditor>
                                     </div>
                                 </b-col>
@@ -313,11 +313,32 @@
                                     <div class="form-group">
                                         <label for="webDescriptionES" class="control-label">{{ $t('settings.webDescriptionES') }}</label>
                                         <ckeditor :editor="editor" v-model="description.es" :config="editorConfig"></ckeditor>
-                                        <!-- <textarea id="webDescriptionES" v-model="description.es" rows="10" style="height: 20px; min-height: 150px;" :placeholder="$t('settings.descriptionPHolder')"></textarea>     -->
                                     </div>
                                 </b-col>
                             </b-row>
                             <input type="submit" name="commit" :value="$t('settings.updateDescription')" style="margin-left: 15px;margin-top: 4rem;">
+                        </form>
+                    </div>
+
+                    <div v-if="(choice == 7) && isAdmin">
+                        <form @submit.prevent="updatePrivacy" class="form-data">
+                            <b-row>
+                                <b-col cols="12">
+                                    <div class="form-group">
+                                        <label for="privacyEN" class="control-label">{{ $t('settings.privacyEN') }}</label>
+                                        <ckeditor :editor="editor" v-model="privacy.en" :config="editorConfig"></ckeditor>
+                                    </div>
+                                </b-col>
+                            </b-row>
+                            <b-row style="margin-top: 4rem;">
+                                <b-col cols="12">
+                                    <div class="form-group">
+                                        <label for="privacyES" class="control-label">{{ $t('settings.privacyES') }}</label>
+                                        <ckeditor :editor="editor" v-model="privacy.es" :config="editorConfig"></ckeditor>
+                                    </div>
+                                </b-col>
+                            </b-row>
+                            <input type="submit" name="commit" :value="$t('settings.updatePrivacy')" style="margin-left: 15px;margin-top: 4rem;">
                         </form>
                     </div>
                 </div>
@@ -410,6 +431,11 @@ export default {
             en: '',
             es: ''
         },
+        privacy: {
+            type: 'privacy',
+            en: '',
+            es: ''
+        },
         spin: false
       }
     },
@@ -443,6 +469,11 @@ export default {
                     const resDescription = await this.axios.get(`texts/description`);
                     if((resDescription.data) && (Object.keys(resDescription.data).length !== 0)){
                         this.description = resDescription.data;
+                    }
+
+                    const resPrivacy = await this.axios.get(`texts/privacy`);
+                    if((resPrivacy.data) && (Object.keys(resPrivacy.data).length !== 0)){
+                        this.privacy = resPrivacy.data;
                     }
                 }
                 this.spin = false;                
@@ -717,6 +748,16 @@ export default {
                     headers: { token: this.$store.state.token}
                 });
                 this.$router.push({path: '/'})
+            } catch (error) {
+                console.log(error);
+            }
+        },
+        async updatePrivacy() {
+            try {
+                const res = await this.axios.put(`texts/privacy`, this.privacy, {
+                    headers: { token: this.$store.state.token}
+                });
+                this.$router.push({path: '/privacy'})
             } catch (error) {
                 console.log(error);
             }

@@ -8,7 +8,13 @@
             </div>
         </b-col>
 
-        <b-row class="body padding-box">
+        <b-row v-if="spin" class="body padding-box">
+             <b-col cols="12" style="display: flex;justify-content: center; padding: 0">
+                <div id="preloader" class="content-box" style="height: 550px; position: relative"></div>
+            </b-col>
+        </b-row>
+
+        <b-row v-else class="body padding-box">
             <b-col cols="12" xl="3" class="content-box choices-box">
                 <div class="choices">
                     <div @click="setChoice(1)" :class="[choice == 1 ? activeClass : '']">{{ $t('problem.introduction') }}</div>
@@ -178,6 +184,7 @@ export default {
             publications: [],
             choice: 1,
             activeClass: 'active',
+            spin: false
         }
     },
     created () {
@@ -190,6 +197,7 @@ export default {
         },
         async fetchData() {
             try {
+                this.spin = true;
                 const res = await this.axios.get(`problems/${this.url}`);
                 this.problem = res.data;
 
@@ -203,8 +211,10 @@ export default {
                 this.problem.publications.forEach( id => promises.push(this.axios.get(`publications/id/${id}`)));
                 const publications = await Promise.all(promises);
                 this.publications = publications.map( publication => publication.data).filter(publication => publication.visible == true);
+                this.spin = false;
             } catch (error) {
                 console.log(error);
+                this.spin = false;
                 this.$router.push({path: '/error'});
             }
             

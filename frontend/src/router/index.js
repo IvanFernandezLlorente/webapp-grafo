@@ -21,6 +21,7 @@ import RequestSignUp from '../pages/RequestSignUp';
 import Applications from '../components/Applications';
 import ImportOrcid from '../components/ImportOrcid';
 import ErrorComponent from '../components/Error';
+import Privacy from '../components/Privacy';
 
 Vue.use(VueRouter)
 
@@ -161,6 +162,11 @@ const routes = [
             }
         }
      }, 
+     {
+        path: '/privacy',
+        name: 'Privacy',
+        component: Privacy,
+     },
      {
         path: '/error',
         name: 'Error',
