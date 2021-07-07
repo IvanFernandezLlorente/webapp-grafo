@@ -8,7 +8,7 @@
                         <img src="../assets/logo_grafo_menu.svg" class="image-menu">
                     </div>
                     <div class="title">
-                        <div style="font-size: 1.5rem;font-weight: bold; white-space: nowrap;">Grafo Research</div>
+                        <div style="font-size: 1.5rem;font-weight: bold; white-space: nowrap;">Heuristicas</div>
                     </div>
                 </div>
                 <hr class="divider">

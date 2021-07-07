@@ -11,13 +11,13 @@ const messages = {
             recentProblems: 'Most recent problems'
         },
         login: {
-            title: 'Sign in to Grafo Research',
+            title: 'Sign in to Heuristicas',
             email: 'Email',
             emailPHolder: 'example@gmail.com',
             pass: 'Password',
             passPHolder: 'Password',
             button: 'Sign In',
-            titleNewPerson: 'New to Grafo Research?',
+            titleNewPerson: 'New to Heuristicas?',
             linkNewPerson: 'Request Sign Up',
             google: 'Sign In with Google',
             github: 'Sign In with GitHub',
@@ -316,13 +316,13 @@ const messages = {
             recentProblems: 'Problemas más recientes'
         },
         login: {
-            title: 'Iniciar sesión en Grafo Research',
+            title: 'Iniciar sesión en Heuristicas',
             email: 'Email',
             emailPHolder: 'ejemplo@gmail.com',
             pass: 'Contraseña',
             passPHolder: 'contraseña',
             button: 'Iniciar Sesión',
-            titleNewPerson: '¿Nuevo en Grafo Research?',
+            titleNewPerson: '¿Nuevo en Heuristicas?',
             linkNewPerson: 'Solicita el registro',
             google: 'Iniciar sesión con Google',
             github: 'Iniciar sesión con GitHub',
