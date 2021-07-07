@@ -1,5 +1,7 @@
 import User from "../../src/models/User";
 import Application from '../../src/models/Application';
+import Problem from "../../src/models/Problem";
+import Publication from "../../src/models/Publication";
 const userController = require('../../src/controllers/user.controller');
 import request from 'supertest';
 import jwt from 'jsonwebtoken';
@@ -13,6 +15,8 @@ import app from '../../src/app';
 
 let mockUsers;
 let mockApplications;
+let mockPublications;
+let mockProblems;
 describe('User controller', () => {
     beforeEach(() => {
         mockUsers = [
@@ -41,6 +45,22 @@ describe('User controller', () => {
                 roles: ['user'],
                 banned: true
             }
+        ],
+        mockProblems = [
+            {
+                _id: 1,
+                name: "el problem 1",
+                problemId: "el-problemId-1",
+                user: ["el-userId-2"]
+            }       
+        ],
+        mockPublications = [
+            {
+                _id: 2,
+                title: "el publication 2",
+                publicationId: "el-publicationId-2",
+                user: ["el-userId-2"],
+            },
         ],
         mockApplications = [
             {
@@ -351,6 +371,31 @@ describe('User controller', () => {
                 next() 
             });
 
+            Publication.find = jest.fn(() => mockPublications.filter(publication => publication.user.includes('el-userId-2')));
+            Problem.find = jest.fn(() => mockProblems.filter(problem => problem.user.includes('el-userId-2')));
+            
+            const deleteReferencesMock = jest.fn()
+            .mockImplementationOnce(() => {
+                mockProblems[0] = {
+                    _id: 1,
+                    name: "el problem 1",
+                    problemId: "el-problemId-1",
+                    user: []
+                }  
+                return mockProblems
+            })
+            .mockImplementationOnce(() => {
+                mockPublications[0] = {
+                    _id: 2,
+                    title: "el publication 2",
+                    publicationId: "el-publicationId-2",
+                    user: []
+                }
+                return mockPublications
+            });
+            userController.__Rewire__('deleteReferences', deleteReferencesMock)
+
+
             const res = await request(app).delete('/api/users/el-userId-2');
             expect(authJwt.verifyToken).toHaveBeenCalledTimes(1);
             expect(res.statusCode).toEqual(200);
@@ -361,6 +406,18 @@ describe('User controller', () => {
                 email: "el email 2",
                 password: "la pass 2",
                 userId: "el-userId-2"
+            }]));
+            expect(mockProblems).toEqual(expect.not.arrayContaining([{
+                _id: 2,
+                name: "el problem 2",
+                problemId: "el-problemId-2",
+                user: []
+            }]));
+            expect(mockPublications).toEqual(expect.arrayContaining([{
+                _id: 2,
+                title: "el publication 2",
+                publicationId: "el-publicationId-2",
+                user: []
             }]));
         });
     });

@@ -102,7 +102,7 @@ export default {
             }            
         },
         google(){
-            window.open(`https://${this.$hostname}:3443/api/users/oauth/google/signin`,"windowLoginGoogle","location=1,status=1,scrollbars=1,width=800,height=800");
+            window.open(`https://${this.$hostname}/api/users/oauth/google/signin`,"windowLoginGoogle","location=1,status=1,scrollbars=1,width=800,height=800");
             let listener = window.addEventListener('message', (message) => {
                 if ((message.data.method == 'signinGoogle') && (message.data.message)) {
                     this.error = this.manageError(message.data.message);
@@ -112,7 +112,7 @@ export default {
             });
         },
         github() {
-            window.open(`https://${this.$hostname}:3443/api/users/oauth/github/signin`,"windowLoginGithub","location=1,status=1,scrollbars=1,width=800,height=800");
+            window.open(`https://${this.$hostname}/api/users/oauth/github/signin`,"windowLoginGithub","location=1,status=1,scrollbars=1,width=800,height=800");
             let listener = window.addEventListener('message', (message) => {
                 if ((message.data.method == 'signinGitHub') && (message.data.message)) {
                     this.error = this.manageError(message.data.message);
@@ -122,7 +122,7 @@ export default {
             });
         },
         orcid() {
-            window.open(`https://${this.$hostname}:3443/api/users/oauth/orcid/signin`,"windowLoginORCID","location=1,status=1,scrollbars=1,width=800,height=800");
+            window.open(`https://${this.$hostname}/api/users/oauth/orcid/signin`,"windowLoginORCID","location=1,status=1,scrollbars=1,width=800,height=800");
             let listener = window.addEventListener('message', (message) => {
                 if ((message.data.method == 'signinORCID') && (message.data.message)) {
                     this.error = this.manageError(message.data.message);

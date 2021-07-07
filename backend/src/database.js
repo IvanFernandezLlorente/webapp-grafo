@@ -3,7 +3,7 @@ import config from './config';
 
 export async function startConnection() {
     try {
-        await mongoose.connect(config.MONGODB_URI, {// TODO: change it to dev start  'mongodb://localhost:27017/grafodb'
+        await mongoose.connect('mongodb://localhost:27017/grafodb', {// TODO: change it to dev start  'mongodb://localhost:27017/grafodb'
             useNewUrlParser: true,
             useUnifiedTopology: true,
             useFindAndModify: false,

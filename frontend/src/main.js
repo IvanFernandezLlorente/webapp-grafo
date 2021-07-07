@@ -48,8 +48,8 @@ Vue.use(CKEditor)
 Vue.use(VueAxios, axios)
 Vue.use(SidebarPlugin)
 
-Vue.prototype.$hostname = '192.168.10.144'
-axios.defaults.baseURL = 'https://192.168.10.144:3443/api';
+Vue.prototype.$hostname = 'nuevawebgrafoapi.numa.host'
+axios.defaults.baseURL = 'https://nuevawebgrafoapi.numa.host/api';
 
 new Vue({
   i18n,

@@ -12,7 +12,7 @@ import { URLSearchParams } from 'url';
 passport.use('signinGoogle', new GoogleStrategy({
     clientID: config.OAUTH.GOOGLE.CLIENT_ID,
     clientSecret: config.OAUTH.GOOGLE.CLIENT_SECRET,
-    callbackURL: `https://${config.HOSTNAME}:3443/api/users/oauth/google/callback/signin`
+    callbackURL: `https://${config.HOSTNAME}/api/users/oauth/google/callback/signin`
 }, async (accessToken, refreshToken, profile, done) => {
     try {
         const existingUser = await User.findOne({ 'google.methodId': profile.id, 'google.email': profile.emails[0].value });
@@ -32,7 +32,7 @@ passport.use('signinGoogle', new GoogleStrategy({
 passport.use('signinGitHub', new GitHubStrategy({
     clientID: config.OAUTH.GITHUB.CLIENT_ID,
     clientSecret: config.OAUTH.GITHUB.CLIENT_SECRET,
-    callbackURL: `https://${config.HOSTNAME}:3443/api/users/oauth/github/callback/signin`
+    callbackURL: `https://${config.HOSTNAME}/api/users/oauth/github/callback/signin`
 }, async (accessToken, refreshToken, profile, done) => {
     try {
         const existingUser = await User.findOne({ 'github.methodId': profile.id, 'github.name': profile.username });
@@ -50,12 +50,12 @@ passport.use('signinGitHub', new GitHubStrategy({
 }));
 
 passport.use('signinORCID', new OAuth2Strategy({
-    authorizationURL: `https://sandbox.orcid.org/oauth/authorize?client_id=${config.OAUTH.ORCID.CLIENT_ID}&response_type=code&scope=/authenticate&redirect_uri=https://${config.HOSTNAME}:3443/api/users/oauth/orcid/callback/signin`,
-    tokenURL: `https://sandbox.orcid.org/oauth/authorize?client_id=${config.OAUTH.ORCID.CLIENT_ID}&response_type=token&scope=openid&redirect_uri=https://${config.HOSTNAME}:3443/api/users/oauth/orcid/callback/signin`,
+    authorizationURL: `https://sandbox.orcid.org/oauth/authorize?client_id=${config.OAUTH.ORCID.CLIENT_ID}&response_type=code&scope=/authenticate&redirect_uri=https://${config.HOSTNAME}/api/users/oauth/orcid/callback/signin`,
+    tokenURL: `https://sandbox.orcid.org/oauth/authorize?client_id=${config.OAUTH.ORCID.CLIENT_ID}&response_type=token&scope=openid&redirect_uri=https://${config.HOSTNAME}/api/users/oauth/orcid/callback/signin`,
     scope: '/authenticate',
     clientID: config.OAUTH.ORCID.CLIENT_ID,
     clientSecret: config.OAUTH.ORCID.CLIENT_SECRET,
-    callbackURL: `https://${config.HOSTNAME}:3443/api/users/oauth/orcid/callback/signin`,
+    callbackURL: `https://${config.HOSTNAME}/api/users/oauth/orcid/callback/signin`,
     passReqToCallback: true,
 }, async (req,accessToken, refreshToken, profile, done) => {
     try {
@@ -91,7 +91,7 @@ passport.use('signinORCID', new OAuth2Strategy({
 passport.use('connectGoogle', new GoogleStrategy({
     clientID: config.OAUTH.GOOGLE.CLIENT_ID,
     clientSecret: config.OAUTH.GOOGLE.CLIENT_SECRET,
-    callbackURL: `https://${config.HOSTNAME}:3443/api/users/oauth/google/callback/connect`,
+    callbackURL: `https://${config.HOSTNAME}/api/users/oauth/google/callback/connect`,
     passReqToCallback: true,
 }, async (req, accessToken, refreshToken, profile, done) => {
     try {
@@ -130,7 +130,7 @@ passport.use('connectGoogle', new GoogleStrategy({
 passport.use('connectGithub',new GitHubStrategy({
     clientID: config.OAUTH.GITHUB.CLIENT_ID,
     clientSecret: config.OAUTH.GITHUB.CLIENT_SECRET,
-    callbackURL: `https://${config.HOSTNAME}:3443/api/users/oauth/github/callback/connect`,
+    callbackURL: `https://${config.HOSTNAME}/api/users/oauth/github/callback/connect`,
     passReqToCallback: true,
 }, async (req,accessToken, refreshToken, profile, done) => {
     try {
@@ -166,12 +166,12 @@ passport.use('connectGithub',new GitHubStrategy({
 }));
 
 passport.use('connectORCID', new OAuth2Strategy({
-    authorizationURL: `https://sandbox.orcid.org/oauth/authorize?client_id=${config.OAUTH.ORCID.CLIENT_ID}&response_type=code&scope=/authenticate&redirect_uri=https://${config.HOSTNAME}:3443/api/users/oauth/orcid/callback/connect`,
-    tokenURL: `https://sandbox.orcid.org/oauth/authorize?client_id=${config.OAUTH.ORCID.CLIENT_ID}&response_type=token&scope=openid&redirect_uri=https://${config.HOSTNAME}:3443/api/users/oauth/orcid/callback/connect`,
+    authorizationURL: `https://sandbox.orcid.org/oauth/authorize?client_id=${config.OAUTH.ORCID.CLIENT_ID}&response_type=code&scope=/authenticate&redirect_uri=https://${config.HOSTNAME}/api/users/oauth/orcid/callback/connect`,
+    tokenURL: `https://sandbox.orcid.org/oauth/authorize?client_id=${config.OAUTH.ORCID.CLIENT_ID}&response_type=token&scope=openid&redirect_uri=https://${config.HOSTNAME}/api/users/oauth/orcid/callback/connect`,
     scope: '/authenticate',
     clientID: config.OAUTH.ORCID.CLIENT_ID,
     clientSecret: config.OAUTH.ORCID.CLIENT_SECRET,
-    callbackURL: `https://${config.HOSTNAME}:3443/api/users/oauth/orcid/callback/connect`,
+    callbackURL: `https://${config.HOSTNAME}/api/users/oauth/orcid/callback/connect`,
     passReqToCallback: true,
 }, async (req,accessToken, refreshToken, profile, done) => {
     try {

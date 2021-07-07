@@ -52,14 +52,14 @@
 
                     <div style="display: flex;margin-bottom: 0.5rem;">
                         <div v-if="publication.pdf" class="resource">
-                            <a :href="`https://${this.$hostname}:3443/api/files/downloads/${publication.pdf}`">
+                            <a :href="`https://${this.$hostname}/api/files/downloads/${publication.pdf}`">
                                 <img src="../assets/pdf.svg">
                                 <p>{{ $t('publication.pdf') }}</p>
                             </a>
                         </div>
 
                         <div v-if="publication.bibtex" class="resource">
-                            <a :href="`https://${this.$hostname}:3443/api/files/bibtex/${publication.publicationId}`">
+                            <a :href="`https://${this.$hostname}/api/files/bibtex/${publication.publicationId}`">
                                 <img src="../assets/cite.svg">
                                 <p>{{ $t('publication.cite') }}</p>
                             </a>

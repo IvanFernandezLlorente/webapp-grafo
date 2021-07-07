@@ -1,5 +1,7 @@
 import User from "../models/User";
 import Application from '../models/Application';
+import Problem from '../models/Problem';
+import Publication from '../models/Publication';
 import jwt from 'jsonwebtoken';
 import config from '../config';
 import * as emailSend from '../libs/email';
@@ -113,6 +115,11 @@ export const updateUserById = async (req, res) => {
                     new: true
                 }
             )
+
+            if (req.body.banned) {
+                await emailSend.emailBan(updatedUser);
+            }
+
             return res.status(200).json(updatedUser);
         }
         return res.status(401).json({ message: "Unauthorized" });
@@ -165,16 +172,34 @@ export const deleteUserById = async (req, res) => {
 
         if (req.isAdmin || req.userId == req.params.userId) { 
             const { userId } = req.params;
+            
+            const publications = await Publication.find({ user: userFound._id });
+            await Promise.all(deleteReferences(publications, userFound));
+
+            
+            const problems = await Problem.find({ user: userFound._id });
+            await Promise.all(deleteReferences(problems, userFound));
+
             const user = await User.findOneAndDelete({ userId });
-            // if (user) {
-            //     await fs.unlink(path.resolve(user.imagenPath));
-            // }
+            
             return res.status(200).json();
         }
         return res.status(401).json({ message: "Unauthorized" });
     } catch (error) {
         return res.status(500).json({ message: "Error" });
     }
+}
+
+const deleteReferences = (array, user) => {
+    const promises = [];
+    
+    array.forEach( item => {
+        const index = item.user.indexOf(user._id);
+        item.user.splice(index, 1);
+        promises.push(item.save());
+    });
+
+    return promises;
 }
 
 export const signUp = async (req,res) => {
