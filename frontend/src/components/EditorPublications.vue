@@ -11,7 +11,7 @@
 
             <h2 slot="title" style="display: none;"></h2>   
 
-            <tab-content :title="$t('createPublication.wizard1')" :before-change="checkEmptyFields">
+            <tab-content :title="$t('createPublication.wizard1')" :before-change="checkFields">
                 <b-row>
                     <b-col cols="12" class="first-items">
                         <div class="main-buttons">
@@ -58,8 +58,8 @@
                     </b-col>
                     <b-col cols="12" xl="4">
                         <div class="form-group">
-                            <label for="publicationId" class="required">URL</label>
-                            <input id="publicationId" v-model="publication.publicationId" @change="updateCopy" type="text" placeholder="URL">
+                            <label for="publicationId" class="required">{{ $t('createPublication.publicationId') }}</label>
+                            <input id="publicationId" v-model="publication.publicationId" @change="updateCopy" type="text" placeholder="ID">
                             <p v-if="noURL" style="color: red;">{{ $t('createPublication.noURL') }}</p>
                         </div>
                     </b-col>
@@ -188,6 +188,7 @@
                         </div>
                     </b-col>
                 </b-row>
+                <p v-if="error" class="msgResponse col-md-6 col-xl-4 col-12" style="margin-left: 0;">{{ errorMsg }}</p>
             </tab-content>
 
 
@@ -339,7 +340,7 @@ export default {
         return {
             publication: {
                 title: '',
-                publicationId: '',
+                publicationId: (Date.now().toString(36) + Math.random().toString(36).substr(2, 6)),
                 journal: '',
                 volume: '',
                 pages: '',
@@ -447,13 +448,6 @@ export default {
             try {
                 this.spin = true;
 
-                if (!(await this.checkUniquePublication())) {
-                    this.error = true;
-                    this.spin = false;
-                    this.errorMsg = this.$t('createPublication.error');
-                    return;
-                }  
-
                 this.deleteEmptyUsers();
                 if (this.authors.length == 0) {
                     this.error = true;
@@ -468,6 +462,13 @@ export default {
                 this.prepareContent();
                 this.generateBibtex();
                 
+
+                const doiString = "https://doi.org/";
+                if((this.publication.doi) && !(this.publication.doi.startsWith(doiString))) {
+                    this.publication.doi = doiString.concat(this.publication.doi);
+                    this.publicationCopy.doi = this.publication.doi;
+                }
+
                 const idPDF = await this.prepareFilePDF();
                 let files;
                 if (this.filesToUpload) {
@@ -856,11 +857,23 @@ export default {
                     break;
             }
         },
-        checkEmptyFields: function() {
+        checkFields: async function() {
             this.noTitle = this.publication.title ? false : true;
             this.noURL = this.publication.publicationId ? false : true;
             
-            return (!this.noTitle) && (!this.noURL);
+            if ((!this.noTitle) && (!this.noURL)) {
+                if (!(await this.checkUniquePublication())) {
+                    this.error = true;
+                    this.spin = false;
+                    this.errorMsg = this.$t('createPublication.error');
+                    return false;
+                } 
+                this.error = false;
+                this.spin = false;
+                this.errorMsg = '';
+                return true;
+            }
+            return false;
         }
     },
     watch: {

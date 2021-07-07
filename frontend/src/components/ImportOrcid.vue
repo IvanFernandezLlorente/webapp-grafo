@@ -32,7 +32,7 @@
                                     <p><b>{{ $t('importORCID.titlePubli') }}: </b>{{publicationSelected.title.title.value}}</p> 
                                     <p v-if="journalExist(publicationSelected)"><b>{{ $t('importORCID.journal') }}: </b>{{publicationSelected["journal-title"]["value"]}}</p>
                                     <p><b>Date: </b>{{publicationSelected["publication-date"].year.value}}</p>
-                                    <p v-if="doiExist(publicationSelected)"><b>DOI: </b>https://doi.org/{{manageDOI(publicationSelected)}}</p>
+                                    <p v-if="doiExist(publicationSelected)"><b>DOI: </b>{{manageDOI(publicationSelected)}}</p>
                                     <p v-if="publicationSelected.citation" class="cite"><b>{{ $t('importORCID.citation') }}: </b>{{publicationSelected.citation["citation-value"]}}</p>                   
                                 </div>
                                 <div class="publication-buttons">

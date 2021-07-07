@@ -43,7 +43,7 @@
                                             </b-col>
                                             <b-col cols="12" md="4"> 
                                                 <div class="form-group">
-                                                    <label for="userId" class="control-label required">URL</label>
+                                                    <label for="userId" class="control-label required">{{ $t('settings.idPHolder') }}</label>
                                                     <input id="userId" @keydown.enter.prevent='' v-model="user.userId" @change="updateCopy" type="text" :placeholder="$t('settings.idPHolder')">
                                                 </div>
                                             </b-col>

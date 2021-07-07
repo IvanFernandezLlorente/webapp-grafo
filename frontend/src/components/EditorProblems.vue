@@ -11,7 +11,7 @@
 
             <h2 slot="title" style="display: none;"></h2>
 
-            <tab-content :title="$t('createProblem.wizard1')" :before-change="checkEmptyFields">
+            <tab-content :title="$t('createProblem.wizard1')" :before-change="checkFields">
                 <b-row>
                     <b-col cols="12" class="first-items">
                         <div style="display: flex; justify-content: flex-end;">
@@ -31,8 +31,8 @@
                     </b-col>
                     <b-col cols="12" xl="6">
                         <div class="form-group">
-                            <label for="problemId" class="required">URL</label>
-                            <input id="problemId" v-model="problem.problemId" @change="updateCopy" type="text" placeholder="URL">
+                            <label for="problemId" class="required">{{ $t('createProblem.problemId') }}</label>
+                            <input id="problemId" v-model="problem.problemId" @change="updateCopy" type="text" placeholder="ID">
                             <p v-if="noURL" style="color: red;">{{ $t('createProblem.noURL') }}</p>
                         </div>
                     </b-col>
@@ -102,6 +102,7 @@
                         <tags-input v-model="selectedTags" :existing-tags="suggestions" :typeahead="true" :typeahead-max-results=10 :placeholder="$t('createProblem.tagsPHolder')"></tags-input>
                     </b-col>
                 </b-row>
+                <p v-if="error" class="msgResponse col-md-6 col-xl-4 col-12" style="margin-left: 0;">{{ errorMsg }}</p>
             </tab-content>
 
 
@@ -250,7 +251,7 @@ export default {
         return {
             problem: {
                 name: '',
-                problemId: '',
+                problemId: (Date.now().toString(36) + Math.random().toString(36).substr(2, 6)),
                 alias: '',
                 description: {
                     content: '',
@@ -340,13 +341,6 @@ export default {
         async saveProblem() {
             try {
                 this.spin = true;
-
-                if (!(await this.checkUniqueProblem())) {
-                    this.error = true;
-                    this.errorMsg = this.$t('createProblem.error');
-                    this.spin = false;
-                    return;
-                }  
 
                 this.prepareUsers();
                 this.preparePublications();
@@ -558,11 +552,23 @@ export default {
                     break;
             }
         },
-        checkEmptyFields: function() {
+        checkFields: async function() {
             this.noTitle = this.problem.name ? false : true;
             this.noURL = this.problem.problemId ? false : true;
             
-            return (!this.noTitle) && (!this.noURL);
+            if ((!this.noTitle) && (!this.noURL)) {
+                if (!(await this.checkUniqueProblem())) {
+                    this.error = true;
+                    this.spin = false;
+                    this.errorMsg = this.$t('createProblem.error');
+                    return false;
+                } 
+                this.error = false;
+                this.spin = false;
+                this.errorMsg = '';
+                return true;
+            }
+            return false;              
         },
         async getTags(){
             const res = await this.axios.get(`tags`);
