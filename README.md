@@ -6,4 +6,4 @@ Heuristicas is a web application for the dissemination of scientific publication
 
 Click on the following link to access the site
 
-[Heuristicas](https://nuevawebgrafo.numa.host/)
+[Heuristicas](https://heuristicas.es/)
