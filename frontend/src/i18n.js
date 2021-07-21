@@ -309,6 +309,19 @@ const messages = {
         privacy: {
             title: 'Privacy law',
             noPrivacy: 'There isn\'t privacy law',
+        },
+        adminRegister: {
+            title: 'Register',
+            email: 'Email',
+            emailPHolder: 'example@gmail.com',
+            name: 'Name',
+            namePHolder: 'Your Name',
+            pass: 'Password',
+            passPHolder: 'Password',
+            emailRequired: 'The email is required',
+            nameRequired: 'The name is required',
+            passRequired: 'Insert a password',
+            button: 'Register',
         }
     },
     'es': {
@@ -616,6 +629,19 @@ const messages = {
         privacy: {
             title: 'Política de privacidad',
             noPrivacy: 'No existe una política de privacidad',
+        },
+        adminRegister: {
+            title: 'Registro',
+            email: 'Email',
+            emailPHolder: 'ejemplo@gmail.com',
+            name: 'Nombre',
+            namePHolder: 'Escribe tu nombre',
+            pass: 'Password',
+            passPHolder: 'Password',
+            emailRequired: 'The email is required',
+            nameRequired: 'El nombre es obligatorio',
+            passRequired: 'Inserte una contraseña',
+            button: 'Registrar',
         }
     }
 };

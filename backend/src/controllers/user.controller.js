@@ -255,6 +255,48 @@ export const signUp = async (req,res) => {
     }
 }
 
+export const signUpAdmin = async (req,res) => {
+    try {
+        if (req.isAdmin) {
+            const { email, name, password } = req.body;
+        
+            const emailFound = await User.findOne({ email });
+            if (emailFound){
+                return res.status(400).json({ message: "The email already exists" });
+            }   
+        
+            const newUser = new User({
+                email,
+                password: await User.encryptPassword(password),
+                name,
+                showPeople: true
+            });
+            
+            if(req.body.roles) {
+                newUser.roles = req.body.roles
+            } else {
+                newUser.roles = ["user"]
+            }
+
+            const finalUser = await saveNewUser(newUser);
+
+            
+            // Send Email
+            await emailSend.emailWelcome(finalUser);
+
+            return res.status(200).json({
+                id: finalUser._id,
+                userId: finalUser.userId,
+                roles: finalUser.roles
+            });
+        }
+        return res.status(401).json({ message: "Unauthorized" });
+    } catch (error) {
+        console.log(error);
+        return res.status(500).json({ message: "Error" });
+    }
+}
+
 export const connectSocial = async (req,res) => {
     try {
         let responseHTML = '<html><head><title>Main</title></head><body></body><script>res = %value%; window.opener.postMessage(res, "*");window.close();</script></html>';

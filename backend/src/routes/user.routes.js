@@ -18,6 +18,8 @@ router.get('/id/:id', userController.getUserById);
 
 router.post('/signup', [verifySignUp.checkDuplicateNameOrEmail, verifySignUp.checkRolesExisted], userController.signUp);
 
+router.post('/admin/signup', [authJwt.verifyToken, verifySignUp.checkDuplicateNameOrEmail, verifySignUp.checkRolesExisted], userController.signUpAdmin);
+
 router.post('/signin', userController.signIn);
 
 router.post('/images/:userId',[authJwt.verifyToken], userController.imageProfile);

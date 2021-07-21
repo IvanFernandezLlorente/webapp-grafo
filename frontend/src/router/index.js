@@ -23,6 +23,7 @@ import ImportOrcid from '../components/ImportOrcid';
 import ErrorComponent from '../components/Error';
 import Privacy from '../components/Privacy';
 import AdminPeople from '../components/AdminPeople';
+import AdminRegister from '../components/AdminRegister';
 
 Vue.use(VueRouter)
 
@@ -185,6 +186,18 @@ const routes = [
             }
         }
      }, 
+     {
+        path: '/admin-register',
+        name: 'AdminRegister',
+        component: AdminRegister,
+        beforeEnter: (to, from, next) => {
+            if (store.state.isAdmin) {
+                next();
+            } else {
+                next({path: '/'})
+            }
+        }
+     },
     ]
   },
   {
