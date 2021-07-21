@@ -311,8 +311,8 @@ const messages = {
             title: 'Privacy law',
             noPrivacy: 'There isn\'t privacy law',
         },
-        adminRegister: {
-            title: 'Register',
+        admin: {
+            title: 'Administrator',
             email: 'Email',
             emailPHolder: 'example@gmail.com',
             name: 'Name',
@@ -323,6 +323,8 @@ const messages = {
             nameRequired: 'The name is required',
             passRequired: 'Insert a password',
             button: 'Register',
+            people: 'People',
+            register: 'Register',
         }
     },
     'es': {
@@ -632,8 +634,10 @@ const messages = {
             title: 'Política de privacidad',
             noPrivacy: 'No existe una política de privacidad',
         },
-        adminRegister: {
-            title: 'Registro',
+        admin: {
+            title: 'Administrador',
+            people: 'Personas',
+            register: 'Registro',
             email: 'Email',
             emailPHolder: 'ejemplo@gmail.com',
             name: 'Nombre',

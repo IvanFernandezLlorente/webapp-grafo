@@ -68,14 +68,6 @@
                         Admin People
                     </div>
                 </router-link>
-                <router-link v-if="isAdmin" to="/admin-register" class="link" @click.native="hideSidebar(); active = 'admin-register'" :class="{active: active === 'admin-register'}">
-                    <div class="icon">
-                        <b-icon-person-plus></b-icon-person-plus>
-                    </div>
-                    <div class="title">
-                        Admin Register
-                    </div>
-                </router-link>
             </div>
         </div>
     </div>
