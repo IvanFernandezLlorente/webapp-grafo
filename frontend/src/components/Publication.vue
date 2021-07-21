@@ -17,16 +17,16 @@
         <b-row v-else class="body padding-box">
             <b-col cols="12" xl="3" class="content-box choices-box">
                 <div class="choices">
-                    <div @click="setChoice(1)" :class="[choice == 1 ? activeClass : '']">{{ $t('publication.introduction') }}</div>
-                    <div v-if="publication.description.visible" @click="setChoice(2)" :class="[choice == 2 ? activeClass : '']">{{ $t('publication.description') }}</div>    
-                    <div v-if="publication.state.visible" @click="setChoice(3)" :class="[choice == 3 ? activeClass : '']">{{ $t('publication.state') }}</div>  
-                    <div v-if="publication.instances.visible" @click="setChoice(4)" :class="[choice == 4 ? activeClass : '']">{{ $t('publication.instances') }}</div>  
-                    <div v-if="publication.computationalExperience.visible" @click="setChoice(5)" :class="[choice == 5 ? activeClass : '']">{{ $t('publication.computationalExperience') }}</div>  
-                    <div v-if="publication.reference.visible" @click="setChoice(6)" :class="[choice == 6 ? activeClass : '']">{{ $t('publication.references') }}</div>            
+                    <div @click="setChoice(1); scrollToElement({behavior: 'smooth'},'intro')" :class="[choice == 1 ? activeClass : '']">{{ $t('publication.introduction') }}</div>
+                    <div v-if="publication.description.visible" @click="setChoice(2); scrollToElement({behavior: 'smooth'},'description')" :class="[choice == 2 ? activeClass : '']">{{ $t('publication.description') }}</div>    
+                    <div v-if="publication.state.visible" @click="setChoice(3); scrollToElement({behavior: 'smooth'},'state')" :class="[choice == 3 ? activeClass : '']">{{ $t('publication.state') }}</div>  
+                    <div v-if="publication.instances.visible" @click="setChoice(4); scrollToElement({behavior: 'smooth'},'instances')" :class="[choice == 4 ? activeClass : '']">{{ $t('publication.instances') }}</div>  
+                    <div v-if="publication.computationalExperience.visible" @click="setChoice(5); scrollToElement({behavior: 'smooth'},'computationalExperience')" :class="[choice == 5 ? activeClass : '']">{{ $t('publication.computationalExperience') }}</div>  
+                    <div v-if="publication.reference.visible" @click="setChoice(6); scrollToElement({behavior: 'smooth'},'reference')" :class="[choice == 6 ? activeClass : '']">{{ $t('publication.references') }}</div>            
                 </div>
             </b-col>
             <b-col cols="12" xl="9" class="info-box">
-                <div v-if="choice == 1" class="content-box info">
+                <div class="content-box info intro" >
                     <b-row style="position: relative;">
                         <b-col cols="12" md="11">
                             <h3 id="title">{{publication.title}}</h3>
@@ -123,65 +123,45 @@
                     </div>
                 </div>
 
-                <div v-if="choice == 2" class="content-box info">
+                <div class="content-box info description" v-if="publication.description.visible">
                     <b-row>
-                        <div>
-                            <h3 id="title">{{ publication.title }}</h3>
-                        </div>
-
-                        <div v-if="publication.description.visible" class="editable-content">
+                        <div class="editable-content">
                             <h4 class="subtitle">{{ $t('publication.description') }}</h4>
                             <div v-html="publication.description.content"></div>
                         </div>
                     </b-row>
                 </div>
 
-                <div v-if="choice == 3" class="content-box info">
+                <div class="content-box info state" v-if="publication.state.visible">
                     <b-row>
-                        <div>
-                            <h3 id="title">{{ publication.title }}</h3>
-                        </div>
-
-                        <div v-if="publication.state.visible" class="editable-content">
+                        <div class="editable-content">
                             <h4 class="subtitle">{{ $t('publication.state') }}</h4>
                             <div v-html="publication.state.content"></div>
                         </div>
                     </b-row>
                 </div>
 
-                <div v-if="choice == 4" class="content-box info">
+                <div class="content-box info instances" v-if="publication.instances.visible">
                     <b-row>
-                        <div>
-                            <h3 id="title">{{ publication.title }}</h3>
-                        </div>
-
-                        <div v-if="publication.instances.visible" class="editable-content">
+                        <div class="editable-content">
                             <h4 class="subtitle">{{ $t('publication.instances') }}</h4>
                             <div v-html="publication.instances.content"></div>
                         </div>
                     </b-row>
                 </div>
 
-                <div v-if="choice == 5" class="content-box info">
+                <div class="content-box info computationalExperience" v-if="publication.computationalExperience.visible">
                     <b-row>
-                        <div>
-                            <h3 id="title">{{ publication.title }}</h3>
-                        </div>
-
-                        <div v-if="publication.computationalExperience.visible" class="editable-content">
+                        <div class="editable-content">
                             <h4 class="subtitle">{{ $t('publication.computationalExperience') }}</h4>
                             <div v-html="publication.computationalExperience.content"></div>
                         </div>
                     </b-row>
                 </div>
 
-                <div v-if="choice == 6" class="content-box info">
+                <div class="content-box info reference" v-if="publication.reference.visible">
                     <b-row>
-                        <div>
-                            <h3 id="title">{{ publication.title }}</h3>
-                        </div>
-
-                        <div v-if="publication.reference.visible" class="editable-content">
+                        <div class="editable-content">
                             <h4 class="subtitle">{{ $t('publication.references') }}</h4>
                             <div v-html="publication.reference.content"></div>
                         </div>
@@ -286,6 +266,13 @@ export default {
         },
         getDoi(doi) {
             return doi.split("https://doi.org/")[1];
+        },
+        scrollToElement(options,ref) {
+            const el = this.$el.getElementsByClassName(ref)[0];
+            
+            if (el) {
+                el.scrollIntoView(options);
+            }
         },
     },
     computed: mapState(['isAdmin','id']),

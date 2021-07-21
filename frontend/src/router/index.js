@@ -22,6 +22,7 @@ import Applications from '../components/Applications';
 import ImportOrcid from '../components/ImportOrcid';
 import ErrorComponent from '../components/Error';
 import Privacy from '../components/Privacy';
+import AdminPeople from '../components/AdminPeople';
 
 Vue.use(VueRouter)
 
@@ -171,6 +172,18 @@ const routes = [
         path: '/error',
         name: 'Error',
         component: ErrorComponent
+     },
+     {
+        path: '/admin-people',
+        name: 'AdminPeople',
+        component: AdminPeople,
+        beforeEnter: (to, from, next) => {
+            if (store.state.isAdmin) {
+                next();
+            } else {
+                next({path: '/'})
+            }
+        }
      }, 
     ]
   },

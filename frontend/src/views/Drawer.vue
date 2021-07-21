@@ -60,6 +60,14 @@
                         {{ $t('drawer.problems') }}
                     </div>
                 </router-link>
+                <router-link v-if="isAdmin" to="/admin-people" class="link" @click.native="hideSidebar(); active = 'admin-people'" :class="{active: active === 'admin-people'}">
+                    <div class="icon">
+                        <b-icon-file-person></b-icon-file-person>
+                    </div>
+                    <div class="title">
+                        Admin People
+                    </div>
+                </router-link>
             </div>
         </div>
     </div>
@@ -121,12 +129,14 @@ export default {
                 case 'Publications':
                     this.active = 'publications';
                     break;
+                case 'admin-people':
+                    this.active = 'admin-people';
                 default:
                     this.active = null;
             }
         }
     },
-    computed: mapState(['userId']),
+    computed: mapState(['userId','isAdmin']),
     watch: {
         userId() {
             this.id = this.userId;
