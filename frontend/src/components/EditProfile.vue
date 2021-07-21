@@ -22,6 +22,7 @@
                         <div v-if="isAdmin" @click="setChoice(5)" :class="[choice == 5 ? activeClass : '']">{{ $t('settings.tabTags') }}</div>
                         <div v-if="isAdmin" @click="setChoice(6)" :class="[choice == 6 ? activeClass : '']">{{ $t('settings.webDescription') }}</div>
                         <div v-if="isAdmin" @click="setChoice(7)" :class="[choice == 7 ? activeClass : '']">{{ $t('settings.tabPrivacy') }}</div>
+                        <div v-if="isAdmin" @click="setChoice(8)" :class="[choice == 8 ? activeClass : '']">{{ $t('settings.tabAdminPassword') }}</div>
                     </div>
 
                     <div v-if="choice == 1">
@@ -341,6 +342,28 @@
                             <input type="submit" name="commit" :value="$t('settings.updatePrivacy')" style="margin-left: 15px;margin-top: 4rem;">
                         </form>
                     </div>
+
+                    <div v-if="choice == 8">
+                        <b-row style="flex-direction: column;margin-top: 3rem;">
+                            <form @submit.prevent="updatePasswordAdmin">
+                                <b-col cols="12" md="6" xl="4">
+                                    <div class="form-group">
+                                        <label for="newPassword" class="control-label required">{{ $t('settings.newPassword') }}</label>
+                                        <input id="newPassword" @keydown.enter.prevent='' v-model="newPassword" class="form-control" type="password" :placeholder="$t('settings.newPassword')">
+                                    </div>
+                                </b-col>
+                                <b-col cols="12" md="6" xl="4">
+                                    <div class="form-group">
+                                        <label for="confirmPassword" class="control-label required">{{ $t('settings.confirmPassword') }}</label>
+                                        <input id="confirmPassword" @keydown.enter.prevent='' v-model="confirmPassword" class="form-control" type="password" :placeholder="$t('settings.confirmPassword')">
+                                    </div>
+                                </b-col>
+                                <p v-if="errorPassword" class="msgResponse-error msgResponse col-md-6 col-xl-4 col-12">{{errorPassword}}</p>  
+                                <p v-if="changedPassword" class="msgResponse-success msgResponse col-md-6 col-xl-4 col-12">{{changedPassword}}</p>
+                                <input type="submit" name="commit" :value="$t('settings.savePassword')" style="margin-left: 15px;margin-top: 4rem;">
+                            </form>
+                        </b-row>
+                    </div>
                 </div>
                 
             </div>
@@ -642,7 +665,10 @@ export default {
         },
         async updatePassword() {
             try {
-                if (this.currentPassword && this.newPassword && this.confirmPassword) {
+                if (this.newPassword != this.confirmPassword) {
+                    this.changedPassword = '';
+                    this.errorPassword = this.$t('settings.errorPasswordDifferent');
+                } else if (this.currentPassword && this.newPassword && this.confirmPassword) {
                     const body = {
                         currentPassword: this.currentPassword,
                         newPassword: this.newPassword
@@ -653,10 +679,35 @@ export default {
                     if (res.status == 200) {
                         this.errorPassword = '';
                         this.changedPassword = this.$t('settings.changedPassword');
+                        this.currentPassword = '';
+                        this.newPassword = '';
+                        this.confirmPassword = '';
                     }
-                } else if (this.newPassword != this.confirmPassword) {
+                } else {
+                    this.changedPassword = '';
+                    this.errorPassword = this.$t('settings.errorPasswordIncomplete');
+                }
+            } catch (error) {
+                console.log(error); 
+                this.changedPassword = '';
+                this.errorPassword = error.response.data.message;
+            }
+        },
+        async updatePasswordAdmin() {
+            try {
+                if (this.newPassword != this.confirmPassword) {
                     this.changedPassword = '';
                     this.errorPassword = this.$t('settings.errorPasswordDifferent');
+                } else if (this.newPassword && this.confirmPassword) {
+                    const res = await this.axios.put(`users/password/${this.url}`, { newPassword: this.newPassword }, {
+                        headers: { token: this.$store.state.token}
+                    });
+                    if (res.status == 200) {
+                        this.errorPassword = '';
+                        this.changedPassword = this.$t('settings.changedPassword');
+                        this.newPassword = '';
+                        this.confirmPassword = '';
+                    }
                 } else {
                     this.changedPassword = '';
                     this.errorPassword = this.$t('settings.errorPasswordIncomplete');

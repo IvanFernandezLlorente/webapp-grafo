@@ -141,9 +141,11 @@ export const changePassword = async (req, res) => {
         }
 
         if (req.isAdmin || req.userId == req.params.userId) {
-            const checkPassword = await User.comparePassword(req.body.currentPassword,user.password);
-            if (!checkPassword) {
-                return res.status(401).json({ message: "The current password is not the same"});
+            if (!req.isAdmin) {
+                const checkPassword = await User.comparePassword(req.body.currentPassword,user.password);
+                if (!checkPassword) {
+                    return res.status(401).json({ message: "The current password is not the same"});
+                }
             }
 
             const encryptedPassword = await User.encryptPassword(req.body.newPassword);
