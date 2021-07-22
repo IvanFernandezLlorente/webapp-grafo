@@ -31,7 +31,7 @@
 
 #preloader {
     position: absolute;
-    z-index: 9999;
+    z-index: 999;
     overflow: hidden;
     background-color: #fff;
     height: 100%;

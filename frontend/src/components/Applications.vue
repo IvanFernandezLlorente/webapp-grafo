@@ -10,7 +10,7 @@
         <b-row class="body padding-box">
             <b-col cols="12">
                 <b-row v-if="spinAll">
-                    <div id="preloader" class="content-box" style="height: 550px;"></div>
+                    <div id="preloader" class="content-box" style="height: 640px;"></div>
                 </b-row>
                 <b-row v-if="applications.length != 0">
                     <b-col cols="12" xl="4" class="application-box">

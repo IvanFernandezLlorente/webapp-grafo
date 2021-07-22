@@ -727,6 +727,7 @@ export default {
                         this.usersConfirm = entry.fields.author["authors$"];
                         this.manageUsersBibtex();
                     }
+                    this.deleteEmptyUsers();
                 } else {
                     this.publication.bibtex = '';
                     this.publicationCopy.bibtex = '';

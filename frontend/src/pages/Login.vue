@@ -22,7 +22,7 @@
                         <label for="password" style="margin-top: 15px;">{{ $t('login.pass') }}</label>
                         <input id="password" v-model="password" name="password" :placeholder="$t('login.passPHolder')" type="password">
 
-                        <vue-recaptcha ref="recaptcha"
+                        <vue-recaptcha ref="recaptcha" style="display: flex;justify-content: center;"
                             @verify="onVerify" :sitekey="sitekey">
                         </vue-recaptcha>
 
